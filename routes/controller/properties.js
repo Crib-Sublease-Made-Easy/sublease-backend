@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Load Properies Model
-const Property = require('../../models/Property');
+const Property = require('../../models/property');
 
 
 
