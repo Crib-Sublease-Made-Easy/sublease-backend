@@ -7,7 +7,7 @@ const User = require('../../models/user');
 
 
 
-//************************* PROPERTY CONTROLLER ***************************//
+//************************* USER CONTROLLER ***************************//
 // @route GET /users
 // @description lists all of the users in the market
 // @access public
