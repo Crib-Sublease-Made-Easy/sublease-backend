@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const authy = require('authy')('VBLvLnTJXGPBOOIaOgyqEh294tAl26Vp');
+const authy = require('authy')('yiJTrwNpc3wqCWvelJRkWnAE6jzv6emp');
 // Load Properies Model
 const User = require('../models/user');
 
@@ -19,6 +19,7 @@ const User = require('../models/user');
 // @access public
 exports.otp_step1= (req, resp, next) => {
   authy.register_user(req.body.email, req.body.phoneNumber, function (err, res) {
+    console.log(err)
     console.log(res)
     if(String(res.success) === String(true)){
       resp.status(201).json({
