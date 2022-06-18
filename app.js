@@ -8,34 +8,35 @@ require("dotenv").config();
 
 //connect database
 connectDB();
-
-
 app.use(express.json());
 
+
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-    );
-    if (req.method === "OPTIONS") {
-      res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
-      return res.status(200).json({});
-    }
-    next();
-  });
-
-  
-
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
+    return res.status(200).json({});
+  }
+  next();
+});
 
 //routes
 app.get('/', (req, res) => res.send('Hello World'));
 
-const properties = require('./routes/controller/properties')
+
+
+const properties = require('./api/routes/properties')
 app.use('/properties', properties);
 
-const users = require('./routes/controller/users')
+const users = require('./api/routes/users')
 app.use('/users', users);
+
+const tokens = require('./api/routes/token')
+app.use('/tokens', tokens);
 
 
 

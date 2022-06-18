@@ -1,11 +1,11 @@
-const express = require('express');
-const router = express.Router();
 const bcrypt = require("bcrypt");
+const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
-
 // Load Properies Model
-const User = require('../../models/user');
+const User = require('../models/user');
+
+
 
 
 
@@ -16,7 +16,8 @@ const User = require('../../models/user');
 // @route POST /users/signup
 // @description signup a user in the database
 // @access public
-router.post("/signup", (req, res, next) => {
+exports.user_signup = (req, res, next) => {
+  console.log(req.body)
   User.find({ email: req.body.email })
     .exec()
     .then(user => {
@@ -31,6 +32,8 @@ router.post("/signup", (req, res, next) => {
               error: err
             });
           } else {
+
+
             const user = new User({
               //_id: new mongoose.Types.ObjectId(),
               email: req.body.email,
@@ -39,16 +42,48 @@ router.post("/signup", (req, res, next) => {
               lastName: req.body.lastName,
               phoneNumber: req.body.phoneNumber,
               age: req.body.age,
-              gender: req.body.gender
+              gender: req.body.gender,
             });
             user
-              .save()
-              .then(result => {
-                console.log(result);
-                res.status(201).json({
-                  message: "User Sign Up Successful!"
-                });
-              })
+            .save()
+            .then(result => {
+              const accessToken = jwt.sign(
+                {
+                  email: result.email,
+                  userId: result._id
+                },
+                process.env.JWT_KEY,
+                {
+                    expiresIn: "1h"
+                }
+              );
+              const refreshToken = jwt.sign(
+                {
+                  email: result.email,
+                  userId: result._id
+                },
+                process.env.JWT_KEY,
+                {
+                    expiresIn: "100d"
+                }
+              );
+
+
+              console.log(result);
+              res.status(201).json({
+                message: "User signed up successfully",
+                createdUser: {
+                    firstName: result.firstName,
+                    lastName: result.lastName,
+                    price: result.price,
+                    _id: result._id,
+                },
+                token: {
+                  refresh: refreshToken,
+                  access: accessToken
+                }
+              });
+            })
               .catch(err => {
                 console.log(err);
                 res.status(500).json({
@@ -59,14 +94,14 @@ router.post("/signup", (req, res, next) => {
         });
       }
     });
-});
+};
 
 
 
 // @route POST /users/login
 // @description login a user in the database and return access token
 // @access public
-router.post("/login", (req, res, next) => {
+exports.user_login = (req, res, next) => {
   User.find({ email: req.body.email })
     .exec()
     .then(user => {
@@ -82,7 +117,7 @@ router.post("/login", (req, res, next) => {
           });
         }
         if (result) {
-          const token = jwt.sign(
+          const accessToken = jwt.sign(
             {
               email: user[0].email,
               userId: user[0]._id
@@ -92,9 +127,22 @@ router.post("/login", (req, res, next) => {
                 expiresIn: "1h"
             }
           );
+          const refreshToken = jwt.sign(
+            {
+              email: user[0].email,
+              userId: user[0]._id
+            },
+            process.env.JWT_KEY,
+            {
+                expiresIn: "100d"
+            }
+          );
           return res.status(200).json({
             message: "Authentication Successful",
-            accessToken: token
+            token: {
+              access: accessToken,
+              refresh: refreshToken
+            }
           });
         }
         res.status(401).json({
@@ -108,7 +156,7 @@ router.post("/login", (req, res, next) => {
         error: err
       });
     });
-});
+};
 
 
 
@@ -118,51 +166,50 @@ router.post("/login", (req, res, next) => {
 // @route GET /users
 // @description lists all of the users in the market
 // @access public
-router.get('/' , (req, res) => {
+exports.user_get_all= (req, res, next) => {
     User.find()
         .then(proprties => res.json(proprties))
         .catch(err => res.status(404).json({ propertiesFound: 'none'}));
         
-});
+};
 
 
 // @route GET /users/:id
 // @description Get single user by id
 // @access Public
-router.get('/:id', (req, res) => {
+exports.user_get_one = (req, res, next) => {
     User.findById(req.params.id)
       .then(user => res.json(user))
       .catch(err => res.status(404).json({ usersFound: 'No User found' }));
-  });
+  };
   
   // @route POST /users
   // @description post user
   // @access Public
-  router.post('/', (req, res) => {
-    User.create(req.body)
-      .then(user => res.json({ msg: 'user added successfully' }))
-      .catch(err => res.status(400).json({ error: 'Unable to add this user', errRaw: err }));
-  });
+  // router.post('/', (req, res) => {
+  //   User.create(req.body)
+  //     .then(user => res.json({ msg: 'user added successfully' }))
+  //     .catch(err => res.status(400).json({ error: 'Unable to add this user', errRaw: err }));
+  // });
   
   // @route PUT /users/:id
   // @description Update user
   // @access Public
-  router.put('/:id', (req, res) => {
+  exports.user_modify = (req, res, next) => {
     User.findByIdAndUpdate(req.params.id, req.body)
       .then(user => res.json({ msg: 'Updated successfully' }))
       .catch(err =>
         res.status(400).json({ error: 'Unable to update the Database' })
       );
-  });
+  };
   
   // @route DELETE /users/:id
   // @description Delete user by id
   // @access Public
-  router.delete('/:id', (req, res) => {
+  exports.user_delete = (req, res, next) => {
     User.findByIdAndRemove(req.params.id, req.body)
       .then(user => res.json({ mgs: 'User deleted successfully' }))
       .catch(err => res.status(404).json({ error: 'No such a user' }));
-  });
+  };
 
 
-module.exports = router;
