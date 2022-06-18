@@ -43,6 +43,7 @@ exports.otp_step1= (req, resp, next) => {
 exports.otp_step2= (req, resp, next) => {
 
   authy.request_sms(req.body.authy_id, force=true, function (err, res) {
+    console.log(err)
     if(String(res.success) === String("true")){
       resp.status(201).json({
         messge: "SMS token was sent",
@@ -63,7 +64,7 @@ exports.otp_step2= (req, resp, next) => {
 // @description send sms
 // @access public
 exports.otp_step3= (req, resp, next) => {
-
+  console.log(err)
   authy.verify(req.body.authy_id, token=String(req.body.token), function (err, res) {
     if(String(res.success) == String(true)){
       resp.status(201).json({
