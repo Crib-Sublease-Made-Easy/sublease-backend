@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-
+const authy = require('authy')('VBLvLnTJXGPBOOIaOgyqEh294tAl26Vp');
 // Load Properies Model
 const User = require('../models/user');
 
@@ -12,6 +12,73 @@ const User = require('../models/user');
 
 //************************* USER CONTROLLER ***************************//
 
+
+
+// @route POST /users/OTP/step1
+// @description create useraccount
+// @access public
+exports.otp_step1= (req, resp, next) => {
+  authy.register_user(req.body.email, req.body.phoneNumber, function (err, res) {
+    console.log(res)
+    if(String(res.success) === String(true)){
+      resp.status(201).json({
+        id: res.user.id,
+        response: res
+      })
+    } else{
+      resp.status(401).json({
+        message: "Incorrect OTP",
+        response: res
+      })
+    }
+
+  });
+};
+
+
+// @route POST /users/OTP/step2
+// @description send sms
+// @access public
+exports.otp_step2= (req, resp, next) => {
+
+  authy.request_sms(req.body.authy_id, force=true, function (err, res) {
+    if(String(res.success) === String("true")){
+      resp.status(201).json({
+        messge: "SMS token was sent",
+        response: res
+      })
+    } else{
+      resp.status(401).json({
+        message: "Failed to send OTP SMS",
+        response: res
+      })
+    }
+
+  });
+}
+
+
+// @route POST /users/OTP/step3
+// @description send sms
+// @access public
+exports.otp_step3= (req, resp, next) => {
+
+  authy.verify(req.body.authy_id, token=String(req.body.token), function (err, res) {
+    if(String(res.success) == String(true)){
+      resp.status(201).json({
+        messge: "Success",
+        response: res
+      })
+    } else{
+      resp.status(401).json({
+        message: "Failed",
+        response: res
+      })
+    }
+
+  });
+}
+  
 
 // @route POST /users/signup
 // @description signup a user in the database

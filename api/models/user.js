@@ -28,7 +28,19 @@ const UserSchema = new mongoose.Schema ({
     age: {
         type: Number,
         required: true
-    }
+    },
+    age: {
+        type: Number,
+        required: true
+    },
+    validOTP: {
+        type: Boolean,
+        required: true
+    },
+    authy_id: {
+        type: Number,
+        required: true
+    },
 })
 
 module.exports = User = mongoose.model('user', UserSchema)
