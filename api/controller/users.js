@@ -1,13 +1,41 @@
 const bcrypt = require("bcrypt");
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken");
 const authy = require('authy')('DqPfoRJb2keIv58497NPMICWQ495Xn5T');
 // Load Properies Model
 const User = require('../models/user');
+const router = require('express').Router();
+const config = require('config')
+const db = config.get('mongoURI')
 
 
+// ------------ Image Specific Code----------
+const Grid = require('gridfs-stream');
 
+const dbInstance = mongoose.connection;
 
+ let gfs, gridfsBucket;
+ 
+
+ dbInstance.once('open', () => {
+  gridfsBucket = new mongoose.mongo.GridFSBucket(dbInstance.db, {
+  bucketName: 'profileImages'
+});
+
+  gfs = Grid(dbInstance.db, mongoose.mongo);
+  gfs.collection('profileImages');
+})
+
+//-----------Get an Image----------------
+exports.get_image = async(req, res, next) => {
+  const file = await gfs.files.findOne({ filename: req.params.filename });
+  const readstream = gridfsBucket.openDownloadStream(file._id);
+ // var readstream = gfs.createReadStream({ filename: req.params.filename });
+  readstream.on("error", function (err) {
+    res.send("No image found with that title");
+  });
+  readstream.pipe(res);
+}
 
 
 //************************* USER CONTROLLER ***************************//
@@ -112,6 +140,8 @@ exports.user_signup = (req, res, next) => {
               phoneNumber: req.body.phoneNumber,
               age: req.body.age,
               gender: req.body.gender,
+              authy_id: req.body.authy_id,
+              profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename
             });
             user
             .save()
@@ -145,6 +175,7 @@ exports.user_signup = (req, res, next) => {
                     firstName: result.firstName,
                     lastName: result.lastName,
                     price: result.price,
+                    profilePic: result.profilePic,
                     _id: result._id,
                 },
                 token: {
