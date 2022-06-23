@@ -3,6 +3,37 @@ const Property = require('../models/property');
 const mongoose = require("mongoose");
 
 
+// ------------ Image Specific Code----------
+
+const Grid = require('gridfs-stream');
+
+const dbInstance = mongoose.connection;
+
+ let gfs, gridfsBucket;
+ 
+
+ dbInstance.once('open', () => {
+  gridfsBucket = new mongoose.mongo.GridFSBucket(dbInstance.db, {
+  bucketName: 'propertyImages'
+});
+
+  gfs = Grid(dbInstance.db, mongoose.mongo);
+  gfs.collection('propertyImages');
+})
+
+
+//-----------Get an Image----------------
+exports.get_image = async(req, res, next) => {
+    const file = await gfs.files.findOne({ filename: req.params.filename });
+    const readstream = gridfsBucket.openDownloadStream(file._id);
+   // var readstream = gfs.createReadStream({ filename: req.params.filename });
+    readstream.on("error", function (err) {
+      res.send("No image found with that title");
+    });
+    readstream.pipe(res);
+  }
+  
+  
 
 
 //************************* PROPERTY CONTROLLER ***************************//
@@ -30,7 +61,39 @@ exports.property_get_one = (req, res, next) => {
   // @description post property
   // @access Public
   exports.property_create = (req, res, next) => {
-        Property.create(req.body)
+    console.log(JSON.stringify(req.files))
+    propImgList = []
+    for (let i = 0; i < req.files.length; i++) {
+        propImgList[i] = ('https://sublease-app.herokuapp.com/properties/propertyImages/' + req.files[i].filename)
+      }
+    
+    const property = new Property({
+        //_id: new mongoose.Types.ObjectId(),
+        title: req.body.title,
+        type: req.body.type,
+        location: req.body.location,
+        timePosted: req.body.timePosted,
+        postedBy: req.body.postedBy,
+        price: req.body.price,
+        availableFrom: req.body.availableFrom,
+        availableTo: req.body.availableTo,
+        imgList: propImgList,
+        furnished: req.body.furnished,
+        moveinFlexiblity: req.body.moveinFlexiblity,
+        renew: req.body.renew,
+        pets: req.body.pets,
+        parking: req.body.parking,
+        onSiteWasherDryer: req.body.onSiteWasherDryer,
+        description: req.body.description,
+        bed: req.body.bed,
+        bath: req.body.bath,
+        sharedRoom: req.body.sharedRoom,
+        utilitiesIncluded: req.body.utilitiesIncluded,
+        deleted: false,
+        numberOfViews: 0
+      });
+      property
+      .save()
       .then(property => res.json({ msg: 'property added successfully' }))
       .catch(err => res.status(400).json({ error: 'Unable to add this property', errRaw: err }));
   };
