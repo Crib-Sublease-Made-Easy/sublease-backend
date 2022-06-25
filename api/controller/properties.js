@@ -61,7 +61,7 @@ exports.property_get_one = (req, res, next) => {
   // @description post property
   // @access Public
   exports.property_create = (req, res, next) => {
-    console.log(JSON.stringify(req))
+    console.log(req)
     console.log(JSON.stringify(req.files))
     propImgList = []
     for (let i = 0; i < req.files.length; i++) {
