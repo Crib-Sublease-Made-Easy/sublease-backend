@@ -70,17 +70,19 @@ exports.property_query = (req, res, next) => {
         req.query.price = price
     }
     var coords = [];
-    coords[0] = req.query.longitude;
-    coords[1] = req.query.latitude;
-    req.query.loc = {
-        $near: {
-            $geometry: {
-                type: "Point",
-                coordinates: coords
-            },
-            $maxDistance: req.query.maxDistance
-        }
-    } 
+    if(query.latitude == undefined || query.longitude == undefined){
+        coords[0] = req.query.longitude;
+        coords[1] = req.query.latitude;
+        query.loc = {
+            $near: {
+                $geometry: {
+                    type: "Point",
+                    coordinates: coords
+                },
+                $maxDistance: req.query.maxDistance
+            }
+        } 
+    }
     delete query.priceHigh
     delete query.priceLow
     delete query.latitude
@@ -88,7 +90,7 @@ exports.property_query = (req, res, next) => {
     delete query.maxDistance
     delete query.page
 
-    console.log(req.query)
+    console.log(query)
 
     Property.find(query, 'imgList location availableTo availableFrom price loc', { skip: req.query.page * 4, limit: 4 })
     .then(proprties => res.json(proprties))
