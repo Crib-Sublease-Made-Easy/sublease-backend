@@ -69,11 +69,28 @@ exports.property_query = (req, res, next) => {
         price = {$gte: req.query.priceLow, $lte: req.query.priceHigh}
         req.query.price = price
     }
+    var coords = [];
+    coords[0] = req.query.longitude;
+    coords[1] = req.query.latitude;
+    req.query.loc = {
+        $near: {
+            $geometry: {
+                type: "Point",
+                coordinates: coords
+            },
+            $maxDistance: req.query.maxDistance
+        }
+    } 
     delete req.query.priceHigh
     delete req.query.priceLow
+    delete req.query.latitude
+    delete req.query.longitude
+    delete req.query.maxDistance
+
+
     console.log(req.query)
 
-    Property.find(query, 'imgList location availableTo availableFrom price', { skip: req.query.page * 4, limit: 4 })
+    Property.find(query, 'imgList location availableTo availableFrom price loc', { skip: req.query.page * 4, limit: 4 })
     .then(proprties => res.json(proprties))
     .catch(err => res.status(404).json({ propertiesFound: 'none'}));
 
@@ -98,7 +115,9 @@ exports.property_get_one = (req, res, next) => {
     for (let i = 0; i < req.files.length; i++) {
         propImgList[i] = ('https://sublease-app.herokuapp.com/properties/propertyImages/' + req.files[i].filename)
       }
-    
+    var coor = []
+    coor[0] = req.body.longitude
+    coor[1] = req.body.latitude
     const property = new Property({
         //_id: new mongoose.Types.ObjectId(),
         title: req.body.title,
@@ -121,6 +140,7 @@ exports.property_get_one = (req, res, next) => {
         bath: req.body.bath,
         sharedRoom: req.body.sharedRoom,
         utilitiesIncluded: req.body.utilitiesIncluded,
+        loc: coor,
         deleted: false,
         numberOfViews: 0
       });

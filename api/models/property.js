@@ -106,6 +106,10 @@ const PropertySchema = new mongoose.Schema (
             type: Boolean,
             required: false
         },
+        loc: {
+            type: [Number], // [<longitude>, <latitude>]
+            required: false
+        },
         imgList: {
             type: Array,
             required: false
@@ -120,5 +124,6 @@ const PropertySchema = new mongoose.Schema (
         },
     
     })
+    PropertySchema.index({ "loc": "2dsphere" });
 
 module.exports = Property = mongoose.model('property', PropertySchema)
