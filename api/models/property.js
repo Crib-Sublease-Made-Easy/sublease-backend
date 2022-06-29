@@ -23,7 +23,7 @@ const PropertySchema = new mongoose.Schema (
             required: false
         },
         price: {
-            type: mongoose.Decimal128,
+            type: Number,
             required: false
         },
         availableFrom: {
@@ -75,6 +75,34 @@ const PropertySchema = new mongoose.Schema (
             required: false
         },
         utilitiesIncluded: {
+            type: Boolean,
+            required: false
+        },
+        tv: {
+            type: Boolean,
+            required: false
+        },
+        pool: {
+            type: Boolean,
+            required: false
+        },
+        gym: {
+            type: Boolean,
+            required: false
+        },
+        roomates: {
+            type: Boolean,
+            required: false
+        },
+        mattress: {
+            type: Boolean,
+            required: false
+        },
+        parkingGarage: {
+            type: Boolean,
+            required: false
+        },
+        wifi: {
             type: Boolean,
             required: false
         },

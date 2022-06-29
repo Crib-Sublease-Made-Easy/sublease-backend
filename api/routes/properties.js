@@ -43,6 +43,7 @@ const propertyPics = upload.fields([{ name: 'propImg1', maxCount: 1 }, { name: '
 
 router.post("/",upload.array('propertyImages', 5), PropertyController.property_create);
 router.get("/", PropertyController.property_get_all);
+router.get("/query", PropertyController.property_query)
 router.get("/:id", checkAuth, PropertyController.property_get_one);
 router.put("/:id", checkAuth, PropertyController.property_modify);
 router.get("/:id", checkAuth, PropertyController.property_delete);

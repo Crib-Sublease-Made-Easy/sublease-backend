@@ -47,6 +47,38 @@ exports.property_get_all = (req, res, next) => {
         
 };
 
+// @route GET /properties
+// @description lists all of the properties in the market
+// @access public
+exports.property_query = (req, res, next) => {
+    console.log("PAGE", req.query.page)
+    console.log("TITLE", req.query.title)
+    console.log("PRICE", req.query.price)
+    // type: req.query.type,
+    // price: {$gte: req.query.priceLow, $lte: req.query.priceHigh},
+    // bedroom: req.query.bedroom,
+    // bathroom: req.query.bathroom,
+    // petsAllowed: req.query.petsAllowed,
+    // ableToRenew: req.query.ableToRenew,
+    // wifi: req.query.wifi,
+    // onSiteWasherDryer: req.query.onSiteWasherDryer,
+    // utilitiesIncluded: req.query.utilitiesIncluded,
+    // furnished: 
+    query = req.query
+    if(query.priceLow != undefined || query.priceHigh != undefined){
+        price = {$gte: req.query.priceLow, $lte: req.query.priceHigh}
+        req.query.price = price
+    }
+    delete req.query.priceHigh
+    delete req.query.priceLow
+    console.log(req.query)
+
+    Property.find(query, 'imgList location availableTo availableFrom price', { skip: req.query.page * 4, limit: 4 })
+    .then(proprties => res.json(proprties))
+    .catch(err => res.status(404).json({ propertiesFound: 'none'}));
+
+};
+
 
 // @route GET /properties/:id
 // @description Get single property by id
