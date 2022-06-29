@@ -81,12 +81,12 @@ exports.property_query = (req, res, next) => {
             $maxDistance: req.query.maxDistance
         }
     } 
-    delete req.query.priceHigh
-    delete req.query.priceLow
-    delete req.query.latitude
-    delete req.query.longitude
-    delete req.query.maxDistance
-
+    delete query.priceHigh
+    delete query.priceLow
+    delete query.latitude
+    delete query.longitude
+    delete query.maxDistance
+    delete query.page
 
     console.log(req.query)
 
