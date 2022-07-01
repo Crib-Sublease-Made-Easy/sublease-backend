@@ -41,10 +41,10 @@ const upload = multer({ storage, limits: { fieldSize: 25 * 1024 * 1024 } });
 
 const propertyPics = upload.fields([{ name: 'propImg1', maxCount: 1 }, { name: 'propImg2', maxCount: 1 }, { name: 'propImg3', maxCount: 1 }, { name: 'propImg4', maxCount: 1 }, { name: 'propImg5', maxCount: 1 }])
 
-router.post("/",upload.array('propertyImages', 5), PropertyController.property_create);
+router.post("/",upload.array('propertyImages', 5), checkAuth,PropertyController.property_create);
 router.get("/", PropertyController.property_get_all);
 router.get("/query", PropertyController.property_query)
-router.get("/:id", checkAuth, PropertyController.property_get_one);
+router.get("/:id", PropertyController.property_get_one);
 router.put("/:id", checkAuth, PropertyController.property_modify);
 router.get("/:id", checkAuth, PropertyController.property_delete);
 router.get("/propertyImages/:filename", PropertyController.get_image);

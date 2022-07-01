@@ -115,7 +115,7 @@ const PropertySchema = new mongoose.Schema (
             required: false
         },
         numberOfViews: {
-            type: Array,
+            type: Number,
             required: false
         },
         deleted: {

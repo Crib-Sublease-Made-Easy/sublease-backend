@@ -1,6 +1,7 @@
 // Load Properies Model
 const Property = require('../models/property');
 const mongoose = require("mongoose");
+const jwt = require('jsonwebtoken');
 
 
 // ------------ Image Specific Code----------
@@ -102,9 +103,27 @@ exports.property_query = (req, res, next) => {
 // @route GET /properties/:id
 // @description Get single property by id
 // @access Public
-exports.property_get_one = (req, res, next) => {
-    Property.findById(req.params.id)
-      .then(property => res.json(property))
+exports.property_get_one = async (req, res, next) => {
+    await Property.findById(req.params.id)
+      .then( async property => {
+        await User.findById(property.postedBy).then( async user => {
+            postedUserInfo = {}
+            postedUserInfo.firstName= user.firstName
+            postedUserInfo.lastName= user.lastName
+            postedUserInfo.profilePic = user.profilePic
+            changeNumberOfViews = {}
+            changeNumberOfViews.numberOfViews = property.numberOfViews + 1;
+            console.log("ChangeNumberOfViews,", changeNumberOfViews)
+            await Property.findByIdAndUpdate(property._id, changeNumberOfViews)
+            .then(property => console.log("Successfully changed", property))
+            .catch(err =>
+              console.log("Error with incrementing view count", err)
+            );
+            
+            res.json({propertyInfo: property, postedUserInfo: postedUserInfo}) 
+        })
+        .catch(err => res.status(404).json({ propertiesFound: 'Invalid User in Property soldBy field' }));
+      })
       .catch(err => res.status(404).json({ propertiesFound: 'No Property found' }));
   };
   
@@ -112,6 +131,8 @@ exports.property_get_one = (req, res, next) => {
   // @description post property
   // @access Public
   exports.property_create = (req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
     console.log(JSON.stringify(req.files))
     propImgList = []
     for (let i = 0; i < req.files.length; i++) {
@@ -126,7 +147,7 @@ exports.property_get_one = (req, res, next) => {
         type: req.body.type,
         location: req.body.location,
         timePosted: req.body.timePosted,
-        postedBy: req.body.postedBy,
+        postedBy: decoded.userId,
         price: req.body.price,
         availableFrom: req.body.availableFrom,
         availableTo: req.body.availableTo,
