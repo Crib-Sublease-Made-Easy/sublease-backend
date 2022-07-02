@@ -92,7 +92,7 @@ exports.property_query = (req, res, next) => {
     delete query.maxDistance
     console.log("QUERY", JSON.stringify(query))
 
-    Property.find(query, null, { skip: req.query.page * 4, limit: 4 })
+    Property.find(query, null, { skip: req.query.page * 1, limit: 1})
     .then(proprties => res.json(proprties))
     .catch(err => res.status(404).json({ propertiesFound: 'none', error: err}));
 
