@@ -80,7 +80,7 @@ exports.property_query = (req, res, next) => {
                      $geometry : {
                         type : "Point" ,
                         coordinates : coords},
-                     $maxDistance : req.query.maxDistance
+                     $maxDistance : req.query.maxDistance * 1600
                    }
              }
         
@@ -97,6 +97,61 @@ exports.property_query = (req, res, next) => {
     .catch(err => res.status(404).json({ propertiesFound: 'none', error: err}));
 
 };
+
+
+
+// @route GET /properties
+// @description lists all of the properties in the market
+// @access public
+exports.property_get_all = (req, res, next) => {
+    Property.find()
+        .then(proprties => res.json(proprties))
+        .catch(err => res.status(404).json({ propertiesFound: 'none'}));
+        
+};
+
+// @route GET /properties
+// @description lists all of the properties in the market
+// @access public
+exports.property_pins = (req, res, next) => {
+    console.log("lat", req.query.latitude)
+    console.log("long", req.query.longitude)
+    console.log("maxdist", req.query.maxDistance)
+    // type: req.query.type,
+    query = req.query
+
+    var coords = [];
+    maxDistance = 1600 * 10;
+    if(query.maxDistance != undefined){
+        maxDistance = query.maxDistance * 1600;
+    }
+    if(! (query.latitude == undefined && query.longitude == undefined)){
+        coords[0] = req.query.longitude;
+        coords[1] = req.query.latitude;
+        console.log(coords)
+        location = {loc: {
+                    $near :
+                   {
+                     $geometry : {
+                        type : "Point" ,
+                        coordinates : coords
+                    },
+                     $maxDistance : maxDistance
+                   }
+                }
+        }
+        
+    }
+    console.log(location)
+    Property.find(location, '_id loc price')
+    .then(proprties => res.json(proprties))
+    .catch(err => res.status(404).json({ propertiesFound: 'none', error: err}));
+
+};
+
+
+
+
 
 
 // @route GET /properties/:id
