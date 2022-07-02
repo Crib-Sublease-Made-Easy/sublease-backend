@@ -3,7 +3,6 @@ const Property = require('../models/property');
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
 
-
 // ------------ Image Specific Code----------
 
 const Grid = require('gridfs-stream');
@@ -52,9 +51,9 @@ exports.property_get_all = (req, res, next) => {
 // @description lists all of the properties in the market
 // @access public
 exports.property_query = (req, res, next) => {
-    console.log("PAGE", req.query.page)
-    console.log("TITLE", req.query.title)
-    console.log("PRICE", req.query.price)
+    console.log("lat", req.query.latitude)
+    console.log("long", req.query.longitude)
+    console.log("maxdist", req.query.maxDistance)
     // type: req.query.type,
     // price: {$gte: req.query.priceLow, $lte: req.query.priceHigh},
     // bedroom: req.query.bedroom,
@@ -74,27 +73,29 @@ exports.property_query = (req, res, next) => {
     if(! (query.latitude == undefined && query.longitude == undefined)){
         coords[0] = req.query.longitude;
         coords[1] = req.query.latitude;
+        console.log(coords)
         query.loc = {
-            $near: {
-                $geometry: {
-                    type: "Point",
-                    coordinates: coords
-                },
-                $maxDistance: req.query.maxDistance
-            }
-        } 
+                    $near :
+                   {
+                     $geometry : {
+                        type : "Point" ,
+                        coordinates : coords},
+                     $maxDistance : req.query.maxDistance
+                   }
+             }
+        
     }
     delete query.priceHigh
     delete query.priceLow
     delete query.latitude
     delete query.longitude
     delete query.maxDistance
+    delete query.page
+    console.log("QUERY", JSON.stringify(query))
 
-    console.log("QUERY", query)
-
-    Property.find(query, 'imgList location availableTo availableFrom price loc', { skip: req.query.page * 4, limit: 4 })
+    Property.find(query, null, { skip: req.query.page * 4, limit: 4 })
     .then(proprties => res.json(proprties))
-    .catch(err => res.status(404).json({ propertiesFound: 'none'}));
+    .catch(err => res.status(404).json({ propertiesFound: 'none', error: err}));
 
 };
 
@@ -162,7 +163,10 @@ exports.property_get_one = async (req, res, next) => {
         bath: req.body.bath,
         sharedRoom: req.body.sharedRoom,
         utilitiesIncluded: req.body.utilitiesIncluded,
-        loc: coor,
+        loc: {
+            type: "Point",
+            coordinates: coor
+        },
         deleted: false,
         numberOfViews: 0
       });
