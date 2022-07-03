@@ -36,6 +36,10 @@ const UserSchema = new mongoose.Schema ({
     profilePic:{
         type: String,
         required: true
+    },
+    postedProperties: {
+        type: [String],
+        required: true
     }
 })
 

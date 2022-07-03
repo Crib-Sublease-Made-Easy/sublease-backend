@@ -70,6 +70,10 @@ exports.property_query = (req, res, next) => {
         req.query.price = price
     }
     var coords = [];
+    maxDistance = 1600 * 10;
+    if(query.maxDistance != undefined){
+        maxDistance = query.maxDistance * 1600;
+    }
     if(! (query.latitude == undefined && query.longitude == undefined)){
         coords[0] = req.query.longitude;
         coords[1] = req.query.latitude;
@@ -80,7 +84,7 @@ exports.property_query = (req, res, next) => {
                      $geometry : {
                         type : "Point" ,
                         coordinates : coords},
-                     $maxDistance : req.query.maxDistance * 1600
+                     $maxDistance : maxDistance
                    }
              }
         
@@ -226,7 +230,14 @@ exports.property_get_one = async (req, res, next) => {
       });
       property
       .save()
-      .then(property => res.json({ msg: 'property added successfully' }))
+      .then( async (property)  => {
+        User.findOneAndUpdate(
+            { _id: decoded.userId }, 
+            { $push: { postedProperty: property._id  } }
+        )
+            
+        res.json({ msg: 'property added successfully' })
+        }   )
       .catch(err => res.status(400).json({ error: 'Unable to add this property', errRaw: err }));
   };
   
