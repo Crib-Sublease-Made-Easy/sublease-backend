@@ -25,8 +25,8 @@ const UserSchema = new mongoose.Schema ({
         type: Number,
         required: true
     },
-    age: {
-        type: Number,
+    dob: {
+        type: String,
         required: true
     },
     authy_id: {
@@ -37,8 +37,20 @@ const UserSchema = new mongoose.Schema ({
         type: String,
         required: true
     },
+    school:{
+        type: String,
+        required: true
+    },
+    occupation:{
+        type: String,
+        required: true
+    },
     postedProperties: {
         type: [String],
+        required: true
+    },
+    otpSuccessful:{
+        type: Boolean,
         required: true
     }
 })

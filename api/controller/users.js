@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken");
-const authy = require('authy')('DqPfoRJb2keIv58497NPMICWQ495Xn5T');
+const authy = require('authy')('0uqy1HDYnzJklHL7UHoMNPkbFPhJHTP6');
 // Load Properies Model
 const User = require('../models/user');
 const router = require('express').Router();
@@ -95,14 +95,16 @@ exports.otp_step3= (req, resp, next) => {
   authy.verify(req.body.authy_id, token=String(req.body.token), function (err, res) {
     console.log(err)
     if(String(res.success) == String(true)){
+      User.findOneAndUpdate({ authy_id: req.body.authy_id },{otpSuccessful: true})
+    .exec()
+    .then(user => {
       resp.status(201).json({
         messge: "Success",
-        response: res
       })
+    });
     } else{
       resp.status(401).json({
         message: "Failed",
-        response: res
       })
     }
 
@@ -138,10 +140,15 @@ exports.user_signup = (req, res, next) => {
               firstName: req.body.firstName,
               lastName: req.body.lastName,
               phoneNumber: req.body.phoneNumber,
-              age: req.body.age,
+              dob: req.body.dob,
               gender: req.body.gender,
               authy_id: req.body.authy_id,
-              profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename
+              profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename,
+              postedProperties: [],
+              occupation: req.body.occupation,
+              school: req.body.school,
+              otpSuccessful: false
+
             });
             user
             .save()

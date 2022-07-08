@@ -10,10 +10,6 @@ const PropertySchema = new mongoose.Schema (
             type: String,
             required: false,
         },
-        location: {
-            type: String,
-            required: false
-        },
         timePosted: {
             type: String,
             required: false
@@ -34,30 +30,6 @@ const PropertySchema = new mongoose.Schema (
             type: String,
             required: false
         },
-        furnished: {
-            type: Boolean,
-            required: false
-        },
-        moveinFlexibility: {
-            type: Boolean,
-            required: false
-        },
-        renew: {
-            type: Boolean,
-            required: false
-        },
-        pets: {
-            type: Boolean,
-            required: false
-        },
-        parking: {
-            type: Boolean,
-            required: false
-        },
-        onSiteWasherDryer: {
-            type: Boolean,
-            required: false
-        },
         description: {
             type: String,
             required: false
@@ -70,40 +42,8 @@ const PropertySchema = new mongoose.Schema (
             type: Number,
             required: false
         },
-        sharedRoom: {
-            type: Boolean,
-            required: false
-        },
-        utilitiesIncluded: {
-            type: Boolean,
-            required: false
-        },
-        tv: {
-            type: Boolean,
-            required: false
-        },
-        pool: {
-            type: Boolean,
-            required: false
-        },
-        gym: {
-            type: Boolean,
-            required: false
-        },
-        roomates: {
-            type: Boolean,
-            required: false
-        },
-        mattress: {
-            type: Boolean,
-            required: false
-        },
-        parkingGarage: {
-            type: Boolean,
-            required: false
-        },
-        wifi: {
-            type: Boolean,
+        amenities: {
+            type: [String],
             required: false
         },
         loc: {
@@ -115,6 +55,14 @@ const PropertySchema = new mongoose.Schema (
             coordinates: {
               type: [Number],
               default: [0, 0],
+            },
+            streetAddr: {
+                type: String,
+                required: false,
+            },
+            secondaryTxt: {
+                type: String,
+                required: false,
             }
         },
         imgList: {
