@@ -98,10 +98,10 @@ exports.otp_step2= (req, resp, next) => {
 // @description send sms
 // @access public
 exports.otp_step3= (req, resp, next) => {
-  authy.verify(req.body.authy_id, token=String(req.body.token), function (err, res) {
+  authy.verify(req.body.email, req.body.authy_id, token=String(req.body.token), function (err, res) {
     console.log(err)
     if(String(res.success) == String(true)){
-      User.findOneAndUpdate({ authy_id: req.body.authy_id },{otpSuccessful: true})
+      User.findOneAndUpdate({ email: req.body.email },{otpSuccessful: true})
     .exec()
     .then(user => {
       resp.status(201).json({
