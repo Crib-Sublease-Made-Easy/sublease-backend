@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema ({
     },
     authy_id: {
         type: Number,
-        required: true
+        required: false
     },
     profilePic:{
         type: String,

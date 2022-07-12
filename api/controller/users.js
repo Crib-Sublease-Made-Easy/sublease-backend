@@ -148,7 +148,7 @@ exports.user_signup = (req, res, next) => {
               // phoneNumber: req.body.phoneNumber,
               dob: req.body.dob,
               gender: req.body.gender,
-              // authy_id: req.body.authy_id,
+              authy_id: '',
               profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename,
               postedProperties: [],
               occupation: req.body.occupation,
