@@ -50,10 +50,16 @@ exports.otp_step1= (req, resp, next) => {
     console.log(err)
     console.log(res)
     if(String(res.success) === String(true)){
-      resp.status(201).json({
-        id: res.user.id,
-        response: res
-      })
+      User.findOneAndUpdate({ email: req.body.email },{phoneNumber: req.body.phoneNumber})
+      .exec()
+      .then(user => {
+        resp.status(201).json({
+          id: res.user.id,
+          response: res
+        })
+      });
+
+
     } else{
       resp.status(401).json({
         message: "Incorrect OTP",
@@ -139,10 +145,10 @@ exports.user_signup = (req, res, next) => {
               password: hash,
               firstName: req.body.firstName,
               lastName: req.body.lastName,
-              phoneNumber: req.body.phoneNumber,
+              // phoneNumber: req.body.phoneNumber,
               dob: req.body.dob,
               gender: req.body.gender,
-              authy_id: req.body.authy_id,
+              // authy_id: req.body.authy_id,
               profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename,
               postedProperties: [],
               occupation: req.body.occupation,
