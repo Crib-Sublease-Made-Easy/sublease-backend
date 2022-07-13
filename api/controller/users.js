@@ -104,8 +104,34 @@ exports.otp_step3= (req, resp, next) => {
       User.findOneAndUpdate({ email: req.body.email },{otpSuccessful: true})
     .exec()
     .then(user => {
+
+      const accessToken = jwt.sign(
+        {
+          email: user.email,
+          userId: user._id
+        },
+        process.env.JWT_KEY,
+        {
+            expiresIn: "1h"
+        }
+      );
+      const refreshToken = jwt.sign(
+        {
+          email: user.email,
+          userId: user._id
+        },
+        process.env.JWT_KEY,
+        {
+            expiresIn: "100d"
+        }
+      );
+
       resp.status(201).json({
         messge: "Success",
+        token: {
+          accessToken: accessToken,
+          refreshToken: refreshToken
+        }
       })
     });
     } else{
@@ -159,26 +185,6 @@ exports.user_signup = (req, res, next) => {
             user
             .save()
             .then(result => {
-              const accessToken = jwt.sign(
-                {
-                  email: result.email,
-                  userId: result._id
-                },
-                process.env.JWT_KEY,
-                {
-                    expiresIn: "1h"
-                }
-              );
-              const refreshToken = jwt.sign(
-                {
-                  email: result.email,
-                  userId: result._id
-                },
-                process.env.JWT_KEY,
-                {
-                    expiresIn: "100d"
-                }
-              );
 
 
               console.log(result);
@@ -190,10 +196,6 @@ exports.user_signup = (req, res, next) => {
                     price: result.price,
                     profilePic: result.profilePic,
                     _id: result._id,
-                },
-                token: {
-                  refresh: refreshToken,
-                  access: accessToken
                 }
               });
             })
