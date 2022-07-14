@@ -227,7 +227,7 @@ exports.property_get_one = async (req, res, next) => {
       .then( async (property)  => {
         User.findOneAndUpdate(
             { _id: decoded.userId }, 
-            { $push: { postedProperty: property._id  } }
+            { $push: { postedProperties: property._id  } }
         )
             
         res.json({ msg: 'property added successfully' })
