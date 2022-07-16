@@ -122,20 +122,20 @@ exports.property_favorite = (req, res, next) => {
   const token = req.headers.authorization.split(" ")[1];
   const decoded = jwt.verify(token, process.env.JWT_KEY);
   console.log(decoded)
-  User.findOneAndUpdate(
-    { _id: decoded.userId },
-    { $push: { favoriteProperties: req.body.propertyId } },
 
-    function (err, model) {
-      if (err) {
-        //console.log(err);
-        return res.send(err);
-      } 
-    }
-  ).then(user => res.json({ message: "Property successfully marked as favorite"}))
-  .catch(err => res.status(404).json({ propertiesFound: 'none' }));
+
+
+  User.findByIdAndUpdate(
+    { _id: decoded.userId },
+    { $push: { favoriteProperties: req.body.propertyId } }
+  )
+  .then(user => res.json({ msg: 'Updated successfully' }))
+  .catch(err =>
+    res.status(400).json({ error: 'Unable to update the Database' })
+  );
 
 };
+
 
 // @route GET /properties
 // @description lists all of the properties in the market
