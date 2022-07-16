@@ -49,6 +49,10 @@ const UserSchema = new mongoose.Schema ({
         type: [String],
         required: true
     },
+    favoriteProperties: {
+        type: [String],
+        required: true
+    },
     otpSuccessful:{
         type: Boolean,
         required: true

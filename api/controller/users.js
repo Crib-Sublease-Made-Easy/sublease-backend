@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken");
-const authy = require('authy')('yiJTrwNpc3wqCWvelJRkWnAE6jzv6emp');
+const authy = require('authy')('O6FDVOwRHJNIO9SbWvdDTOxMfA8PVdKo');
 // Load Properies Model
 const User = require('../models/user');
 const router = require('express').Router();
@@ -177,6 +177,7 @@ exports.user_signup = (req, res, next) => {
               authy_id: '',
               profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename,
               postedProperties: [],
+              favoriteProperies: [],
               occupation: req.body.occupation,
               school: req.body.school,
               otpSuccessful: false
