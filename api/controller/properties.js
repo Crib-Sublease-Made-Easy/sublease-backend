@@ -123,12 +123,28 @@ exports.property_favorite = (req, res, next) => {
   const decoded = jwt.verify(token, process.env.JWT_KEY);
   console.log(decoded)
 
-
-
-  User.findByIdAndUpdate(
+  User.updateOne(
     { _id: decoded.userId },
-    { $push: { favoriteProperties: req.body.propertyId } }
-  )
+    [
+        {
+            $set: {
+              favoriteProperties: {
+                    $cond: [
+                        {
+                            $in: [ req.body.propertyId,"$favoriteProperties"]
+                        },
+                        {
+                            $setDifference: ["$favoriteProperties", [req.body.propertyId]]
+                        },
+                        {
+                            $concatArrays: ["$favoriteProperties", [req.body.propertyId]]
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+)
   .then(user => res.json({ msg: 'Updated successfully' }))
   .catch(err =>
     res.status(400).json({ error: 'Unable to update the Database' })
