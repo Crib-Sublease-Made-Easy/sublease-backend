@@ -313,7 +313,7 @@ exports.user_get_one = (req, res, next) => {
   // @access Public
   exports.user_modify = (req, res, next) => {
     User.findByIdAndUpdate(req.params.id, req.body)
-      .then(user => res.json({ msg: 'Updated successfully' }))
+      .then(user => res.json({ msg: user }))
       .catch(err =>
         res.status(400).json({ error: 'Unable to update the Database' })
       );
