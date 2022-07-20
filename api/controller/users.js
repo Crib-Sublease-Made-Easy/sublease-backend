@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken");
-const authy = require('authy')('O6FDVOwRHJNIO9SbWvdDTOxMfA8PVdKo');
+const authy = require('authy')('KYP3m9wfHwyFqBxJqmZqDUt4BfV8WZbS');
 // Load Properies Model
 const User = require('../models/user');
 const router = require('express').Router();
@@ -194,7 +194,6 @@ exports.user_signup = (req, res, next) => {
                 createdUser: {
                     firstName: result.firstName,
                     lastName: result.lastName,
-                    price: result.price,
                     profilePic: result.profilePic,
                     _id: result._id,
                 }
