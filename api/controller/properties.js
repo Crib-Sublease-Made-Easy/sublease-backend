@@ -22,16 +22,29 @@ dbInstance.once('open', () => {
 })
 
 
+// //-----------Get an Image----------------
+// exports.get_image = async (req, res, next) => {
+//   const file = await gfs.files.findOne({ filename: req.params.filename });
+//   console.log("FILE", file)
+//   const readstream = gridfsBucket.openDownloadStream(file._id);
+//   // var readstream = gfs.createReadStream({ filename: req.params.filename });
+//   readstream.on("error", function (err) {
+//     res.send("No image found with that title");
+//   });
+//   readstream.pipe(res);
+// }
 //-----------Get an Image----------------
 exports.get_image = async (req, res, next) => {
-  const file = await gfs.files.findOne({ filename: req.params.filename });
-  console.log(file)
-  const readstream = gridfsBucket.openDownloadStream(file._id);
+  const file = await gfs.files.findOne({ filename: req.params.filename })
+  .then((response) =>{
+    console.log("response" , response);
+    gridfsBucket.openDownloadStream(response._id);
+  })
   // var readstream = gfs.createReadStream({ filename: req.params.filename });
-  readstream.on("error", function (err) {
-    res.send("No image found with that title");
-  });
-  readstream.pipe(res);
+  // readstream.on("error", function (err) {
+  //   res.send("No image found with that title");
+  // // });
+  // readstream.pipe(res);
 }
 
 
