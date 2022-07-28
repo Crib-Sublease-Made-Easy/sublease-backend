@@ -37,7 +37,8 @@ app.use('/users', users);
 const tokens = require('./api/routes/token')
 app.use('/tokens', tokens);
 
-
+const autocomplete = require('./api/routes/autocomplete')
+app.use('/autocomplete', autocomplete);
 
 const port = process.env.PORT || 8082;
 
