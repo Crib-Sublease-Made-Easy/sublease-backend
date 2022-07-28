@@ -8,6 +8,8 @@ const router = require('express').Router();
 const config = require('config')
 const db = config.get('mongoURI')
 
+const sendBirdAppId = '14BD0602-4159-48D7-9292-66136C479B46';
+
 
 // ------------ Image Specific Code----------
 const Grid = require('gridfs-stream');
@@ -257,6 +259,13 @@ exports.user_login = (req, res, next) => {
             token: {
               access: accessToken,
               refresh: refreshToken
+            },
+            sendbirdAppId: sendBirdAppId,
+            loggedInUser:{
+              firstName: user[0].firstName,
+              lastName: user[0].lastName,
+              profilePic: user[0].profilePic,
+              _id: user[0]._id
             }
           });
         }
