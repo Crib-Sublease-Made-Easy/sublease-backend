@@ -123,7 +123,7 @@ exports.property_query = (req, res, next) => {
     //         p.postedUser.school = user.school
     //   })
     // })
-      return res.json(proprties)
+      return res.json(properties)
       
     })
     .catch(err => res.status(404).json({ propertiesFound: 'none', error: err }));
