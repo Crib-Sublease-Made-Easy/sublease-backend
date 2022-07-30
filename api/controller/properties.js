@@ -201,8 +201,8 @@ exports.property_pins = (req, res, next) => {
 
   }
   console.log(location)
-  Property.find(location, '_id loc price')
-    .then(proprties => res.json(proprties))
+  Property.find(location, '_id loc price imgList availableFrom availableTo')
+    .then(proprties => res.json({propertyInfo: proprties}))
     .catch(err => res.status(404).json({ propertiesFound: 'none', error: err }));
 
 };
