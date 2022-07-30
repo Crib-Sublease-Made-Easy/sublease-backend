@@ -113,16 +113,16 @@ exports.property_query = (req, res, next) => {
 
   Property.find(query, null, { skip: req.query.page * 4, limit: 4 })
     .then( properties => {
-      properties.map(async p => {
-          await User.findById(p.postedBy).then(async user => {
-            p.postedUser = {}
-            p.postedUser.firstName = user.firstName
-            p.postedUser.lastName = user.lastName
-            p.postedUser.profilePic = user.profilePic
-            p.postedUser.occupation = user.occupation
-            p.postedUser.school = user.school
-      })
-    })
+    //   properties.map(async p => {
+    //       await User.findById(p.postedBy).then(async user => {
+    //         p.postedUser = {}
+    //         p.postedUser.firstName = user.firstName
+    //         p.postedUser.lastName = user.lastName
+    //         p.postedUser.profilePic = user.profilePic
+    //         p.postedUser.occupation = user.occupation
+    //         p.postedUser.school = user.school
+    //   })
+    // })
       return res.json(proprties)
       
     })
