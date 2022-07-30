@@ -112,7 +112,20 @@ exports.property_query = (req, res, next) => {
   console.log("QUERY", JSON.stringify(query))
 
   Property.find(query, null, { skip: req.query.page * 4, limit: 4 })
-    .then(proprties => res.json(proprties))
+    .then( proprties => {
+      properties.map(async p => {
+          await User.findById(property.postedBy).then(async user => {
+            p.postedUser = {}
+            p.postedUser.firstName = user.firstName
+            p.postedUser.lastName = user.lastName
+            p.postedUser.profilePic = user.profilePic
+            p.postedUser.occupation = user.occupation
+            p.postedUser.school = user.school
+      })
+    })
+      return res.json(proprties)
+      
+    })
     .catch(err => res.status(404).json({ propertiesFound: 'none', error: err }));
 
 };
