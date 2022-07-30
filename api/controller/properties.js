@@ -112,7 +112,7 @@ exports.property_query = (req, res, next) => {
   console.log("QUERY", JSON.stringify(query))
 
   Property.find(query, null, { skip: req.query.page * 4, limit: 4 })
-    .then( proprties => {
+    .then( properties => {
       properties.map(async p => {
           await User.findById(property.postedBy).then(async user => {
             p.postedUser = {}
