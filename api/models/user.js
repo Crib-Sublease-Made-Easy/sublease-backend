@@ -39,11 +39,11 @@ const UserSchema = new mongoose.Schema ({
     },
     school:{
         type: String,
-        required: true
+        required: false
     },
     occupation:{
         type: String,
-        required: true
+        required: false
     },
     postedProperties: {
         type: [String],

@@ -180,8 +180,8 @@ exports.user_signup = (req, res, next) => {
               profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename,
               postedProperties: [],
               favoriteProperies: [],
-              occupation: req.body.occupation,
-              school: req.body.school,
+              occupation: (req.body.occupation == undefined) ? null : req.body.occupation,
+              school: (req.body.school == undefined) ? null : req.body.school,
               otpSuccessful: false
 
             });
