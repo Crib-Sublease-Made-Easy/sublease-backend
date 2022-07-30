@@ -125,7 +125,7 @@ exports.property_query = (req, res, next) => {
     //         console.log("P", p)
     //   })
     // }))
-    return res.json(response)
+    return res.json(properties)
     })
     .catch(err => res.status(404).json({ propertiesFound: 'none', error: err }));
 

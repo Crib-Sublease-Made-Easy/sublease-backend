@@ -35,7 +35,7 @@ const PropertySchema = new mongoose.Schema (
             required: false
         },
         bed: {
-            type: Number,
+            type: String,
             required: false
         },
         bath: {
