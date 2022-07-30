@@ -32,6 +32,7 @@ exports.places_autocomplete = (req, res, next) => {
 exports.reverse_geocoding = (req, res, next) => {
     let lat = req.query.lat 
     let long = req.query.long 
+    console.log(req.query)
     if(lat == undefined || long == undefined){
         res.status(404).json({ error: 'invalid query' })
     } else{  
