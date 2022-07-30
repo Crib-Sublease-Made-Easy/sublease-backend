@@ -1,7 +1,7 @@
 var axios = require('axios');
 
-// @route GET /properties/:id
-// @description Delete property by id
+// @route GET 
+// @description List all locations given a query
 // @access Public
 exports.places_autocomplete = (req, res, next) => {
         let query = req.params.query    
@@ -25,3 +25,29 @@ exports.places_autocomplete = (req, res, next) => {
         }
   };
   
+
+// @route GET 
+// @description List all locations given a query
+// @access Public
+exports.reverse_geocoding = (req, res, next) => {
+    let lat = req.query.lat 
+    let long = req.query.long 
+    if(lat == undefined || long == undefined){
+        res.status(404).json({ error: 'invalid query' })
+    } else{  
+        
+    var config = {
+        method: 'get',
+        url: `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=AIzaSyBLCfWwROY3Bfvq_TOnDjX90wn2nCJF2nA`,
+    };
+    axios(config)
+    .then(function (response) {
+        let JSONdata = response.data
+        res.json({formatted_address: JSONdata.results[0].formatted_address})      
+    })
+    .catch(function (error) {
+        console.log(error);
+        res.status(404).json({ error: 'invalid query' })
+    });
+    }
+};
