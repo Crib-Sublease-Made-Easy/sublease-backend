@@ -203,7 +203,10 @@ exports.property_pins = (req, res, next) => {
   console.log("maxdist", req.query.maxDistance)
   // type: req.query.type,
   query = req.query
-
+  if (query.priceLow != undefined || query.priceHigh != undefined) {
+    price = { $gte: req.query.priceLow, $lte: req.query.priceHigh }
+    req.query.price = price
+  }
   var coords = [];
   maxDistance = 1600 * 10;
   if (query.maxDistance != undefined) {
@@ -213,8 +216,7 @@ exports.property_pins = (req, res, next) => {
     coords[0] = req.query.longitude;
     coords[1] = req.query.latitude;
     console.log(coords)
-    location = {
-      loc: {
+    query.loc = {
         $near:
         {
           $geometry: {
@@ -223,12 +225,16 @@ exports.property_pins = (req, res, next) => {
           },
           $maxDistance: maxDistance
         }
-      }
+  
     }
 
   }
-  console.log(location)
-  Property.find(location, '_id loc price imgList availableFrom availableTo')
+  delete query.priceHigh
+  delete query.priceLow
+  delete query.latitude
+  delete query.longitude
+  delete query.maxDistance
+  Property.find(query, '_id loc price imgList availableFrom availableTo')
     .then(proprties => res.json(proprties))
     .catch(err => res.status(404).json({ propertiesFound: 'none', error: err }));
 
