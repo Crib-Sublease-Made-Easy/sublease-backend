@@ -119,6 +119,7 @@ exports.property_query = (req, res, next) => {
           let d = await User.findById(p.postedBy).then(async user => {
             let q = p
             postedUser = {}
+            postedUser.firstName = user._id;
             postedUser.firstName = user.firstName;
             postedUser.lastName = user.lastName;
             postedUser.profilePic = user.profilePic;
@@ -246,9 +247,12 @@ exports.property_get_one = async (req, res, next) => {
     .then(async property => {
       await User.findById(property.postedBy).then(async user => {
         postedUserInfo = {}
+        postedUserInfo.firstName = user._id
         postedUserInfo.firstName = user.firstName
         postedUserInfo.lastName = user.lastName
         postedUserInfo.profilePic = user.profilePic
+        postedUserInfo.occupation = user.occupation;
+        postedUserInfo.school = user.school;
         changeNumberOfViews = {}
         changeNumberOfViews.numberOfViews = property.numberOfViews + 1;
         console.log("ChangeNumberOfViews,", changeNumberOfViews)
