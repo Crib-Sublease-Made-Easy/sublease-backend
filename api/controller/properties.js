@@ -159,8 +159,10 @@ exports.property_get_all = (req, res, next) => {
 exports.property_favorite = (req, res, next) => {
   const token = req.headers.authorization.split(" ")[1];
   const decoded = jwt.verify(token, process.env.JWT_KEY);
-  console.log(decoded)
-  console.log(req.body.propertyId)
+  console.log("DECODED", decoded)
+  console.log("PROPERTY ID", req.body.propertyId)
+  console.log("BODY", req.body)
+
   User.updateOne(
     { _id: decoded.userId },
     [
