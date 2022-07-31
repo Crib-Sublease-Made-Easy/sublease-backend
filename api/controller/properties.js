@@ -256,7 +256,7 @@ exports.property_get_one = async (req, res, next) => {
             console.log("Error with incrementing view count", err)
           );
 
-        res.json({ propertyInfo: property, postedUserInfo: postedUserInfo })
+        res.json({ propertyInfo: property, userInfo: postedUserInfo })
       })
         .catch(err => res.status(404).json({ propertiesFound: 'Invalid User in Property soldBy field' }));
     })
