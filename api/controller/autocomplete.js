@@ -52,3 +52,31 @@ exports.reverse_geocoding = (req, res, next) => {
     });
     }
 };
+
+
+
+// @route GET 
+// @description Given address return lat and long
+// @access Public
+exports.geocoding = (req, res, next) => {
+    let address = req.query.address    
+    if(address == undefined){
+        res.json([])
+    } else{  
+        
+    var config = {
+        method: 'get',
+        url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyBLCfWwROY3Bfvq_TOnDjX90wn2nCJF2nA`,
+    };
+    axios(config)
+    .then(function (response) {
+        let JSONdata = response.data
+        console.log(JSONdata)
+        res.json(JSONdata.results[0].geometry.location)      
+    })
+    .catch(function (error) {
+        console.log(error);
+        res.status(404).json({ error: 'invalid query' })
+    });
+    }
+};
