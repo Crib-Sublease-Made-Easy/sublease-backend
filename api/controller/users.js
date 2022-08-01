@@ -295,12 +295,12 @@ exports.login_token = (req, resp, next) => {
         })
       .catch(err => {
         console.log(err);
-        res.status(500).json({
+        resp.status(500).json({
           error: err
         });
       });
     }
-  })
+  }).
 };
 
 
