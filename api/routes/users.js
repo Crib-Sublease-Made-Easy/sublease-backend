@@ -41,6 +41,7 @@ const upload = multer({ storage });
 
 router.post("/check", UserController.check_user);
 router.post("/authy", UserController.authy);
+router.post("/login", UserController.login_token);
 router.delete("/:id", UserController.user_delete);
 router.put("/:id", checkAuth, UserController.user_modify);
 router.put("/profileImages/:id", upload.single('userImage'), checkAuth, UserController.user_modify_profilePic);
