@@ -150,7 +150,7 @@ exports.otp_step3 = (req, resp, next) => {
         .save()
         .then(result => {
           console.log(result);
-          res.status(201).json({
+          resp.status(201).json({
             message: "User account created successfully",
             createdUser: {
               firstName: result.firstName,
@@ -167,7 +167,7 @@ exports.otp_step3 = (req, resp, next) => {
         })
         .catch(err => {
           console.log(err);
-          res.status(500).json({
+          resp.status(500).json({
             error: err
           });
         });
