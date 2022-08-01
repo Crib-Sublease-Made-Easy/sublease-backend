@@ -157,6 +157,8 @@ exports.otp_step3 = (req, resp, next) => {
               lastName: result.lastName,
               profilePic: result.profilePic,
               phoneNumber: result.phoneNumber,
+              occupation: result.occupation,
+              school: result.school,
               _id: result._id,
             },
             token: {
@@ -227,6 +229,78 @@ exports.authy = (req, res, next) => {
         error: err
       });
     });
+};
+
+
+// @route POST /users/login
+// @description login a user in the database and return access token
+// @access public
+exports.login_token = (req, res, next) => {
+  authy.verify(req.body.authy_id, token = String(req.body.token), function (err, res) {
+    console.log(err)
+    if (String(res.success) == String(true)) {
+      User.find({ phoneNumber: req.body.phoneNumber })
+      .exec()
+      .then(user => {
+        if (user.length < 1) {
+          return res.status(401).json({
+            message: "Authentication Failed"
+          });
+        } else {
+
+          const accessToken = jwt.sign(
+            {
+              phoneNumber: user[0].phoneNumber,
+              userId: user[0]._id,
+              token: "access"
+            },
+            process.env.JWT_KEY,
+            {
+              expiresIn: "1h"
+            }
+          );
+          const refreshToken = jwt.sign(
+            {
+              phoneNumber: user[0].phoneNumber,
+              userId: user[0]._id,
+              email: user[0].email,
+              firstName: user[0].firstName,
+              lastName: user[0].lastName,
+              token: "refresh"
+            },
+            process.env.JWT_KEY,
+            {
+              expiresIn: "100d"
+            }
+          );
+
+
+          return res.status(200).json({
+            message: "User successfully logged in",
+            loggedIn: {
+              firstName: user[0].firstName,
+              lastName: user[0].lastName,
+              profilePic: user[0].profilePic,
+              phoneNumber: user[0].phoneNumber,
+              school: user[0].school,
+              occupation: user[0].occupation,
+              _id: user[0]._id,
+            },
+            token: {
+              accessToken: accessToken,
+              refreshToken: refreshToken
+            }
+          });
+        }
+        })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({
+          error: err
+        });
+      });
+    }
+  })
 };
 
 
