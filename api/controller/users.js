@@ -235,7 +235,7 @@ exports.authy = (req, res, next) => {
 // @route POST /users/login
 // @description login a user in the database and return access token
 // @access public
-exports.login_token = (req, res, next) => {
+exports.login_token = (req, resp, next) => {
   authy.verify(req.body.authy_id, token = String(req.body.token), function (err, res) {
     console.log(err)
     if (String(res.success) == String(true)) {
@@ -243,7 +243,7 @@ exports.login_token = (req, res, next) => {
       .exec()
       .then(user => {
         if (user.length < 1) {
-          return res.status(401).json({
+          return resp.status(401).json({
             message: "Authentication Failed"
           });
         } else {
@@ -275,7 +275,7 @@ exports.login_token = (req, res, next) => {
           );
 
 
-          return res.status(200).json({
+          return resp.status(200).json({
             message: "User successfully logged in",
             loggedIn: {
               firstName: user[0].firstName,
