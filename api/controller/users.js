@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken");
-const authy = require('authy')('ih05cS5wQXVEj0hMZKg0u6EVgVX9TfzO');
+const authy = require('authy')('gr4qkK9i00Vl1jx8SicYBTxP66l89rKv');
 // Load Properies Model
 const User = require('../models/user');
 const router = require('express').Router();
@@ -16,23 +16,23 @@ const Grid = require('gridfs-stream');
 
 const dbInstance = mongoose.connection;
 
- let gfs, gridfsBucket;
- 
+let gfs, gridfsBucket;
 
- dbInstance.once('open', () => {
+
+dbInstance.once('open', () => {
   gridfsBucket = new mongoose.mongo.GridFSBucket(dbInstance.db, {
-  bucketName: 'profileImages'
-});
+    bucketName: 'profileImages'
+  });
 
   gfs = Grid(dbInstance.db, mongoose.mongo);
   gfs.collection('profileImages');
 })
 
 //-----------Get an Image----------------
-exports.get_image = async(req, res, next) => {
+exports.get_image = async (req, res, next) => {
   const file = await gfs.files.findOne({ filename: req.params.filename });
   const readstream = gridfsBucket.openDownloadStream(file._id);
- // var readstream = gfs.createReadStream({ filename: req.params.filename });
+  // var readstream = gfs.createReadStream({ filename: req.params.filename });
   readstream.on("error", function (err) {
     res.send("No image found with that title");
   });
@@ -47,45 +47,44 @@ exports.get_image = async(req, res, next) => {
 // @route POST /users/OTP/step1
 // @description create useraccount
 // @access public
-exports.otp_step1= (req, resp, next) => {
-  authy.register_user(req.body.email, req.body.phoneNumber, function (err, res) {
-    console.log(err)
-    console.log(res)
-    if(String(res.success) === String(true)){
-      User.findOneAndUpdate({ email: req.body.email },{phoneNumber: req.body.phoneNumber})
-      .exec()
-      .then(user => {
+exports.otp_step1 = (req, resp, next) => {
+  if (req.body.email == undefined || req.body.phoneNumber == undefined) {
+    resp.status(400).json({
+      message: "Email and Phone Number must be provided",
+    })
+  } else {
+    authy.register_user(req.body.email, req.body.phoneNumber, function (err, res) {
+      console.log(err)
+      console.log(res)
+      if (String(res.success) === String(true)) {
         resp.status(201).json({
-          id: res.user.id,
           response: res
         })
-      });
+      } else {
+        resp.status(401).json({
+          message: "Incorrect OTP",
+          response: res
+        })
+      }
 
-
-    } else{
-      resp.status(401).json({
-        message: "Incorrect OTP",
-        response: res
-      })
-    }
-
-  });
+    });
+  }
 };
 
 
 // @route POST /users/OTP/step2
 // @description send sms
 // @access public
-exports.otp_step2= (req, resp, next) => {
+exports.otp_step2 = (req, resp, next) => {
 
-  authy.request_sms(req.body.authy_id, force=true, function (err, res) {
+  authy.request_sms(req.body.authy_id, force = true, function (err, res) {
     console.log(err)
-    if(String(res.success) === String("true")){
+    if (String(res.success) === String("true")) {
       resp.status(201).json({
         messge: "SMS token was sent",
         response: res
       })
-    } else{
+    } else {
       resp.status(401).json({
         message: "Failed to send OTP SMS",
         response: res
@@ -99,44 +98,75 @@ exports.otp_step2= (req, resp, next) => {
 // @route POST /users/OTP/step3
 // @description send sms
 // @access public
-exports.otp_step3= (req, resp, next) => {
-  authy.verify(req.body.authy_id, token=String(req.body.token), function (err, res) {
+exports.otp_step3 = (req, resp, next) => {
+  authy.verify(req.body.authy_id, token = String(req.body.token), function (err, res) {
     console.log(err)
-    if(String(res.success) == String(true)){
-      User.findOneAndUpdate({ email: req.body.email },{otpSuccessful: true})
-    .exec()
-    .then(user => {
+    if (String(res.success) == String(true)) {
 
       const accessToken = jwt.sign(
         {
-          email: user.email,
+          phoneNumber: user.phoneNumber,
           userId: user._id
         },
         process.env.JWT_KEY,
         {
-            expiresIn: "1h"
+          expiresIn: "1h"
         }
       );
       const refreshToken = jwt.sign(
         {
-          email: user.email,
+          phoneNumber: user.phoneNumber,
           userId: user._id
         },
         process.env.JWT_KEY,
         {
-            expiresIn: "100d"
+          expiresIn: "100d"
         }
       );
 
-      resp.status(201).json({
-        messge: "Success",
-        token: {
-          accessToken: accessToken,
-          refreshToken: refreshToken
-        }
-      })
-    });
-    } else{
+      const user = new User({
+        //_id: new mongoose.Types.ObjectId(),
+        email: req.body.email,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        phoneNumber: req.body.phoneNumber,
+        dob: req.body.dob,
+        gender: req.body.gender,
+        authy_id: req.body.authy_id,
+        profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename,
+        postedProperties: [],
+        favoriteProperies: [],
+        occupation: (req.body.occupation == undefined) ? null : req.body.occupation,
+        school: (req.body.school == undefined) ? null : req.body.school,
+      });
+
+      user
+        .save()
+        .then(result => {
+          console.log(result);
+          res.status(201).json({
+            message: "User account created successfully",
+            createdUser: {
+              firstName: result.firstName,
+              lastName: result.lastName,
+              profilePic: result.profilePic,
+              phoneNumber: result.phoneNumber,
+              _id: result._id,
+            },
+            token: {
+              accessToken: accessToken,
+              refreshToken: refreshToken
+            }
+          });
+        })
+        .catch(err => {
+          console.log(err);
+          res.status(500).json({
+            error: err
+          });
+        });
+
+    } else {
       resp.status(401).json({
         message: "Failed",
       })
@@ -144,70 +174,23 @@ exports.otp_step3= (req, resp, next) => {
 
   });
 }
-  
 
-// @route POST /users/signup
+
+// @route POST /users/check
 // @description signup a user in the database
 // @access public
-exports.user_signup = (req, res, next) => {
+exports.check_user = (req, res, next) => {
   console.log(req.body)
-  User.find({ email: req.body.email })
+  User.find({ phoneNumber: req.body.phoneNumber })
     .exec()
     .then(user => {
       if (user.length >= 1) {
         return res.status(409).json({
-          message: "User already has an account with this email"
+          message: "User already has an account with this phone number"
         });
       } else {
-        bcrypt.hash(req.body.password, 10, (err, hash) => {
-          if (err) {
-            return res.status(500).json({
-              error: err
-            });
-          } else {
-
-
-            const user = new User({
-              //_id: new mongoose.Types.ObjectId(),
-              email: req.body.email,
-              password: hash,
-              firstName: req.body.firstName,
-              lastName: req.body.lastName,
-              // phoneNumber: req.body.phoneNumber,
-              dob: req.body.dob,
-              gender: req.body.gender,
-              authy_id: '',
-              profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename,
-              postedProperties: [],
-              favoriteProperies: [],
-              occupation: (req.body.occupation == undefined) ? null : req.body.occupation,
-              school: (req.body.school == undefined) ? null : req.body.school,
-              otpSuccessful: false
-
-            });
-            user
-            .save()
-            .then(result => {
-
-
-              console.log(result);
-              res.status(201).json({
-                message: "User signed up successfully",
-                createdUser: {
-                    firstName: result.firstName,
-                    lastName: result.lastName,
-                    profilePic: result.profilePic,
-                    _id: result._id,
-                }
-              });
-            })
-              .catch(err => {
-                console.log(err);
-                res.status(500).json({
-                  error: err
-                });
-              });
-          }
+        return res.status(200).json({
+          message: "This is a valid phone number"
         });
       }
     });
@@ -241,7 +224,7 @@ exports.user_login = (req, res, next) => {
             },
             process.env.JWT_KEY,
             {
-                expiresIn: "1h"
+              expiresIn: "1h"
             }
           );
           const refreshToken = jwt.sign(
@@ -251,7 +234,7 @@ exports.user_login = (req, res, next) => {
             },
             process.env.JWT_KEY,
             {
-                expiresIn: "100d"
+              expiresIn: "100d"
             }
           );
           return res.status(200).json({
@@ -261,7 +244,7 @@ exports.user_login = (req, res, next) => {
               refresh: refreshToken
             },
             sendbirdAppId: sendBirdAppId,
-            loggedInUser:{
+            loggedInUser: {
               firstName: user[0].firstName,
               lastName: user[0].lastName,
               profilePic: user[0].profilePic,
@@ -290,11 +273,11 @@ exports.user_login = (req, res, next) => {
 // @route GET /users
 // @description lists all of the users in the market
 // @access public
-exports.user_get_all= (req, res, next) => {
-    User.find()
-        .then(proprties => res.json(proprties))
-        .catch(err => res.status(404).json({ propertiesFound: 'none'}));
-        
+exports.user_get_all = (req, res, next) => {
+  User.find()
+    .then(proprties => res.json(proprties))
+    .catch(err => res.status(404).json({ propertiesFound: 'none' }));
+
 };
 
 
@@ -302,62 +285,62 @@ exports.user_get_all= (req, res, next) => {
 // @description Get single user by id
 // @access Public
 exports.user_get_one = (req, res, next) => {
-    User.findById(req.params.id)
-      .then(user => res.json(user))
-      .catch(err => res.status(404).json({ usersFound: 'No User found' }));
-  };
-  
-  // @route POST /users
-  // @description post user
-  // @access Public
-  // router.post('/', (req, res) => {
-  //   User.create(req.body)
-  //     .then(user => res.json({ msg: 'user added successfully' }))
-  //     .catch(err => res.status(400).json({ error: 'Unable to add this user', errRaw: err }));
-  // });
-  
-  // @route PUT /users/:id
-  // @description Update user
-  // @access Public
-  exports.user_modify = (req, res, next) => {
-    query = {}
-    if(req.body.school != undefined){
-      query.school = req.body.school
-    }
-    if(req.body.occupation != undefined){
-      query.occupation = req.body.occupation
-    }
-    if(req.body.email != undefined){
-      query.email = req.body.email
-    }
-    User.findByIdAndUpdate(req.params.id, query)
-      .then(user => res.json(user ))
-      .catch(err =>
-        res.status(400).json({ error: 'Unable to update the Database' })
-      );
-  };
-  
+  User.findById(req.params.id)
+    .then(user => res.json(user))
+    .catch(err => res.status(404).json({ usersFound: 'No User found' }));
+};
+
+// @route POST /users
+// @description post user
+// @access Public
+// router.post('/', (req, res) => {
+//   User.create(req.body)
+//     .then(user => res.json({ msg: 'user added successfully' }))
+//     .catch(err => res.status(400).json({ error: 'Unable to add this user', errRaw: err }));
+// });
+
+// @route PUT /users/:id
+// @description Update user
+// @access Public
+exports.user_modify = (req, res, next) => {
+  query = {}
+  if (req.body.school != undefined) {
+    query.school = req.body.school
+  }
+  if (req.body.occupation != undefined) {
+    query.occupation = req.body.occupation
+  }
+  if (req.body.email != undefined) {
+    query.email = req.body.email
+  }
+  User.findByIdAndUpdate(req.params.id, query)
+    .then(user => res.json(user))
+    .catch(err =>
+      res.status(400).json({ error: 'Unable to update the Database' })
+    );
+};
 
 
-    // @route PUT /users/profileImages/:id
-  // @description Update user profile pic
-  // @access Public
-  exports.user_modify_profilePic = (req, res, next) => {
-    User.findByIdAndUpdate(req.params.id, {profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename})
-      .then(user => res.json({msg:"profile pic successfully changed"}))
-      .catch(err =>
-        res.status(400).json({ error: 'Unable to update the Database' })
-      );
-  };
+
+// @route PUT /users/profileImages/:id
+// @description Update user profile pic
+// @access Public
+exports.user_modify_profilePic = (req, res, next) => {
+  User.findByIdAndUpdate(req.params.id, { profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename })
+    .then(user => res.json({ msg: "profile pic successfully changed" }))
+    .catch(err =>
+      res.status(400).json({ error: 'Unable to update the Database' })
+    );
+};
 
 
-  // @route DELETE /users/:id
-  // @description Delete user by id
-  // @access Public
-  exports.user_delete = (req, res, next) => {
-    User.findByIdAndRemove(req.params.id, req.body)
-      .then(user => res.json({ mgs: 'User deleted successfully' }))
-      .catch(err => res.status(404).json({ error: 'No such a user' }));
-  };
+// @route DELETE /users/:id
+// @description Delete user by id
+// @access Public
+exports.user_delete = (req, res, next) => {
+  User.findByIdAndRemove(req.params.id, req.body)
+    .then(user => res.json({ mgs: 'User deleted successfully' }))
+    .catch(err => res.status(404).json({ error: 'No such a user' }));
+};
 
 
