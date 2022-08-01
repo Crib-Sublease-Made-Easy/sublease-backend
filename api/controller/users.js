@@ -198,65 +198,23 @@ exports.check_user = (req, res, next) => {
 
 
 
-// @route POST /users/login
+// @route POST /users/authy
 // @description login a user in the database and return access token
 // @access public
-exports.user_login = (req, res, next) => {
-  User.find({ email: req.body.email })
+exports.authy = (req, res, next) => {
+  User.find({ phoneNumber: req.body.phoneNumber })
     .exec()
     .then(user => {
       if (user.length < 1) {
         return res.status(401).json({
           message: "Authentication Failed"
         });
-      }
-      bcrypt.compare(req.body.password, user[0].password, (err, result) => {
-        if (err) {
-          return res.status(401).json({
-            message: "Authentication Failed"
-          });
-        }
-        if (result) {
-          const accessToken = jwt.sign(
-            {
-              email: user[0].email,
-              userId: user[0]._id
-            },
-            process.env.JWT_KEY,
-            {
-              expiresIn: "1h"
-            }
-          );
-          const refreshToken = jwt.sign(
-            {
-              email: user[0].email,
-              userId: user[0]._id
-            },
-            process.env.JWT_KEY,
-            {
-              expiresIn: "100d"
-            }
-          );
-          return res.status(200).json({
-            message: "Authentication Successful",
-            token: {
-              access: accessToken,
-              refresh: refreshToken
-            },
-            sendbirdAppId: sendBirdAppId,
-            loggedInUser: {
-              firstName: user[0].firstName,
-              lastName: user[0].lastName,
-              profilePic: user[0].profilePic,
-              _id: user[0]._id
-            }
-          });
-        }
-        res.status(401).json({
-          message: "Authentication Failed"
+      } else {
+        return res.status(200).json({
+          authy_id: user.authy_id
         });
-      });
-    })
+      }
+      })
     .catch(err => {
       console.log(err);
       res.status(500).json({
