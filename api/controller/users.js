@@ -300,7 +300,7 @@ exports.login_token = (req, resp, next) => {
         });
       });
     }
-  }).
+  })
 };
 
 
