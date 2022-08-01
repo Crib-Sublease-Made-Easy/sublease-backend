@@ -101,12 +101,14 @@ exports.otp_step2 = (req, resp, next) => {
 exports.otp_step3 = (req, resp, next) => {
   authy.verify(req.body.authy_id, token = String(req.body.token), function (err, res) {
     console.log(err)
+    let _id = new mongoose.Types.ObjectId(),
     if (String(res.success) == String(true)) {
 
       const accessToken = jwt.sign(
         {
-          phoneNumber: user.phoneNumber,
-          userId: user._id
+          phoneNumber: req.body.phoneNumber,
+          userId: _id,
+          token: "access"
         },
         process.env.JWT_KEY,
         {
@@ -115,8 +117,12 @@ exports.otp_step3 = (req, resp, next) => {
       );
       const refreshToken = jwt.sign(
         {
-          phoneNumber: user.phoneNumber,
-          userId: user._id
+          phoneNumber: req.body.phoneNumber,
+          userId: _id,
+          email: req.body.email,
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          token: "refresh"
         },
         process.env.JWT_KEY,
         {
@@ -125,7 +131,7 @@ exports.otp_step3 = (req, resp, next) => {
       );
 
       const user = new User({
-        //_id: new mongoose.Types.ObjectId(),
+        _id: _id,
         email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
