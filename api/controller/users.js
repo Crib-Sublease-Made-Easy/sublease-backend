@@ -217,7 +217,7 @@ exports.authy = (req, res, next) => {
         });
       } else {
         return res.status(200).json({
-          authy_id: user.authy_id
+          authy_id: user[0].authy_id
         });
       }
       })
