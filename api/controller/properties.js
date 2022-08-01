@@ -338,6 +338,7 @@ exports.property_create = (req, res, next) => {
 // @description Update property
 // @access Public
 exports.property_modify = (req, res, next) => {
+
   Property.findByIdAndUpdate(req.params.id, req.body)
     .then(property => res.json({ msg: 'Updated successfully' }))
     .catch(err =>
@@ -349,7 +350,26 @@ exports.property_modify = (req, res, next) => {
 // @description Delete property by id
 // @access Public
 exports.property_delete = (req, res, next) => {
-  Property.findByIdAndRemove(req.params.id, req.body)
+  query = {}
+  if(req.body.type != undefined){
+    query.type = req.body.type
+  }
+  if(req.body.price != undefined){
+    query.price = req.body.price
+  }
+  if(req.body.availableFrom != undefined){
+    query.availableFrom = req.body.availableFrom
+  }
+  if(req.body.availableTo!= undefined){
+    query.availableTo = req.body.availableTo
+  }
+  if(req.body.description!= undefined){
+    query.description = req.body.description
+  }
+  if(req.body.amenities!= undefined){
+    query.amenities = req.body.amenities
+  }
+  Property.findByIdAndRemove(req.params.id, query)
     .then(property => res.json({ mgs: 'Property deleted successfully' }))
     .catch(err => res.status(404).json({ error: 'No such a property' }));
 };

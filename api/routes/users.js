@@ -43,6 +43,7 @@ router.post("/signup", upload.single('userImage'), UserController.user_signup);
 router.post("/login", UserController.user_login);
 router.delete("/:id", UserController.user_delete);
 router.put("/:id", checkAuth, UserController.user_modify);
+router.put("/profileImages/:id", upload.single('userImage'), checkAuth, UserController.user_modify_profilePic);
 router.get("/", UserController.user_get_all);
 router.get("/:id",checkAuth, UserController.user_get_one);
 router.get("/profileImages/:filename", UserController.get_image);

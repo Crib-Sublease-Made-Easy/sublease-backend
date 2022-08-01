@@ -320,13 +320,37 @@ exports.user_get_one = (req, res, next) => {
   // @description Update user
   // @access Public
   exports.user_modify = (req, res, next) => {
-    User.findByIdAndUpdate(req.params.id, req.body)
+    query = {}
+    if(req.body.school != undefined){
+      query.school = req.body.school
+    }
+    if(req.body.occupation != undefined){
+      query.occupation = req.body.occupation
+    }
+    if(req.body.email != undefined){
+      query.email = req.body.email
+    }
+    User.findByIdAndUpdate(req.params.id, query)
       .then(user => res.json(user ))
       .catch(err =>
         res.status(400).json({ error: 'Unable to update the Database' })
       );
   };
   
+
+
+    // @route PUT /users/profileImages/:id
+  // @description Update user profile pic
+  // @access Public
+  exports.user_modify_profilePic = (req, res, next) => {
+    User.findByIdAndUpdate(req.params.id, {profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename})
+      .then(user => res.json({msg:"profile pic successfully changed"}))
+      .catch(err =>
+        res.status(400).json({ error: 'Unable to update the Database' })
+      );
+  };
+
+
   // @route DELETE /users/:id
   // @description Delete user by id
   // @access Public
