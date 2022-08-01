@@ -1,33 +1,33 @@
 const mongoose = require('mongoose');
-const amens = new mongoose.Schema({ value: { type: String, enum: [
-'Pet_Friendly',
-'Garages',
-'Swimming_Pool',
-'Wifi',
-'Gym',
-'Washer_Dryer',
-'Gated_Access',
-'Public_Transportation',
-'Heating_Cooling',
-'Microwave',
-'Grill',
-'TV',
-'Fridge' ,
-'Couch',
-'Mattress',
-'Oven',
-'Coffee_Maker',
-'Toaster',
-'Dishes',
-'Pots_Pans',
-'Utilities_Included',
-'Walkin_Closet',
-'Iron',
-'Freezer',
-'Street_Parking',
-'Parking_on_Premesis',
-'Balcony'
-]} });
+// const amens = new mongoose.Schema({ value: { type: String, enum: [
+// 'Pet_Friendly',
+// 'Garages',
+// 'Swimming_Pool',
+// 'Wifi',
+// 'Gym',
+// 'Washer_Dryer',
+// 'Gated_Access',
+// 'Public_Transportation',
+// 'Heating_Cooling',
+// 'Microwave',
+// 'Grill',
+// 'TV',
+// 'Fridge' ,
+// 'Couch',
+// 'Mattress',
+// 'Oven',
+// 'Coffee_Maker',
+// 'Toaster',
+// 'Dishes',
+// 'Pots_Pans',
+// 'Utilities_Included',
+// 'Walkin_Closet',
+// 'Iron',
+// 'Freezer',
+// 'Street_Parking',
+// 'Parking_on_Premesis',
+// 'Balcony'
+// ]} });
 
 const PropertySchema = new mongoose.Schema (
     {
@@ -72,7 +72,7 @@ const PropertySchema = new mongoose.Schema (
             required: false
         },
         amenities: {
-            type: [amens],
+            type: [String],
             required: false
         },
         loc: {
