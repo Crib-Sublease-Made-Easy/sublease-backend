@@ -346,6 +346,19 @@ exports.property_modify = (req, res, next) => {
     );
 };
 
+
+// // @route PUT /properties/:id
+// // @description Update property
+// // @access Public
+// exports.property_modify_image = (req, res, next) => {
+//   let queryKey = "imgList." + req.body.changeIdx
+//   Property.findByIdAndUpdate(req.params.id, { queryKey : 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename})
+//     .then(property => res.json({ msg: 'Updated successfully' }))
+//     .catch(err =>
+//       res.status(400).json({ error: 'Unable to update the Database' })
+//     );
+// };
+
 // @route DELETE /properties/:id
 // @description Delete property by id
 // @access Public

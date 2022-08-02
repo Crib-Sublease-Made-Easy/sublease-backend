@@ -144,6 +144,7 @@ exports.otp_step3 = (req, resp, next) => {
         favoriteProperies: [],
         occupation: (req.body.occupation == undefined) ? null : req.body.occupation,
         school: (req.body.school == undefined) ? null : req.body.school,
+        deleted: false
       });
 
       user
@@ -365,7 +366,10 @@ exports.user_modify = (req, res, next) => {
 // @access Public
 exports.user_modify_profilePic = (req, res, next) => {
   User.findByIdAndUpdate(req.params.id, { profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename })
-    .then(user => res.json({ msg: "profile pic successfully changed" }))
+    .then(user => res.json({ 
+      msg: "profile pic successfully changed", 
+      profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename
+    }))
     .catch(err =>
       res.status(400).json({ error: 'Unable to update the Database' })
     );
