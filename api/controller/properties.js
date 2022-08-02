@@ -351,15 +351,52 @@ exports.property_modify = (req, res, next) => {
 // @description Update property
 // @access Public
 exports.property_modify_image = (req, res, next) => {
-  let queryKey = "imgList." + req.body.changeIdx
-  Property.findByIdAndUpdate(req.params.id, { "imgList.${req.body.changeIdx}" : 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename})
+  if(req.body.changeIdx == 0){
+    Property.findByIdAndUpdate(req.params.id, {"imgList.0" : 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename})
+      .then(property => res.json({ 
+        msg: 'Updated successfully', 
+        propertyImage: 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename
+      }))
+      .catch(err =>
+        res.status(400).json({ error: err})
+      );
+  } else if(req.body.changeIdx == 1){
+    Property.findByIdAndUpdate(req.params.id, {"imgList.1" : 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename})
     .then(property => res.json({ 
       msg: 'Updated successfully', 
       propertyImage: 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename
     }))
     .catch(err =>
-      res.status(400).json({ error: 'Unable to update the Database' })
+      res.status(400).json({ error: err})
     );
+  } else if(req.body.changeIdx == 2){
+    Property.findByIdAndUpdate(req.params.id, {"imgList.2" : 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename})
+    .then(property => res.json({ 
+      msg: 'Updated successfully', 
+      propertyImage: 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename
+    }))
+    .catch(err =>
+      res.status(400).json({ error: err})
+    );
+  } else if(req.body.changeIdx == 3){
+    Property.findByIdAndUpdate(req.params.id, {"imgList.3" : 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename})
+    .then(property => res.json({ 
+      msg: 'Updated successfully', 
+      propertyImage: 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename
+    }))
+    .catch(err =>
+      res.status(400).json({ error: err})
+    );
+  } else if(req.body.changeIdx == 4){
+    Property.findByIdAndUpdate(req.params.id, {"imgList.4" : 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename})
+    .then(property => res.json({ 
+      msg: 'Updated successfully', 
+      propertyImage: 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename
+    }))
+    .catch(err =>
+      res.status(400).json({ error: err})
+    );
+  }
 };
 
 // @route DELETE /properties/:id
