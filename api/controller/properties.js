@@ -408,8 +408,26 @@ exports.property_delete = (req, res, next) => {
   // Property.findByIdAndRemove(req.params.id, query)
   //   .then(property => res.json({ mgs: 'Property deleted successfully' }))
   //   .catch(err => res.status(404).json({ error: 'No such a property' }));
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwt.verify(token, process.env.JWT_KEY);
+
   Property.findByIdAndUpdate(req.params.id, {deleted: true})
-  .then(property => res.json({ msg: 'Updated successfully' }))
+  .then(async property => {
+    await User.updateOne(
+      { _id: decoded.userId },
+      [
+          {
+              $set: {
+                favoriteProperties: {
+                              $setDifference: ["$postedProperties", [req.params.id]]
+                  }
+              }
+          }
+      ]
+  )
+    return res.json({ msg: 'Updated successfully' })
+
+  })
   .catch(err =>
     res.status(400).json({ error: 'Unable to update the Database' })
   );
