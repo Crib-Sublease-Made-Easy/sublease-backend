@@ -49,7 +49,7 @@ router.post("/favorite", checkAuth,PropertyController.property_favorite)
 router.get("/:id", PropertyController.property_get_one);
 router.put("/:id", checkAuth, PropertyController.property_modify);
 router.put("/propertyImages/:id", upload.single('propertyImage'), checkAuth, PropertyController.property_modify_image);
-router.get("/:id", checkAuth, PropertyController.property_delete);
+router.delete("/:id", checkAuth, PropertyController.property_delete);
 router.get("/propertyImages/:filename", PropertyController.get_image);
 
 module.exports = router;
