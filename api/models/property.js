@@ -104,7 +104,7 @@ const PropertySchema = new mongoose.Schema (
         },
         deleted: {
             type: Boolean,
-            required: false
+            required: true
         },
     
     })
