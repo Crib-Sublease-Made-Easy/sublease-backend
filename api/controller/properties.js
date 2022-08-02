@@ -418,7 +418,7 @@ exports.property_delete = (req, res, next) => {
       [
           {
               $set: {
-                favoriteProperties: {
+                postedProperties: {
                               $setDifference: ["$postedProperties", [req.params.id]]
                   }
               }
