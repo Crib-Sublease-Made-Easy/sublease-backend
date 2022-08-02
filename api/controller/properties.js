@@ -110,7 +110,7 @@ exports.property_query = (req, res, next) => {
   delete query.longitude
   delete query.maxDistance
   console.log("QUERY", JSON.stringify(query))
-
+  query.deleted = false
   Property.find(query, null, { skip: req.query.page * 4, limit: 4 })
     .then( async properties => {
       let arr = properties
@@ -234,6 +234,8 @@ exports.property_pins = (req, res, next) => {
   delete query.latitude
   delete query.longitude
   delete query.maxDistance
+
+  query.deleted = false
   Property.find(query, '_id loc price imgList availableFrom availableTo')
     .then(proprties => res.json(proprties))
     .catch(err => res.status(404).json({ propertiesFound: 'none', error: err }));
