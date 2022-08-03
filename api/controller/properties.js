@@ -65,18 +65,31 @@ exports.property_get_all = (req, res, next) => {
 // @description lists all of the properties in the market
 // @access public
 exports.property_query = (req, res, next) => {
+  Property.find().forEach(
+    function (e) {
+      // convert date if it is a string
+      if (typeof e.startdate === 'string') {
+         e.availableFrom = new Date(e.startdate);
+      }
+      if (typeof e.enddate === 'string') {
+         e.availableTo = new Date(e.enddate);
+      } 
+      // save the updated document
+      Property.save(e);
+    }
+  )
   console.log("lat", req.query.latitude)
   console.log("long", req.query.longitude)
   console.log("maxdist", req.query.maxDistance)
   query = req.query
-  
+
   //AVAILABILITY
-  console.log(req.query)
+  console.log("PROPERTTY QUERY", req.query)
   if(req.query.availableFrom != undefined){
     if(req.query.availableTo != undefined){
       console.log("SETTING AVAILABLE QUERY")
-      query.availableFrom ={"$gt": new Date(req.query.availableFrom)}
-      query.availableTo = {"$lt": new Date(req.query.availableTo)}
+      query.availableFrom ={"$gt": req.query.availableFrom}
+      query.availableTo = {"$lt": req.query.availableTo}
     } 
   }
 
@@ -257,7 +270,7 @@ exports.property_query = (req, res, next) => {
             q.userInfo = d
             return q
         }))
-        console.log("END", props)
+        // console.log("END", props)
         res.json(props)
     })
     .catch(err => res.status(404).json({ propertiesFound: 'none', error: err }));
