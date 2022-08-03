@@ -68,7 +68,7 @@ const PropertySchema = new mongoose.Schema (
             required: false
         },
         bath: {
-            type: Number,
+            type: String,
             required: false
         },
         amenities: {
