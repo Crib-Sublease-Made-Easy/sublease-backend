@@ -65,8 +65,7 @@ exports.property_get_all = (req, res, next) => {
 // @description lists all of the properties in the market
 // @access public
 exports.property_query = (req, res, next) => {
-  Property.find().forEach(
-    function (e) {
+  Property.find().then((e) => {
       // convert date if it is a string
       if (typeof e.availableFrom === 'string') {
          e.availableFrom = new Date(e.availableFrom);
