@@ -223,6 +223,7 @@ exports.property_query = (req, res, next) => {
 
   Property.find(query, null, { skip: req.query.page * 4, limit: 4 })
     .then( async properties => {
+      console.log(properties)
       let arr = properties
       let i = 0;
       let props = await Promise.all(properties.map(async p => {
