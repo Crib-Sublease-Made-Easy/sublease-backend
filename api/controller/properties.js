@@ -68,11 +68,11 @@ exports.property_query = (req, res, next) => {
   Property.find().forEach(
     function (e) {
       // convert date if it is a string
-      if (typeof e.startdate === 'string') {
-         e.availableFrom = new Date(e.startdate);
+      if (typeof e.availableFrom === 'string') {
+         e.availableFrom = new Date(e.availableFrom);
       }
-      if (typeof e.enddate === 'string') {
-         e.availableTo = new Date(e.enddate);
+      if (typeof e.availableTo === 'string') {
+         e.availableTo = new Date(e.availableFrom);
       } 
       // save the updated document
       Property.save(e);
