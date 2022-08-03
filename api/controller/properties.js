@@ -184,7 +184,8 @@ exports.property_query = (req, res, next) => {
   }
   
   if(amens.length != 0){
-    query.amenities = amens
+
+    query.amenities = {$match: { $or: amens }}
   }
 
   if (query.priceLow != undefined || query.priceHigh != undefined) {
