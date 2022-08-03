@@ -72,7 +72,7 @@ exports.property_query = (req, res, next) => {
          e.availableFrom = new Date(e.availableFrom);
       }
       if (typeof e.availableTo === 'string') {
-         e.availableTo = new Date(e.availableFrom);
+         e.availableTo = new Date(e.availableTo);
       } 
       // save the updated document
       Property.save(e);
