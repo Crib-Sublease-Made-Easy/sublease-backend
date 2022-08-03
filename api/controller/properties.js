@@ -68,11 +68,20 @@ exports.property_query = (req, res, next) => {
   console.log("lat", req.query.latitude)
   console.log("long", req.query.longitude)
   console.log("maxdist", req.query.maxDistance)
-
-
-
-
   query = req.query
+  
+  //AVAILABILITY
+  console.log(req.query)
+  if(req.query.availableFrom != undefined){
+    if(req.query.availableTo != undefined){
+      console.log("SETTING AVAILABLE QUERY")
+      query.availableFrom ={"$gt": new Date(req.query.availableFrom)}
+      query.availableTo = {"$lt": new Date(req.query.availableTo)}
+    } 
+  }
+
+
+
   amens = []
   if(query.Pet_Friendly != undefined){
     amens.push('Pet_Friendly')
