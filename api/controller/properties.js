@@ -316,6 +316,128 @@ exports.property_pins = (req, res, next) => {
   console.log("maxdist", req.query.maxDistance)
   // type: req.query.type,
   query = req.query
+
+  amens = []
+  if(query.Pet_Friendly != undefined){
+    amens.push('Pet_Friendly')
+    delete query.Pet_Friendly
+  }
+  if(query.Garages != undefined){
+    amens.push('Garages')
+    delete query.Garages
+  }
+  if(query.Swimming_Pool != undefined){
+    amens.push('Swimming_Pool')
+    delete query.Swimming_Pool
+  }
+  if(query.Wifi != undefined){
+    amens.push('Wifi')
+    delete query.Wifi
+  }
+  if(query.Gym != undefined){
+    amens.push('Gym')
+    delete query.Gym
+  }
+  if(query.Washer_Dryer != undefined){
+    amens.push('Washer_Dryer')
+    delete query.Washer_Dryer
+  }
+  if(query.Gated_Access != undefined){
+    amens.push('Gated_Access')
+    delete query.Gated_Access
+  }
+  if(query.Public_Transportation != undefined){
+    amens.push('Public_Transportation')
+    delete query.Public_Transportation
+  }
+  if(query.Heating_Cooling != undefined){
+    amens.push('Heating_Cooling')
+    delete query.Heating_Cooling
+  }
+  if(query.Microwave != undefined){
+    amens.push('Microwave')
+    delete query.Microwave
+  }
+  if(query.Grill != undefined){
+    amens.push('Grill')
+    delete query.Grill
+  }
+  if(query.TV != undefined){
+    amens.push('TV')
+    delete query.TV
+  }
+  if(query.Fridge != undefined){
+    amens.push('Fridge')
+    delete query.Fridge
+  }
+  if(query.Couch != undefined){
+    amens.push('Couch')
+    delete query.Couch
+  }
+  if(query.Oven != undefined){
+    amens.push('Oven')
+    delete query.Oven
+  }
+  if(query.Mattress != undefined){
+    amens.push('Mattress')
+    delete query.Mattress
+  }
+  if(query.Coffee_Maker != undefined){
+    amens.push('Coffee_Maker')
+    delete query.Coffee_Maker
+  }
+  if(query.Toaster != undefined){
+    amens.push('Toaster')
+    delete query.Toaster
+  }
+  if(query.Dishes != undefined){
+    amens.push('Dishes')
+    delete query.Dishes
+  }
+  if(query.Pots_Pans != undefined){
+    amens.push('Pots_Pans')
+    delete query.Pots_Pans
+  }
+  if(query.Utilities_Included != undefined){
+    amens.push('Utilities_Included')
+    delete query.Utilities_Included
+  }
+  if(query.Walkin_Closet != undefined){
+    amens.push('Walkin_Closet')
+    delete query.Walkin_Closet
+  }
+  if(query.Iron != undefined){
+    amens.push('Iron')
+    delete query.Iron
+  }
+  if(query.Freezer != undefined){
+    amens.push('Freezer')
+    delete query.Freezer
+  }
+  if(query.Balcony != undefined){
+    amens.push('Balcony')
+    delete query.Balcony
+  }
+  if(query.Street_Parking != undefined){
+    amens.push('Street_Parking')
+    delete query.Street_Parking
+  }
+  if(query.Pet_FrParking_on_Premesisiendly != undefined){
+    amens.push('Parking_on_Premesis')
+    delete query.Parking_on_Premesis
+  }
+  
+  if(amens.length != 0){
+
+    query.amenities =  {
+      $all: amens
+    }
+  }
+
+
+
+
+
   if (query.priceLow != undefined || query.priceHigh != undefined) {
     price = { $gte: req.query.priceLow, $lte: req.query.priceHigh }
     req.query.price = price
