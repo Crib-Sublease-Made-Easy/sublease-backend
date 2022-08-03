@@ -332,8 +332,8 @@ exports.property_pins = (req, res, next) => {
   if(req.query.availableFrom != undefined){
     if(req.query.availableTo != undefined){
       console.log("SETTING AVAILABLE QUERY")
-      query.availableFrom ={"$gt": new Date(req.query.availableFrom)}
-      query.availableTo = {"$lt": new Date(req.query.availableTo)}
+      query.availableFrom ={"$gt": req.query.availableFrom}
+      query.availableTo = {"$lt": req.query.availableTo}
     } 
   }
   //AMENITIES
