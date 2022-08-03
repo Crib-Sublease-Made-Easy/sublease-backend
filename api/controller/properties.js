@@ -320,12 +320,11 @@ exports.property_pins = (req, res, next) => {
   //AVAILABILITY
   if(req.availableFrom != undefined){
     if(req.availableTo != undefined){
-      query = {"availableFrom": {"$gt": new Date(req.query.availableFrom)}, "availableTo": {"$lt": new Date(req.query.availableTo)}}
-      delete req.availableTo
+      query.availableFrom ={"$gt": new Date(req.query.availableFrom)}
+      query.availableTo = {"$lt": new Date(req.query.availableTo)}
     } else{
       query = {"availableFrom": {"$gt": new Date(req.query.availableFrom)}}
     }
-    delete req.availbaleFrom
   }
   //AMENITIES
   amens = []
