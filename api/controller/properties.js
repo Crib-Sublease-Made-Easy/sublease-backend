@@ -316,7 +316,18 @@ exports.property_pins = (req, res, next) => {
   console.log("maxdist", req.query.maxDistance)
   // type: req.query.type,
   query = req.query
-
+  
+  //AVAILABILITY
+  if(req.availableFrom != undefined){
+    if(req.availableTo != undefined){
+      query = {"availableFrom": {"$gt": new Date(req.query.availableFrom)}, "availableTo": {"$lt": new Date(req.query.availableTo)}}
+      delete req.availableTo
+    } else{
+      query = {"availableFrom": {"$gt": new Date(req.query.availableFrom)}}
+    }
+    delete req.availbaleFrom
+  }
+  //AMENITIES
   amens = []
   if(query.Pet_Friendly != undefined){
     amens.push('Pet_Friendly')
