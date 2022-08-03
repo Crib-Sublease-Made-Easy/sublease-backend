@@ -320,8 +320,8 @@ exports.property_pins = (req, res, next) => {
   //AVAILABILITY
   delete query.availableFrom
   delete query.availableTo
-  if(req.availableFrom != undefined){
-    if(req.availableTo != undefined){
+  if(req.query.availableFrom != undefined){
+    if(req.query.availableTo != undefined){
       console.log("SETTING AVAILABLE QUERY")
       query.availableFrom ={"$gt": new Date(req.query.availableFrom)}
       query.availableTo = {"$lt": new Date(req.query.availableTo)}
