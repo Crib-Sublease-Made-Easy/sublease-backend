@@ -183,7 +183,9 @@ exports.property_query = (req, res, next) => {
     delete query.Parking_on_Premesis
   }
   
-  query.amenities = amens
+  if(amens.length != 0){
+    query.amenities = amens
+  }
 
   if (query.priceLow != undefined || query.priceHigh != undefined) {
     price = { $gte: req.query.priceLow, $lte: req.query.priceHigh }
@@ -215,8 +217,9 @@ exports.property_query = (req, res, next) => {
   delete query.latitude
   delete query.longitude
   delete query.maxDistance
-  console.log("QUERY", JSON.stringify(query))
   query.deleted = false
+  console.log("QUERY", JSON.stringify(query))
+
   Property.find(query, null, { skip: req.query.page * 4, limit: 4 })
     .then( async properties => {
       let arr = properties
