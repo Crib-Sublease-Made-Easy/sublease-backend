@@ -52,11 +52,11 @@ const PropertySchema = new mongoose.Schema (
             required: false
         },
         availableFrom: {
-            type: String,
+            type: Date,
             required: false
         },
         availableTo: {
-            type: String,
+            type: Date,
             required: false
         },
         description: {
