@@ -322,9 +322,7 @@ exports.property_pins = (req, res, next) => {
     if(req.availableTo != undefined){
       query.availableFrom ={"$gt": new Date(req.query.availableFrom)}
       query.availableTo = {"$lt": new Date(req.query.availableTo)}
-    } else{
-      query = {"availableFrom": {"$gt": new Date(req.query.availableFrom)}}
-    }
+    } 
   }
   //AMENITIES
   amens = []
@@ -481,6 +479,7 @@ exports.property_pins = (req, res, next) => {
   delete query.maxDistance
 
   query.deleted = false
+  console.log("PINSQUERY", query)
   Property.find(query, '_id loc price imgList availableFrom availableTo')
     .then(proprties => res.json(proprties))
     .catch(err => res.status(404).json({ propertiesFound: 'none', error: err }));
