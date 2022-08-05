@@ -309,7 +309,7 @@ exports.property_favorite = (req, res, next) => {
         }
     ]
 )
-  .then(user => res.json({ msg: 'Updated successfully' }))
+  .then(user => res.json({ msg: 'Updated successfully', favorited: user.favoriteProperties }))
   .catch(err =>
     res.status(400).json({ error: 'Unable to update the Database' })
   );
