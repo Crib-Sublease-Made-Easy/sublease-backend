@@ -136,6 +136,7 @@ exports.otp_step3 = (req, resp, next) => {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         phoneNumber: req.body.phoneNumber,
+        oneSignalUserId: req.body.oneSignalUserId,
         dob: req.body.dob,
         gender: req.body.gender,
         authy_id: req.body.authy_id,
@@ -242,7 +243,7 @@ exports.login_token = (req, resp, next) => {
     if (String(res.success) == String(true)) {
       User.find({ phoneNumber: req.body.phoneNumber })
       .exec()
-      .then(user => {
+      .then( async user => {
         if (user.length < 1) {
           return resp.status(401).json({
             message: "Authentication Failed"
@@ -275,7 +276,7 @@ exports.login_token = (req, resp, next) => {
             }
           );
 
-
+          await User.findByIdAndUpdate(user[0]._id, {oneSignalUserId: req.body.oneSignalUserId})
           return resp.status(200).json({
             message: "User successfully logged in",
             loggedIn: {
@@ -293,6 +294,7 @@ exports.login_token = (req, resp, next) => {
             }
           });
         }
+
         })
       .catch(err => {
         console.log(err);

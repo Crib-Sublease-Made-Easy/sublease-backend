@@ -40,6 +40,9 @@ app.use('/tokens', tokens);
 const autocomplete = require('./api/routes/autocomplete')
 app.use('/autocomplete', autocomplete);
 
+const autocomplete = require('./api/routes/notifications')
+app.use('/notifications', autocomplete);
+
 const port = process.env.PORT || 8082;
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
