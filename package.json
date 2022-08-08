@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/VJHack/sublease-backend#readme",
   "dependencies": {
+    "api": "^4.5.2",
     "authy": "^1.4.0",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
