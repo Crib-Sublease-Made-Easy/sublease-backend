@@ -40,8 +40,8 @@ app.use('/tokens', tokens);
 const autocomplete = require('./api/routes/autocomplete')
 app.use('/autocomplete', autocomplete);
 
-const autocomplete = require('./api/routes/notifications')
-app.use('/notifications', autocomplete);
+const notifications = require('./api/routes/notifications')
+app.use('/notifications', notifications);
 
 const port = process.env.PORT || 8082;
 

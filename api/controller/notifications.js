@@ -18,7 +18,7 @@ exports.send_message = async (req, res, next) => {
   
     await User.findById(recipient).then(user =>{
       onesignal.createNotification({
-        include_player_ids: [recipient],
+        include_player_ids: [user.oneSignalUserId],
           contents: {
             en: req.body.message,
           },
