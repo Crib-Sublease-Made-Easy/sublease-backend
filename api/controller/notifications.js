@@ -5,6 +5,7 @@ const User = require('../models/user');
 // @description Send a notification for a chat message
 // @access Private
 exports.send_message = async (req, res, next) => {
+    console.log("TRANSFERING MESSAGE")
     let senderId = req.body.senderId
     let part1 = req.body.participant1
     let part2 = req.body.participant2
@@ -26,7 +27,9 @@ exports.send_message = async (req, res, next) => {
         }, {
           authorization: 'ZGQ0ODYzMDAtYjEzMy00ZjUyLTkxZmEtYzUzMTFiNGFmYmMz'
         })
-      res.json({status: "Notification Successfully Sent"})
+        console.log("TRANSFERING MESSAGE RETURN")
+
+      return res.json({status: "Notification Successfully Sent"})
 
     }).catch(Exception=>
       res.status(404).json({ error: 'No such uuser' })
