@@ -53,27 +53,31 @@ exports.send_message = async (req, res, next) => {
     let part2 = req.body.participant2
     let recipient
 
-    if(senderId != part1){
+    if(senderId == part1){
       recipient = part2
     } else{
       recipient = part1
     }
     console.log(recipient)
-    await User.findById(recipient).then(user =>{
-      console.log("INSIDE ")
-      console.log(user.oneSignalUserId)
-      const body = {
-        app_id: ONESIGNAL_APP_ID,
-        include_player_ids: [user.oneSignalUserId],
-        contents: {
-          en: 'New message from ' + user.firstName,
-        },
-        };
-    
-      createNotication(body);
-      console.log("TRANSFERING MESSAGE RETURN")
-      res.json({status: "Notification Successfully Sent"})
+    await User.findById(senderId).then(async sender =>{
+      await User.findById(recipient).then(user =>{
+        console.log("INSIDE ")
+        console.log(user.oneSignalUserId)
+        const body = {
+          app_id: ONESIGNAL_APP_ID,
+          include_player_ids: [user.oneSignalUserId],
+          contents: {
+            en: 'New message from ' + sender.firstName,
+          },
+          };
+      
+        createNotication(body);
+        console.log("TRANSFERING MESSAGE RETURN")
+        res.json({status: "Notification Successfully Sent"})
 
+      }).catch(Exception=>
+        res.status(404).json({ error: 'No such uuser' })
+      )
     }).catch(Exception=>
       res.status(404).json({ error: 'No such uuser' })
     )
