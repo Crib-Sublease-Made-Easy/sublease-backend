@@ -18,6 +18,7 @@ exports.send_message = async (req, res, next) => {
     }
   
     await User.findById(recipient).then(user =>{
+      console.log("INSIDE ")
       onesignal.createNotification({
         include_player_ids: [user.oneSignalUserId],
           contents: {
@@ -29,7 +30,7 @@ exports.send_message = async (req, res, next) => {
         })
         console.log("TRANSFERING MESSAGE RETURN")
 
-      return res.json({status: "Notification Successfully Sent"})
+       res.json({status: "Notification Successfully Sent"})
 
     }).catch(Exception=>
       res.status(404).json({ error: 'No such uuser' })
