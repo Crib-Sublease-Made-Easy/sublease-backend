@@ -53,7 +53,7 @@ exports.send_message = async (req, res, next) => {
     let part2 = req.body.participant2
     let recipient
 
-    if(senderId == part1){
+    if(senderId != part1){
       recipient = part2
     } else{
       recipient = part1
