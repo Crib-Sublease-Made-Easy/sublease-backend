@@ -543,7 +543,7 @@ exports.property_get_one = async (req, res, next) => {
         postedUserInfo.occupation = user.occupation;
         postedUserInfo.school = user.school;
         changeNumberOfViews = {}
-        changeNumberOfViews.numberOfViews = property.numberOfViews + 1;
+        changeNumberOfViews.numberOfViews = property.numberOfViews;
         console.log("ChangeNumberOfViews,", changeNumberOfViews)
         await Property.findByIdAndUpdate(property._id, changeNumberOfViews)
           .then(property => console.log("Successfully changed", property))
