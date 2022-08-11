@@ -43,6 +43,9 @@ app.use('/autocomplete', autocomplete);
 const notifications = require('./api/routes/notifications')
 app.use('/notifications', notifications);
 
+const contact = require('./api/routes/contact')
+app.use('/contact', contact);
+
 const port = process.env.PORT || 8082;
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
