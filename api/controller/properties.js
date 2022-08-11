@@ -504,6 +504,7 @@ exports.property_pins = (req, res, next) => {
 
 
 // @route GET /properties/:id
+//            /properties/:id/:discover
 // @description Get single property by id
 // @access Public
 exports.property_get_one = async (req, res, next) => {
@@ -518,8 +519,12 @@ exports.property_get_one = async (req, res, next) => {
         postedUserInfo.occupation = user.occupation;
         postedUserInfo.school = user.school;
         changeNumberOfViews = {}
-        changeNumberOfViews.numberOfViews = property.numberOfViews + 1;
-        console.log("ChangeNumberOfViews,", changeNumberOfViews)
+        if(req.params.discover == discover){
+          changeNumberOfViews.numberOfViews = property.numberOfViews + 1;
+          console.log("ChangeNumberOfViews,", changeNumberOfViews)
+        } else {
+          changeNumberOfViews.numberOfViews = property.numberOfViews;
+        }
         await Property.findByIdAndUpdate(property._id, changeNumberOfViews)
           .then(property => console.log("Successfully changed", property))
           .catch(err =>
