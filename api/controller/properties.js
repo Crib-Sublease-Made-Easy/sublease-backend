@@ -519,7 +519,7 @@ exports.property_get_one = async (req, res, next) => {
         postedUserInfo.occupation = user.occupation;
         postedUserInfo.school = user.school;
         changeNumberOfViews = {}
-        if(req.params.discover == discover){
+        if(req.params.discover == 'discover'){
           changeNumberOfViews.numberOfViews = property.numberOfViews + 1;
           console.log("ChangeNumberOfViews,", changeNumberOfViews)
         } else {
