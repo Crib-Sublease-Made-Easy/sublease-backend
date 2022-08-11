@@ -501,10 +501,36 @@ exports.property_pins = (req, res, next) => {
 
 
 
+// @route GET /properties/:id
+//            /properties/:id/:discover
+
+// @description Get single property by id
+// @access Public
+exports.increment_view_count = async (req, res, next) => {
+  await Property.findById(req.params.id)
+    .then(async property => {
+      await User.findById(property.postedBy).then(async user => {
+        changeNumberOfViews = {}
+        changeNumberOfViews.numberOfViews = property.numberOfViews + 1;
+        console.log("ChangeNumberOfViews,", changeNumberOfViews)
+        await Property.findByIdAndUpdate(property._id, changeNumberOfViews)
+          .then(property => console.log("Successfully changed"))
+          .catch(err =>
+            console.log("Error with incrementing view count", err)
+          );
+
+        res.json({ propertyInfo: property, userInfo: postedUserInfo })
+      })
+        .catch(err => res.status(404).json({ propertiesFound: 'Invalid User in Property soldBy field' }));
+    })
+    .catch(err => res.status(404).json({ propertiesFound: 'No Property found' }));
+};
+
 
 
 // @route GET /properties/:id
 //            /properties/:id/:discover
+
 // @description Get single property by id
 // @access Public
 exports.property_get_one = async (req, res, next) => {
@@ -519,12 +545,8 @@ exports.property_get_one = async (req, res, next) => {
         postedUserInfo.occupation = user.occupation;
         postedUserInfo.school = user.school;
         changeNumberOfViews = {}
-        if(req.params.discover == 'discover'){
-          changeNumberOfViews.numberOfViews = property.numberOfViews + 1;
-          console.log("ChangeNumberOfViews,", changeNumberOfViews)
-        } else {
-          changeNumberOfViews.numberOfViews = property.numberOfViews;
-        }
+        changeNumberOfViews.numberOfViews = property.numberOfViews;
+        console.log("ChangeNumberOfViews,", changeNumberOfViews)
         await Property.findByIdAndUpdate(property._id, changeNumberOfViews)
           .then(property => console.log("Successfully changed", property))
           .catch(err =>
