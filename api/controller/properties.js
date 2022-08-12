@@ -295,13 +295,13 @@ exports.property_favorite = (req, res, next) => {
               favoriteProperties: {
                     $cond: [
                         {
-                            $in: [ req.body.propertyId,"$favoriteProperties"]
+                            $in: [mongoose.Types.ObjectId(req.body.propertyId),"$favoriteProperties"]
                         },
                         {
-                            $setDifference: ["$favoriteProperties", [req.body.propertyId]]
+                            $setDifference: ["$favoriteProperties", [mongoose.Types.ObjectId(req.body.propertyId)]]
                         },
                         {
-                            $concatArrays: ["$favoriteProperties", [req.body.propertyId]]
+                            $concatArrays: ["$favoriteProperties",[mongoose.Types.ObjectId(req.body.propertyId)]]
                         }
                     ]
                 }
