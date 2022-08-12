@@ -542,13 +542,25 @@ exports.property_get_one = async (req, res, next) => {
         postedUserInfo.occupation = user.occupation;
         postedUserInfo.school = user.school;
         changeNumberOfViews = {}
-        changeNumberOfViews.numberOfViews = property.numberOfViews;
+        console.log(req.body.viewCount)
+        if(String(req.body.viewCount) === "true"){
+          changeNumberOfViews.numberOfViews = property.numberOfViews + 1;
+        } else{
+          changeNumberOfViews.numberOfViews = property.numberOfViews;
+        }
+        await Property.findByIdAndUpdate(property._id, changeNumberOfViews)
+        .then(property => {
+          console.log("Successfully changed")
+        })
+        .catch(err =>
+          console.log("Error with incrementing view count", err)
+        );
         console.log("ChangeNumberOfViews,", changeNumberOfViews)
         res.json({ propertyInfo: property, userInfo: postedUserInfo })
       })
-        .catch(err => res.status(404).json({ propertiesFound: 'Invalid User in Property soldBy field' }));
+        .catch(err => res.status(404).json({ Error: 'Invalid User in Property soldBy field' }));
     })
-    .catch(err => res.status(404).json({ propertiesFound: 'No Property found' }));
+    .catch(err => res.status(404).json({ Error: 'No Property found' }));
 };
 
 // @route POST /properties
