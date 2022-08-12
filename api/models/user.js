@@ -50,7 +50,7 @@ const UserSchema = new mongoose.Schema ({
         required: true
     },
     favoriteProperties: {
-        type: [String],
+        type: [mongoose.Types.ObjectId],
         required: true
     }
 })

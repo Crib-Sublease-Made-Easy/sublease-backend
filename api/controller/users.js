@@ -308,6 +308,38 @@ exports.login_token = (req, resp, next) => {
 
 
 
+exports.user_get_favorites = (req, res, next) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwt.verify(token, process.env.JWT_KEY);
+  const userId = decoded.userId
+  User.aggregate([
+    {
+      $match: { _id: mongoose.Types.ObjectId(userId) }
+    }, {
+      $lookup:
+      {
+        from: "propertytests",
+        localField: "favoriteProperties",
+        foreignField: "_id",
+        as: "properties"
+      }
+    }
+  ]).then(x => {
+    console.log(x)
+    res.status(200).json({
+    status: 'success',
+    properties: x[0].properties.filter(function (e) {
+      return (e.deleted == false);
+    }).reverse()
+  })
+})
+    .catch(err => {
+      // console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
+}
 
 
 
