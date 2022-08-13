@@ -324,15 +324,33 @@ exports.user_get_favorites = (req, res, next) => {
         as: "properties"
       }
     }
-  ]).then(x => {
-    console.log(x)
-    res.status(200).json({
-    status: 'success',
-    properties: x[0].properties.filter(function (e) {
+  ]).then(async x => {
+    let propertiesArray = x[0].properties.filter(function (e) {
       return (e.deleted == false);
-    }).reverse()
-  })
-})
+    })
+    let props = await Promise.all(propertiesArray.map(async p => {
+      let d = await User.findById(p.postedBy).then(async user => {
+        let q = p
+        postedUser = {}
+        postedUser.firstName = user._id;
+        postedUser.firstName = user.firstName;
+        postedUser.lastName = user.lastName;
+        postedUser.profilePic = user.profilePic;
+        postedUser.occupation = user.occupation;
+        postedUser.school = user.school;
+        q.pos = postedUser
+        console.log("P", q)
+        return postedUser
+        
+        })
+        let q = {}
+        q.propertyInfo = p
+        q.userInfo = d
+        return q
+    }))
+    // console.log("END", props)
+    res.json(props)   
+    })
     .catch(err => {
       // console.log(err);
       res.status(500).json({
