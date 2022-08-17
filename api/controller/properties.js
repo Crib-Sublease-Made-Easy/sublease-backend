@@ -76,7 +76,7 @@ exports.property_query = (req, res, next) => {
   if(req.query.availableFrom != undefined){
     if(req.query.availableTo != undefined){
       console.log("SETTING AVAILABLE QUERY")
-      query.availableFrom ={"$gt": req.query.availableFrom}
+      query.availableFrom ={"$lt": req.query.availableFrom}
       query.availableTo = {"$lt": req.query.availableTo}
     } 
   }
@@ -332,7 +332,7 @@ exports.property_pins = (req, res, next) => {
   if(req.query.availableFrom != undefined){
     if(req.query.availableTo != undefined){
       console.log("SETTING AVAILABLE QUERY")
-      query.availableFrom ={"$gt": req.query.availableFrom}
+      query.availableFrom ={"$lt": req.query.availableFrom}
       query.availableTo = {"$lt": req.query.availableTo}
     } 
   }
