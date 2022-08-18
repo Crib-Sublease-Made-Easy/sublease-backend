@@ -76,8 +76,10 @@ exports.property_query = (req, res, next) => {
   if(req.query.availableFrom != undefined){
     if(req.query.availableTo != undefined){
       console.log("SETTING AVAILABLE QUERY")
-      query.availableFrom = {"$gte": new Date(req.query.availableTo)}
-      query.availableTo ={"$lte": new Date(req.query.availableFrom)}
+      console.log(new Date(req.query.availableFrom).toISOString())
+      console.log(new Date(req.query.availableTo).toISOString())
+      query.availableFrom = {"$gte": new Date(req.query.availableTo).toISOString()}
+      query.availableTo ={"$lte": new Date(req.query.availableFrom).toISOString()}
 
       
     } 
@@ -335,8 +337,11 @@ exports.property_pins = (req, res, next) => {
   if(req.query.availableFrom != undefined){
     if(req.query.availableTo != undefined){
       console.log("SETTING AVAILABLE QUERY")
-      query.availableTo ={"$lte": new Date(req.query.availableFrom)}
-      query.availableFrom = {"$gte": new Date(req.query.availableTo)}
+      console.log("COMPARE DATES")
+      console.log(new Date(req.query.availableFrom).toISOString())
+      console.log(new Date(req.query.availableTo).toISOString())
+      query.availableTo ={"$lte": new Date(req.query.availableFrom).toISOString()}
+      query.availableFrom = {"$gte": new Date(req.query.availableTo).toISOString()}
     } 
   }
   //AMENITIES
