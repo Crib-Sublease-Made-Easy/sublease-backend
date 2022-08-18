@@ -76,12 +76,8 @@ exports.property_query = (req, res, next) => {
   if(req.query.availableFrom != undefined){
     if(req.query.availableTo != undefined){
       console.log("SETTING AVAILABLE QUERY")
-      console.log(new Date(req.query.availableFrom).toISOString())
-      console.log(new Date(req.query.availableTo).toISOString())
-      query.availableFrom = {"$gte": new Date(req.query.availableTo).toISOString()}
-      query.availableTo ={"$lte": new Date(req.query.availableFrom).toISOString()}
-
-      
+      query.availableTo ={"$lte": req.query.availableFrom}
+      query.availableFrom = {"$gte": req.query.availableTo}
     } 
   }
 
@@ -234,7 +230,6 @@ exports.property_query = (req, res, next) => {
   delete query.latitude
   delete query.longitude
   delete query.maxDistance
-
   query.deleted = false
   console.log("QUERY", JSON.stringify(query))
 
@@ -337,11 +332,8 @@ exports.property_pins = (req, res, next) => {
   if(req.query.availableFrom != undefined){
     if(req.query.availableTo != undefined){
       console.log("SETTING AVAILABLE QUERY")
-      console.log("COMPARE DATES")
-      console.log(new Date(req.query.availableFrom).toISOString())
-      console.log(new Date(req.query.availableTo).toISOString())
-      query.availableTo ={"$lte": new Date(req.query.availableFrom).toISOString()}
-      query.availableFrom = {"$gte": new Date(req.query.availableTo).toISOString()}
+      query.availableTo ={"$lte": req.query.availableFrom}
+      query.availableFrom = {"$gte": req.query.availableTo}
     } 
   }
   //AMENITIES
