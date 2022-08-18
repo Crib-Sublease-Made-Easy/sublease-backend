@@ -230,7 +230,6 @@ exports.property_query = (req, res, next) => {
   delete query.latitude
   delete query.longitude
   delete query.maxDistance
-  delete query.page
   query.deleted = false
   console.log("QUERY", JSON.stringify(query))
 
@@ -490,7 +489,6 @@ exports.property_pins = (req, res, next) => {
   delete query.latitude
   delete query.longitude
   delete query.maxDistance
-  delete query.page
 
   query.deleted = false
   console.log("PINSQUERY", query)
