@@ -76,8 +76,8 @@ exports.property_query = (req, res, next) => {
   if(req.query.availableFrom != undefined){
     if(req.query.availableTo != undefined){
       console.log("SETTING AVAILABLE QUERY")
-      query.availableTo ={"$lte": req.query.availableFrom}
       query.availableFrom = {"$gte": req.query.availableTo}
+      query.availableTo ={"$lte": req.query.availableFrom}
 
       
     } 
@@ -232,7 +232,6 @@ exports.property_query = (req, res, next) => {
   delete query.latitude
   delete query.longitude
   delete query.maxDistance
-  delete query.availableFrom
 
   query.deleted = false
   console.log("QUERY", JSON.stringify(query))
@@ -493,7 +492,6 @@ exports.property_pins = (req, res, next) => {
   delete query.latitude
   delete query.longitude
   delete query.maxDistance
-  delete query.availableFrom
 
   query.deleted = false
   console.log("PINSQUERY", query)
