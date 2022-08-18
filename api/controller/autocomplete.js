@@ -16,7 +16,7 @@ exports.places_autocomplete = (req, res, next) => {
         axios(config)
         .then(function (response) {
             let JSONdata = response.data
-            const array = words.filter(place => place.place_id != undefined);
+            const array = JSONdata.predictions.filter(place => place.place_id != undefined);
             res.json(array )      
         })
         .catch(function (error) {
