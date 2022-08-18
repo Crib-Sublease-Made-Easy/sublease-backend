@@ -230,7 +230,7 @@ exports.property_query = (req, res, next) => {
   delete query.latitude
   delete query.longitude
   delete query.maxDistance
-  delete query.availableTo
+  delete query.availableFrom
 
   query.deleted = false
   console.log("QUERY", JSON.stringify(query))
