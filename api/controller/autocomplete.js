@@ -16,6 +16,7 @@ exports.places_autocomplete = (req, res, next) => {
         axios(config)
         .then(function (response) {
             let JSONdata = response.data
+            console.log(JSONdata.predictions)
             res.json(JSONdata.predictions )      
         })
         .catch(function (error) {
