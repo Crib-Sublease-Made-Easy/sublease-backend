@@ -78,8 +78,8 @@ exports.property_query = (req, res, next) => {
       console.log("SETTING AVAILABLE QUERY")
       const to = req.query.availableTo
       const from = req.query.availableFrom
-      query.availableFrom ={"$lt": to}
-      query.availableTo = {"$gt": from}
+      query.availableFrom ={"$lte": to}
+      query.availableTo = {"$gte": from}
     } 
   }
 
@@ -336,8 +336,8 @@ exports.property_pins = (req, res, next) => {
       console.log("SETTING AVAILABLE QUERY")
       const to = req.query.availableTo
       const from = req.query.availableFrom
-      query.availableFrom ={"$lt": to}
-      query.availableTo = {"$gt": from}
+      query.availableFrom ={"$lte": to}
+      query.availableTo = {"$gte": from}
     } 
   }
   //AMENITIES
