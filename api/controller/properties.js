@@ -80,8 +80,8 @@ exports.property_query = (req, res, next) => {
       let to = new Date(req.query.availableTo)
       console.log(from)
       console.log(to)
-      query.availableTo ={"$lte": from}
-      query.availableFrom = {"$gte": to}
+      query.availableTo ={"$lte": to}
+      query.availableFrom = {"$lte": to}
     } 
   }
 
@@ -340,8 +340,8 @@ exports.property_pins = (req, res, next) => {
       let to = new Date(req.query.availableTo)
       console.log(from)
       console.log(to)
-      query.availableTo ={"$lte": from}
-      query.availableFrom = {"$gte": to}
+      query.availableTo ={"$lte": to}
+      query.availableFrom = {"$lte": to}
     } 
   }
   //AMENITIES
