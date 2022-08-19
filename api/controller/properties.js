@@ -76,12 +76,8 @@ exports.property_query = (req, res, next) => {
   if(req.query.availableFrom != undefined){
     if(req.query.availableTo != undefined){
       console.log("SETTING AVAILABLE QUERY")
-      // let from = new Date(req.query.availableFrom)
-      // let to = new Date(req.query.availableTo)
-      // console.log(from)
-      // console.log(to)
-      query.availableTo ={"$lte": req.query.availableTo}
-      query.availableFrom = {"$lte": req.query.availableTo}
+      query.availableFrom ={"$lt": req.query.availableFrom}
+      query.availableTo = {"$lt": req.query.availableTo}
     } 
   }
 
@@ -336,12 +332,8 @@ exports.property_pins = (req, res, next) => {
   if(req.query.availableFrom != undefined){
     if(req.query.availableTo != undefined){
       console.log("SETTING AVAILABLE QUERY")
-      // let from = new Date(req.query.availableFrom)
-      // let to = new Date(req.query.availableTo)
-      // console.log(from)
-      // console.log(to)
-      query.availableTo ={"$lte": req.query.availableTo}
-      query.availableFrom = {"$lte": req.query.availableTo}
+      query.availableFrom ={"$lt": req.query.availableFrom}
+      query.availableTo = {"$lt": req.query.availableTo}
     } 
   }
   //AMENITIES
@@ -727,5 +719,3 @@ exports.property_delete = async (req, res, next) => {
   );
   return res.json({ msg: 'Updated successfully' })
 };
-
-
