@@ -70,14 +70,16 @@ exports.property_query = (req, res, next) => {
   console.log("long", req.query.longitude)
   console.log("maxdist", req.query.maxDistance)
   query = req.query
-
+  
   //AVAILABILITY
   console.log("PROPERTTY QUERY", req.query)
   if(req.query.availableFrom != undefined){
     if(req.query.availableTo != undefined){
       console.log("SETTING AVAILABLE QUERY")
-      query.availableFrom ={"$lt": query.availableTo}
-      query.availableTo = {"$gt": query.availableFrom}
+      const to = req.query.availableTo
+      const from = req.query.availableFrom
+      query.availableFrom ={"$lt": to}
+      query.availableTo = {"$gt": from}
     } 
   }
 
@@ -332,8 +334,10 @@ exports.property_pins = (req, res, next) => {
   if(req.query.availableFrom != undefined){
     if(req.query.availableTo != undefined){
       console.log("SETTING AVAILABLE QUERY")
-      query.availableFrom ={"$lt": query.availableTo}
-      query.availableTo = {"$gt": query.availableFrom}
+      const to = req.query.availableTo
+      const from = req.query.availableFrom
+      query.availableFrom ={"$lt": to}
+      query.availableTo = {"$gt": from}
     } 
   }
   //AMENITIES
