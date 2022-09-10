@@ -576,7 +576,7 @@ exports.property_create = (req, res, next) => {
   console.log(JSON.stringify(req.files))
   propImgList = []
   for (let i = 0; i < req.files.length; i++) {
-    propImgList[i] = ('https://sublease-app.herokuapp.com/properties/propertyImages/' + req.files[i].filename)
+    propImgList[i] = ('https://crib-llc.herokuapp.com/properties/propertyImages/' + req.files[i].filename)
   }
   var coor = []
   coor[0] = req.body.longitude
@@ -644,46 +644,46 @@ exports.property_modify = (req, res, next) => {
 // @access Public
 exports.property_modify_image = (req, res, next) => {
   if(req.body.changeIdx == 0){
-    Property.findByIdAndUpdate(req.params.id, {"imgList.0" : 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename})
+    Property.findByIdAndUpdate(req.params.id, {"imgList.0" : 'https://crib-llc.herokuapp.com/properties/propertyImages/' + req.file.filename})
       .then(property => res.json({ 
         msg: 'Updated successfully', 
-        propertyImage: 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename
+        propertyImage: 'https://crib-llc.herokuapp.com/properties/propertyImages/' + req.file.filename
       }))
       .catch(err =>
         res.status(400).json({ error: err})
       );
   } else if(req.body.changeIdx == 1){
-    Property.findByIdAndUpdate(req.params.id, {"imgList.1" : 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename})
+    Property.findByIdAndUpdate(req.params.id, {"imgList.1" : 'https://crib-llc.herokuapp.com/properties/propertyImages/' + req.file.filename})
     .then(property => res.json({ 
       msg: 'Updated successfully', 
-      propertyImage: 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename
+      propertyImage: 'https://crib-llc.herokuapp.com/properties/propertyImages/' + req.file.filename
     }))
     .catch(err =>
       res.status(400).json({ error: err})
     );
   } else if(req.body.changeIdx == 2){
-    Property.findByIdAndUpdate(req.params.id, {"imgList.2" : 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename})
+    Property.findByIdAndUpdate(req.params.id, {"imgList.2" : 'https://crib-llc.herokuapp.com/properties/propertyImages/' + req.file.filename})
     .then(property => res.json({ 
       msg: 'Updated successfully', 
-      propertyImage: 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename
+      propertyImage: 'https://crib-llc.herokuapp.com/properties/propertyImages/' + req.file.filename
     }))
     .catch(err =>
       res.status(400).json({ error: err})
     );
   } else if(req.body.changeIdx == 3){
-    Property.findByIdAndUpdate(req.params.id, {"imgList.3" : 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename})
+    Property.findByIdAndUpdate(req.params.id, {"imgList.3" : 'https://crib-llc.herokuapp.com/properties/propertyImages/' + req.file.filename})
     .then(property => res.json({ 
       msg: 'Updated successfully', 
-      propertyImage: 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename
+      propertyImage: 'https://crib-llc.herokuapp.com/properties/propertyImages/' + req.file.filename
     }))
     .catch(err =>
       res.status(400).json({ error: err})
     );
   } else if(req.body.changeIdx == 4){
-    Property.findByIdAndUpdate(req.params.id, {"imgList.4" : 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename})
+    Property.findByIdAndUpdate(req.params.id, {"imgList.4" : 'https://crib-llc.herokuapp.com/properties/propertyImages/' + req.file.filename})
     .then(property => res.json({ 
       msg: 'Updated successfully', 
-      propertyImage: 'https://sublease-app.herokuapp.com/properties/propertyImages/' + req.file.filename
+      propertyImage: 'https://crib-llc.herokuapp.com/properties/propertyImages/' + req.file.filename
     }))
     .catch(err =>
       res.status(400).json({ error: err})

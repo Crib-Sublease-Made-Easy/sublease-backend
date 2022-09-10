@@ -140,7 +140,7 @@ exports.otp_step3 = (req, resp, next) => {
         dob: req.body.dob,
         gender: req.body.gender,
         authy_id: req.body.authy_id,
-        profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename,
+        profilePic: 'https://crib-llc.herokuapp.com/users/profileImages/' + req.file.filename,
         postedProperties: [],
         favoriteProperies: [],
         occupation: (req.body.occupation == undefined) ? null : req.body.occupation,
@@ -417,10 +417,10 @@ exports.user_modify = (req, res, next) => {
 // @description Update user profile pic
 // @access Public
 exports.user_modify_profilePic = (req, res, next) => {
-  User.findByIdAndUpdate(req.params.id, { profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename })
+  User.findByIdAndUpdate(req.params.id, { profilePic: 'https://crib-llc.herokuapp.com/users/profileImages/' + req.file.filename })
     .then(user => res.json({ 
       msg: "profile pic successfully changed", 
-      profilePic: 'https://sublease-app.herokuapp.com/users/profileImages/' + req.file.filename
+      profilePic: 'https://crib-llc.herokuapp.com/users/profileImages/' + req.file.filename
     }))
     .catch(err =>
       res.status(400).json({ error: 'Unable to update the Database' })
