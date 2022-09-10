@@ -14,7 +14,7 @@ const {GridFsStorage} = require('multer-gridfs-storage');
 
 const dbInstance = mongoose.connection;
 const mongoURI = "mongodb+srv://vjanarthanan:6nXzPRAnaPfg3vxX@initialcluster.syvfxbn.mongodb.net/?retryWrites=true&w=majority";
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.Promise = global.Promise;
 
 const storage = new GridFsStorage({

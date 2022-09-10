@@ -1,4 +1,4 @@
 {
     "mongoURI":
-      "mongodb+srv://vjanarthanan:50Q2d5e3pCRrPl2L@cluster0.7j0jet6.mongodb.net/?retryWrites=true&w=majority"
-  } 
+    "mongodb+srv://vjanarthanan:50Q2d5e3pCRrPl2L@cluster0.7j0jet6.mongodb.net/?retryWrites=true&w=majority"
+}

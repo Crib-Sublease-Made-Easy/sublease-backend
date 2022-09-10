@@ -1,5 +1,5 @@
 var axios = require('axios');
-
+var google_api_key = 'AIzaSyBbZGuUw4bqWirb1UWSzu9R6_r13rPj-eI'
 // @route GET 
 // @description List all locations given a query
 // @access Public
@@ -11,7 +11,7 @@ exports.places_autocomplete = (req, res, next) => {
             
         var config = {
             method: 'get',
-            url: `https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input=${query}&country:us&types=address&location=37.76999%2C-122.44696&radius=4000&strictbounds=true&key=AIzaSyBLCfWwROY3Bfvq_TOnDjX90wn2nCJF2nA`,
+            url: `https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input=${query}&country:us&types=address&location=37.76999%2C-122.44696&radius=4000&strictbounds=true&key=${google_api_key}`,
         };
         axios(config)
         .then(function (response) {
@@ -40,7 +40,7 @@ exports.reverse_geocoding = (req, res, next) => {
         
     var config = {
         method: 'get',
-        url: `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=AIzaSyBLCfWwROY3Bfvq_TOnDjX90wn2nCJF2nA`,
+        url: `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${google_api_key}`,
     };
     axios(config)
     .then(function (response) {
@@ -67,7 +67,7 @@ exports.geocoding = (req, res, next) => {
         
     var config = {
         method: 'get',
-        url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyBLCfWwROY3Bfvq_TOnDjX90wn2nCJF2nA`,
+        url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${google_api_key}`,
     };
     axios(config)
     .then(function (response) {
