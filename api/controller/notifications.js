@@ -2,8 +2,8 @@
 const User = require('../models/user');
 const request = require('request');
 require('dotenv').config();
-const API_KEY = 'NzFhOTU3MDQtMTkyZi00NDIxLWE5ZjQtNTU0YzRhMWIzNWIw';
-const ONESIGNAL_APP_ID = "440ad232-b229-4ea1-963b-5037d3ac9413";
+const API_KEY = 'YzgwMDZiNzEtN2I2My00ZjkxLWE3ODItZTM5YWEwYzE2MzIw';
+const ONESIGNAL_APP_ID = "a979dd6f-dffb-476e-8d0b-bb27863a3c55";
 const BASE_URL = "https://onesignal.com/api/v1";
 
 /**
