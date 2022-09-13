@@ -1,15 +1,15 @@
 const bcrypt = require("bcrypt");
 const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken");
-const authy = require('authy')('qEWM64dp45rovRszyc7s3dEe4cqvJEG5');
+const authy = require('authy')(process.env.AUTHY_ID);
 // Load Properies Model
 const User = require('../models/user');
 const router = require('express').Router();
 const config = require('config')
 const db = config.get('mongoURI')
 
-const sendBirdAppId = '14BD0602-4159-48D7-9292-66136C479B46';
-
+const sendBirdAppId = process.env.SENDBIRD_APP_ID
+const oneSignalAppId = process.env.ONESIGNAL_APP_ID
 
 // ------------ Image Specific Code----------
 const Grid = require('gridfs-stream');
@@ -165,7 +165,9 @@ exports.otp_step3 = (req, resp, next) => {
             },
             token: {
               accessToken: accessToken,
-              refreshToken: refreshToken
+              refreshToken: refreshToken,
+              sendBirdId: sendBirdAppId,
+              oneSignalId: oneSignalAppId
             }
           });
         })
@@ -290,7 +292,9 @@ exports.login_token = (req, resp, next) => {
             },
             token: {
               accessToken: accessToken,
-              refreshToken: refreshToken
+              refreshToken: refreshToken,
+              sendBirdId: sendBirdAppId,
+              oneSignalId: oneSignalAppId
             }
           });
         }
@@ -307,7 +311,7 @@ exports.login_token = (req, resp, next) => {
 };
 
 
-
+//Don't need validate user because who cares if someone else see's this information
 exports.user_get_favorites = (req, res, next) => {
   const token = req.headers.authorization.split(" ")[1];
   const decoded = jwt.verify(token, process.env.JWT_KEY);
@@ -360,7 +364,7 @@ exports.user_get_favorites = (req, res, next) => {
 }
 
 
-
+//INACTIVE SERVICE
 // @route GET /users
 // @description lists all of the users in the market
 // @access public
@@ -376,9 +380,18 @@ exports.user_get_all = (req, res, next) => {
 // @description Get single user by id
 // @access Public
 exports.user_get_one = (req, res, next) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwt.verify(token, process.env.JWT_KEY);
+  const userId = decoded.userId
+  if(userId == req.params.id ){
   User.findById(req.params.id)
     .then(user => res.json(user))
     .catch(err => res.status(404).json({ usersFound: 'No User found' }));
+  } else{
+    return res.status(401).json({
+      message: 'Auth failed'
+    });
+  }
 };
 
 // @route POST /users
@@ -394,21 +407,30 @@ exports.user_get_one = (req, res, next) => {
 // @description Update user
 // @access Public
 exports.user_modify = (req, res, next) => {
-  query = {}
-  if (req.body.school != undefined) {
-    query.school = req.body.school
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwt.verify(token, process.env.JWT_KEY);
+  const userId = decoded.userId
+  if(userId == req.params.id ){
+    query = {}
+    if (req.body.school != undefined) {
+      query.school = req.body.school
+    }
+    if (req.body.occupation != undefined) {
+      query.occupation = req.body.occupation
+    }
+    if (req.body.email != undefined) {
+      query.email = req.body.email
+    }
+    User.findByIdAndUpdate(req.params.id, query)
+      .then(user => res.json(user))
+      .catch(err =>
+        res.status(400).json({ error: 'Unable to update the Database' })
+      );
+  }else{
+    return res.status(401).json({
+      message: 'Auth failed'
+    });
   }
-  if (req.body.occupation != undefined) {
-    query.occupation = req.body.occupation
-  }
-  if (req.body.email != undefined) {
-    query.email = req.body.email
-  }
-  User.findByIdAndUpdate(req.params.id, query)
-    .then(user => res.json(user))
-    .catch(err =>
-      res.status(400).json({ error: 'Unable to update the Database' })
-    );
 };
 
 
@@ -417,7 +439,11 @@ exports.user_modify = (req, res, next) => {
 // @description Update user profile pic
 // @access Public
 exports.user_modify_profilePic = (req, res, next) => {
-  User.findByIdAndUpdate(req.params.id, { profilePic: 'https://crib-llc.herokuapp.com/users/profileImages/' + req.file.filename })
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwt.verify(token, process.env.JWT_KEY);
+  const userId = decoded.userId
+  if(userId == req.params.id ){
+    User.findByIdAndUpdate(req.params.id, { profilePic: 'https://crib-llc.herokuapp.com/users/profileImages/' + req.file.filename })
     .then(user => res.json({ 
       msg: "profile pic successfully changed", 
       profilePic: 'https://crib-llc.herokuapp.com/users/profileImages/' + req.file.filename
@@ -425,9 +451,14 @@ exports.user_modify_profilePic = (req, res, next) => {
     .catch(err =>
       res.status(400).json({ error: 'Unable to update the Database' })
     );
+  }else{
+    return res.status(401).json({
+      message: 'Auth failed'
+    });
+  }
 };
 
-
+//INACTIVE SERVICE
 // @route DELETE /users/:id
 // @description Delete user by id
 // @access Public

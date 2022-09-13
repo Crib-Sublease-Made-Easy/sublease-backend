@@ -631,13 +631,24 @@ exports.property_create = (req, res, next) => {
 // @route PUT /properties/:id
 // @description Update property
 // @access Public
-exports.property_modify = (req, res, next) => {
-
-  Property.findByIdAndUpdate(req.params.id, req.body)
-    .then(property => res.json({ msg: 'Updated successfully' }))
-    .catch(err =>
-      res.status(400).json({ error: 'Unable to update the Database' })
-    );
+exports.property_modify = async(req, res, next) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwt.verify(token, process.env.JWT_KEY);
+  const userId = decoded.userId
+    Property.findById(req.params.id)
+    .then(async property => {
+      if(userId == property.postedBy ){
+      Property.findByIdAndUpdate(req.params.id, req.body)
+        .then(prop => res.json({ msg: 'Updated successfully' }))
+        .catch(err =>
+          res.status(400).json({ error: 'Unable to update the Database' })
+        );
+      }else{
+        return res.status(401).json({
+          message: 'Auth failed'
+        });
+      }
+    })    
 };
 
 
@@ -645,6 +656,12 @@ exports.property_modify = (req, res, next) => {
 // @description Update property
 // @access Public
 exports.property_modify_image = (req, res, next) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwt.verify(token, process.env.JWT_KEY);
+  const userId = decoded.userId
+  Property.findById(req.params.id)
+  .then(async property => {
+    if(userId == property.postedBy ){
   if(req.body.changeIdx == 0){
     Property.findByIdAndUpdate(req.params.id, {"imgList.0" : 'https://crib-llc.herokuapp.com/properties/propertyImages/' + req.file.filename})
       .then(property => res.json({ 
@@ -691,6 +708,12 @@ exports.property_modify_image = (req, res, next) => {
       res.status(400).json({ error: err})
     );
   }
+}else{
+  return res.status(401).json({
+    message: 'Auth failed'
+  });
+}
+})
 };
 
 // @route DELETE /properties/:id

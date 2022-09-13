@@ -42,13 +42,13 @@ const upload = multer({ storage });
 router.post("/check", UserController.check_user);
 router.post("/authy", UserController.authy);
 router.post("/login", UserController.login_token);
-router.delete("/:id", UserController.user_delete);
+// router.delete("/:id", UserController.user_delete);
 router.put("/:id", checkAuth, UserController.user_modify);
 router.put("/profileImages/:id", upload.single('userImage'), checkAuth, UserController.user_modify_profilePic);
-router.get("/", UserController.user_get_all);
+// router.get("/", UserController.user_get_all);
 router.get("/:id",checkAuth, UserController.user_get_one);
 router.get("/profileImages/:filename", UserController.get_image);
-router.get("/favorites/all", UserController.user_get_favorites)
+router.get("/favorites/all", checkAuth, UserController.user_get_favorites)
 
 
 //OTP Code
