@@ -70,7 +70,7 @@ exports.send_message = async (req, res, next) => {
             en: 'New message from ' + sender.firstName,
           },
           };
-      
+        console.log("DEBUG", body)
         createNotication(body);
         console.log("TRANSFERING MESSAGE RETURN")
         res.json({status: "Notification Successfully Sent"})
