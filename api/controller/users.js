@@ -241,9 +241,7 @@ exports.authy = (req, res, next) => {
 // @access public
 exports.login_token = (req, resp, next) => {
   authy.verify(req.body.authy_id, token = String(req.body.token), function (err, res) {
-    console.log('ERR', err)
-    console.log('RES', res)
-
+    if(res!=undefined){
     if (String(res.success) == String(true)) {
       User.find({ phoneNumber: req.body.phoneNumber })
       .exec()
@@ -309,7 +307,14 @@ exports.login_token = (req, resp, next) => {
         });
       });
     }
+  } else{
+    resp.status(400).json({
+      error: err,
+      success: false
+    });
+  }
   })
+
 };
 
 
