@@ -1,5 +1,5 @@
 var axios = require('axios');
-var google_api_key = 'AIzaSyBbZGuUw4bqWirb1UWSzu9R6_r13rPj-eI'
+var google_api_key = process.env.GOOGLE_API_KEY;
 // @route GET 
 // @description List all locations given a query
 // @access Public
