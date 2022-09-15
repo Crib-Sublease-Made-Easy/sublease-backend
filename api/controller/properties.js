@@ -32,8 +32,9 @@ exports.get_image = async (req, res, next) => {
   readstream.on("error", function (err) {
     res.send("No image found with that title");
   });
-  }
+  
   readstream.pipe(res);
+}
 }
 //-----------Get an Image----------------
 // exports.get_image = async (req, res, next) => {
