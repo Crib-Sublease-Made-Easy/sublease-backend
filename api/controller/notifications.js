@@ -47,6 +47,9 @@ const createNotication = (body) => {
 // @description Send a notification for a chat message
 // @access Private
 exports.send_message = async (req, res, next) => {
+  if(req.body.senderId == undefined || req.body.participant1 == undefined || req.body.participant2 == undefined){
+    res.status(400).json({ error: 'Invalid Request'});
+  } else{
     console.log("TRANSFERING MESSAGE")
     let senderId = req.body.senderId
     let part1 = req.body.participant1
@@ -81,6 +84,7 @@ exports.send_message = async (req, res, next) => {
     }).catch(Exception=>
       res.status(404).json({ error: 'No such uuser' })
     )
+  }
 }; 
   
 
