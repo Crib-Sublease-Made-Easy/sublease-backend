@@ -241,7 +241,9 @@ exports.authy = (req, res, next) => {
 // @access public
 exports.login_token = (req, resp, next) => {
   authy.verify(req.body.authy_id, token = String(req.body.token), function (err, res) {
-    console.log(err)
+    console.log('ERR', err)
+    console.log('RES', res)
+
     if (String(res.success) == String(true)) {
       User.find({ phoneNumber: req.body.phoneNumber })
       .exec()
