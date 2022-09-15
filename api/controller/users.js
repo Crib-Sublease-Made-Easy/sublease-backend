@@ -56,6 +56,7 @@ exports.otp_step1 = (req, resp, next) => {
     authy.register_user(req.body.email, req.body.phoneNumber, function (err, res) {
       console.log(err)
       console.log(res)
+      if(res != undefined){
       if (String(res.success) === String(true)) {
         resp.status(201).json({
           response: res
@@ -66,6 +67,12 @@ exports.otp_step1 = (req, resp, next) => {
           response: res
         })
       }
+    }else{
+      resp.status(400).json({
+        error: err,
+        success: false
+      });
+    }
 
     });
   }
@@ -79,6 +86,7 @@ exports.otp_step2 = (req, resp, next) => {
 
   authy.request_sms(req.body.authy_id, force = true, function (err, res) {
     console.log(err)
+    if(res != undefined){
     if (String(res.success) === String("true")) {
       resp.status(201).json({
         messge: "SMS token was sent",
@@ -90,6 +98,12 @@ exports.otp_step2 = (req, resp, next) => {
         response: res
       })
     }
+  }else{
+    resp.status(400).json({
+      error: err,
+      success: false
+    });
+  }
 
   });
 }
