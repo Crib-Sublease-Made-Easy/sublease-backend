@@ -102,6 +102,7 @@ exports.otp_step3 = (req, resp, next) => {
   authy.verify(req.body.authy_id, token = String(req.body.token), function (err, res) {
     console.log(err)
     let _id = new mongoose.Types.ObjectId()
+    if(res == undefined){
     if (String(res.success) == String(true)) {
 
       const accessToken = jwt.sign(
@@ -179,11 +180,14 @@ exports.otp_step3 = (req, resp, next) => {
         });
 
     } else {
-      resp.status(401).json({
-        message: "Failed",
-      })
+      resp.status(400).json({
+        error: err,
+        success: false
+      });
     }
+  } else{
 
+  }
   });
 }
 
