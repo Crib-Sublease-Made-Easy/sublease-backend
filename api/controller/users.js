@@ -31,12 +31,14 @@ dbInstance.once('open', () => {
 //-----------Get an Image----------------
 exports.get_image = async (req, res, next) => {
   const file = await gfs.files.findOne({ filename: req.params.filename });
+  if(file !=null){
   const readstream = gridfsBucket.openDownloadStream(file._id);
   // var readstream = gfs.createReadStream({ filename: req.params.filename });
   readstream.on("error", function (err) {
     res.send("No image found with that title");
   });
   readstream.pipe(res);
+}
 }
 
 
