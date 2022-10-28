@@ -234,9 +234,7 @@ exports.check_user = (req, res, next) => {
 // @description login a user in the database and return access token
 // @access public
 exports.authy = (req, res, next) => {
-  if(req.body.phoneNumber == 999999999){
 
-  } else {
     User.find({ phoneNumber: req.body.phoneNumber })
       .exec()
       .then(user => {
@@ -256,7 +254,7 @@ exports.authy = (req, res, next) => {
           error: err
         });
       });
-  }
+  
 };
 
 
@@ -329,7 +327,7 @@ exports.login_token = (req, resp, next) => {
       });
     });
 
-    
+
   } else{
     authy.verify(req.body.authy_id, token = String(req.body.token), function (err, res) {
     if(res!=undefined){
