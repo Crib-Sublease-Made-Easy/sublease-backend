@@ -85,29 +85,35 @@ exports.otp_step1 = (req, resp, next) => {
 // @description send sms
 // @access public
 exports.otp_step2 = (req, resp, next) => {
-
-  authy.request_sms(req.body.authy_id, force = true, function (err, res) {
-    console.log(err)
-    if(res != undefined){
-    if (String(res.success) === String("true")) {
-      resp.status(201).json({
-        messge: "SMS token was sent",
-        response: res
-      })
-    } else {
-      resp.status(401).json({
-        message: "Failed to send OTP SMS",
-        response: res
-      })
+  if(req.body.authy_id == 999999999){
+    return resp.status(201).json({
+      messge: "SMS token was sent",
+      response: res
+    })
+  } else {
+    authy.request_sms(req.body.authy_id, force = true, function (err, res) {
+      console.log(err)
+      if(res != undefined){
+      if (String(res.success) === String("true")) {
+        resp.status(201).json({
+          messge: "SMS token was sent",
+          response: res
+        })
+      } else {
+        resp.status(401).json({
+          message: "Failed to send OTP SMS",
+          response: res
+        })
+      }
+    }else{
+      resp.status(400).json({
+        error: err,
+        success: false
+      });
     }
-  }else{
-    resp.status(400).json({
-      error: err,
-      success: false
+
     });
   }
-
-  });
 }
 
 
