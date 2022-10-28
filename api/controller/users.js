@@ -88,7 +88,6 @@ exports.otp_step2 = (req, resp, next) => {
   if(req.body.authy_id == 999999999){
     return resp.status(201).json({
       messge: "SMS token was sent",
-      response: res
     })
   } else {
     authy.request_sms(req.body.authy_id, force = true, function (err, res) {
