@@ -45,6 +45,9 @@ app.use('/notifications', notifications);
 const contact = require('./api/routes/contact')
 app.use('/contact', contact);
 
+const website = require('./api/routes/website')
+app.use('/web', website);
+
 // const chat = require('./api/routes/chat')
 // app.use('/chat', chat);
 
