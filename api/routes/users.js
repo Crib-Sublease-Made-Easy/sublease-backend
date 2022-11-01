@@ -10,12 +10,7 @@ const path = require("path");
 const crypto = require("crypto");
 const { GridFsStorage } = require("multer-gridfs-storage");
 
-const MONGODB_USERNAME = process.env.MONGO_USER;
-const MONGODB_PASSWORD = process.env.MONGO_PASSWORD;
-
 const dbInstance = mongoose.connection;
-const mongoURI = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@initialcluster.syvfxbn.mongodb.net/?retryWrites=true&w=majority`;
-// mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.Promise = global.Promise;
 
 const storage = new GridFsStorage({
