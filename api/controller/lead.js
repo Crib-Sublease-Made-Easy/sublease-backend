@@ -1,4 +1,4 @@
-const Contact = require('../models/contact');
+const Lead = require('../models/lead');
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
 
@@ -15,10 +15,10 @@ exports.collect_leads = (req, res, next) => {
   if(req.body.email == undefined){
     res.status(400).json({ error: 'Unable to send contact', errRaw: err });
   } else{
-    const contact = new Contact({
+    const lead = new Lead({
       email: req.body.email,
     });
-    contact
+    lead
       .save()
       .then(async (cont) => {
         res.json({ msg: 'Email Stored Successfully' })
