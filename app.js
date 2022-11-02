@@ -45,6 +45,8 @@ app.use('/notifications', notifications);
 const contact = require('./api/routes/contact')
 app.use('/contact', contact);
 
+const contact = require('./api/routes/leads')
+app.use('/leads', contact);
 // const chat = require('./api/routes/chat')
 // app.use('/chat', chat);
 
