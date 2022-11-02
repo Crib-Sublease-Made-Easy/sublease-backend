@@ -5,11 +5,11 @@ const jwt = require('jsonwebtoken');
 
 
 
-//************************* PROPERTY CONTROLLER ***************************//
+//************************* LEADS CONTROLLER ***************************//
 
 
-// @route POST /properties
-// @description post property
+// @route POST /leads
+// @description post leads
 // @access Public
 exports.collect_leads = (req, res, next) => {
   if(req.body.email == undefined){
@@ -26,3 +26,15 @@ exports.collect_leads = (req, res, next) => {
       .catch(err => res.status(400).json({ error: 'Unable to store email', errRaw: err }));
   }
 };
+
+
+// @route GET /leads
+// @description get leads
+// @access Public
+exports.get_leads = (req, res, next) => {
+
+    Lead.find()
+    .then(leads => res.json(leads))
+    .catch(err => res.status(404).json({ leadsFound: 'none' }));
+    
+  };

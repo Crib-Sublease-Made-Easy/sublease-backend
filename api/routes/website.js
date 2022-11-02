@@ -4,5 +4,6 @@ const WebsiteController = require('../controller/lead');
 
 
 router.post("/leads", WebsiteController.collect_leads);
+router.get("/leads", WebsiteController.get_leads);
 
 module.exports = router; 
