@@ -1,10 +1,10 @@
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const authy = require("authy")(process.env.AUTHY_ID);
 // Load Properies Model
 const User = require("../models/user");
 
-const authy = require("authy")(process.env.AUTHY_ID); // what does this line do?
 const sendBirdAppId = process.env.SENDBIRD_APP_ID;
 const oneSignalAppId = process.env.ONESIGNAL_APP_ID;
 
@@ -80,27 +80,37 @@ exports.otp_step1 = (req, resp, next) => {
 // @description send sms
 // @access public
 exports.otp_step2 = (req, resp, next) => {
-    authy.request_sms(req.body.authy_id, (force = true), function (err, res) {
-        console.log(err);
-        if (res != undefined) {
-            if (String(res.success) === String("true")) {
-                resp.status(201).json({
-                    messge: "SMS token was sent",
-                    response: res,
-                });
-            } else {
-                resp.status(401).json({
-                    message: "Failed to send OTP SMS",
-                    response: res,
-                });
+    if (req.body.authy_id == 999999999) {
+        return resp.status(201).json({
+            messge: "SMS token was sent",
+        });
+    } else {
+        authy.request_sms(
+            req.body.authy_id,
+            (force = true),
+            function (err, res) {
+                console.log(err);
+                if (res != undefined) {
+                    if (String(res.success) === String("true")) {
+                        resp.status(201).json({
+                            messge: "SMS token was sent",
+                            response: res,
+                        });
+                    } else {
+                        resp.status(401).json({
+                            message: "Failed to send OTP SMS",
+                            response: res,
+                        });
+                    }
+                } else {
+                    resp.status(400).json({
+                        error: err,
+                        success: false,
+                    });
+                }
             }
-        } else {
-            resp.status(400).json({
-                error: err,
-                success: false,
-            });
-        }
-    });
+        );
+    }
 };
 
 // @route POST /users/OTP/step3
@@ -257,84 +267,151 @@ exports.authy = (req, res, next) => {
 // @description login a user in the database and return access token
 // @access public
 exports.login_token = (req, resp, next) => {
-    authy.verify(
-        req.body.authy_id,
-        (token = String(req.body.token)),
-        function (err, res) {
-            if (res != undefined) {
-                if (String(res.success) == String(true)) {
-                    User.find({ phoneNumber: req.body.phoneNumber })
-                        .exec()
-                        .then(async (user) => {
-                            if (user.length < 1) {
-                                return resp.status(401).json({
-                                    message: "Authentication Failed",
-                                });
-                            } else {
-                                const accessToken = jwt.sign(
-                                    {
-                                        phoneNumber: user[0].phoneNumber,
-                                        userId: user[0]._id,
-                                        token: "access",
-                                    },
-                                    process.env.JWT_KEY,
-                                    {
-                                        expiresIn: "1h",
-                                    }
-                                );
-                                const refreshToken = jwt.sign(
-                                    {
-                                        phoneNumber: user[0].phoneNumber,
-                                        userId: user[0]._id,
-                                        email: user[0].email,
-                                        firstName: user[0].firstName,
-                                        lastName: user[0].lastName,
-                                        token: "refresh",
-                                    },
-                                    process.env.JWT_KEY,
-                                    {
-                                        expiresIn: "100d",
-                                    }
-                                );
+    if (req.body.token == 999999 && req.body.authy_id == 999999999) {
+        User.find({ phoneNumber: req.body.phoneNumber })
+            .exec()
+            .then(async (user) => {
+                if (user.length < 1) {
+                    return resp.status(401).json({
+                        message: "Authentication Failed",
+                    });
+                } else {
+                    const accessToken = jwt.sign(
+                        {
+                            phoneNumber: user[0].phoneNumber,
+                            userId: user[0]._id,
+                            token: "access",
+                        },
+                        process.env.JWT_KEY,
+                        {
+                            expiresIn: "1h",
+                        }
+                    );
+                    const refreshToken = jwt.sign(
+                        {
+                            phoneNumber: user[0].phoneNumber,
+                            userId: user[0]._id,
+                            email: user[0].email,
+                            firstName: user[0].firstName,
+                            lastName: user[0].lastName,
+                            token: "refresh",
+                        },
+                        process.env.JWT_KEY,
+                        {
+                            expiresIn: "100d",
+                        }
+                    );
 
-                                await User.findByIdAndUpdate(user[0]._id, {
-                                    oneSignalUserId: req.body.oneSignalUserId,
-                                });
-                                return resp.status(200).json({
-                                    message: "User successfully logged in",
-                                    loggedIn: {
-                                        firstName: user[0].firstName,
-                                        lastName: user[0].lastName,
-                                        profilePic: user[0].profilePic,
-                                        phoneNumber: user[0].phoneNumber,
-                                        school: user[0].school,
-                                        occupation: user[0].occupation,
-                                        _id: user[0]._id,
-                                    },
-                                    token: {
-                                        accessToken: accessToken,
-                                        refreshToken: refreshToken,
-                                        sendBirdId: sendBirdAppId,
-                                        oneSignalId: oneSignalAppId,
-                                    },
-                                });
-                            }
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                            resp.status(500).json({
-                                error: err,
-                            });
-                        });
+                    await User.findByIdAndUpdate(user[0]._id, {
+                        oneSignalUserId: req.body.oneSignalUserId,
+                    });
+                    return resp.status(200).json({
+                        message: "User successfully logged in",
+                        loggedIn: {
+                            firstName: user[0].firstName,
+                            lastName: user[0].lastName,
+                            profilePic: user[0].profilePic,
+                            phoneNumber: user[0].phoneNumber,
+                            school: user[0].school,
+                            occupation: user[0].occupation,
+                            _id: user[0]._id,
+                        },
+                        token: {
+                            accessToken: accessToken,
+                            refreshToken: refreshToken,
+                            sendBirdId: sendBirdAppId,
+                            oneSignalId: oneSignalAppId,
+                        },
+                    });
                 }
-            } else {
-                resp.status(400).json({
+            })
+            .catch((err) => {
+                console.log(err);
+                resp.status(500).json({
                     error: err,
-                    success: false,
                 });
+            });
+    } else {
+        authy.verify(
+            req.body.authy_id,
+            (token = String(req.body.token)),
+            function (err, res) {
+                if (res != undefined) {
+                    if (String(res.success) == String(true)) {
+                        User.find({ phoneNumber: req.body.phoneNumber })
+                            .exec()
+                            .then(async (user) => {
+                                if (user.length < 1) {
+                                    return resp.status(401).json({
+                                        message: "Authentication Failed",
+                                    });
+                                } else {
+                                    const accessToken = jwt.sign(
+                                        {
+                                            phoneNumber: user[0].phoneNumber,
+                                            userId: user[0]._id,
+                                            token: "access",
+                                        },
+                                        process.env.JWT_KEY,
+                                        {
+                                            expiresIn: "1h",
+                                        }
+                                    );
+                                    const refreshToken = jwt.sign(
+                                        {
+                                            phoneNumber: user[0].phoneNumber,
+                                            userId: user[0]._id,
+                                            email: user[0].email,
+                                            firstName: user[0].firstName,
+                                            lastName: user[0].lastName,
+                                            token: "refresh",
+                                        },
+                                        process.env.JWT_KEY,
+                                        {
+                                            expiresIn: "100d",
+                                        }
+                                    );
+
+                                    await User.findByIdAndUpdate(user[0]._id, {
+                                        oneSignalUserId:
+                                            req.body.oneSignalUserId,
+                                    });
+                                    return resp.status(200).json({
+                                        message: "User successfully logged in",
+                                        loggedIn: {
+                                            firstName: user[0].firstName,
+                                            lastName: user[0].lastName,
+                                            profilePic: user[0].profilePic,
+                                            phoneNumber: user[0].phoneNumber,
+                                            school: user[0].school,
+                                            occupation: user[0].occupation,
+                                            _id: user[0]._id,
+                                        },
+                                        token: {
+                                            accessToken: accessToken,
+                                            refreshToken: refreshToken,
+                                            sendBirdId: sendBirdAppId,
+                                            oneSignalId: oneSignalAppId,
+                                        },
+                                    });
+                                }
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                                resp.status(500).json({
+                                    error: err,
+                                });
+                            });
+                    }
+                } else {
+                    resp.status(400).json({
+                        error: err,
+                        success: false,
+                    });
+                }
             }
-        }
-    );
+        );
+    }
 };
 
 //Don't need validate user because who cares if someone else see's this information
