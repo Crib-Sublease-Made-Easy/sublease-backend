@@ -34,7 +34,14 @@ exports.collect_leads = (req, res, next) => {
 exports.get_leads = (req, res, next) => {
 
     Lead.find()
-    .then(leads => res.json(leads))
+    .then(leads => {
+        res.json(
+            {
+                count: leads.length,    
+                leads
+            })
+        }
+    )
     .catch(err => res.status(404).json({ leadsFound: 'none' }));
     
   };
