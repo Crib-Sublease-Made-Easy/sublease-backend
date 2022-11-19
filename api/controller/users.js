@@ -574,16 +574,16 @@ exports.user_modify_profilePic = (req, res, next) => {
 // @route DELETE /users/:id
 // @description Delete user by id
 // @access Public
-exports.user_delete = (req, res, next) => {
+  exports.user_delete = (req, res, next) => {
     User.findByIdAndRemove(req.params.id, req.body)
         .then((user) => res.json({ mgs: "User deleted successfully" }))
         .catch((err) => res.status(404).json({ error: "No such a user" }));
     
     authy.delete_user(req.body.authyID, function (err, res) {
-    console.log(res.message);
+        console.log(res.message);
+        console.log("ERROR" , err);
+    })
     return res;
-    }).then((res) => res.json({ mgs: "User deleted successfully" }))
-    .catch((err) => res.status(404).json({ error: "No such a user" }));
-};
+  };
 
 
