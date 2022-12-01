@@ -99,7 +99,12 @@ exports.geocoding_all = (req, res, next) => {
     .then(function (response) {
         let JSONdata = response.data
         console.log(JSONdata)
-        res.json(JSONdata.results[0])      
+        if(JSONdata.results.length() > 0){
+             res.json(JSONdata.results[0])    
+        }
+        else{
+             res.status(500).json({ error: 'invalid query' }) 
+        }
     })
     .catch(function (error) {
         console.log(error);
