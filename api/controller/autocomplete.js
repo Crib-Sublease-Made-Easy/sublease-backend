@@ -81,3 +81,29 @@ exports.geocoding = (req, res, next) => {
     });
     }
 };
+
+// @route GET 
+// @description Given address return lat and long
+// @access Public
+exports.geocoding_new = (req, res, next) => {
+    let address = req.query.address    
+    if(address == undefined){
+        res.json([])
+    } else{  
+        
+    var config = {
+        method: 'get',
+        url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${google_api_key}`,
+    };
+    axios(config)
+    .then(function (response) {
+        let JSONdata = response.data
+        console.log(JSONdata)
+        res.json(JSONdata.results[0])      
+    })
+    .catch(function (error) {
+        console.log(error);
+        res.status(404).json({ error: 'invalid query' })
+    });
+    }
+};
