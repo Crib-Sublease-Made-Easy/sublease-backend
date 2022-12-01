@@ -85,8 +85,8 @@ exports.geocoding = (req, res, next) => {
 // @route GET 
 // @description Given address return lat and long
 // @access Public
-exports.geocoding_all = (req, res, next) => {
-    let address = req.params.address    
+exports.geocoding = (req, res, next) => {
+    let address = req.query.address    
     if(address == undefined){
         res.json([])
     } else{  
@@ -98,6 +98,7 @@ exports.geocoding_all = (req, res, next) => {
     axios(config)
     .then(function (response) {
         let JSONdata = response.data
+        console.log(JSONdata)
         res.json(JSONdata.results[0])      
     })
     .catch(function (error) {
