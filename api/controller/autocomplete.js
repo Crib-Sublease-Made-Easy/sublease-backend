@@ -85,7 +85,7 @@ exports.geocoding = (req, res, next) => {
 // @route GET 
 // @description Given address return lat and long
 // @access Public
-exports.geocoding = (req, res, next) => {
+exports.geocoding_all = (req, res, next) => {
     let address = req.query.address    
     if(address == undefined){
         res.json([])
