@@ -97,6 +97,7 @@ exports.geocoding_new = (req, res, next) => {
     };
     axios(config)
     .then(function (response) {
+        console.log(response)
         let JSONdata = response.data
         console.log(JSONdata)
         res.json(JSONdata.results[0])      
