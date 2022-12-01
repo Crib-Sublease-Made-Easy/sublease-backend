@@ -106,7 +106,14 @@ const PropertySchema = new mongoose.Schema (
             type: Boolean,
             required: true
         },
-    
+        securityDeposit: {
+            type: Number,
+            required: false
+        },
+        availabilityFlexibility: {
+            type: Boolean,
+            required: false
+        },
     })
     PropertySchema.index({ "loc": "2dsphere" });
 

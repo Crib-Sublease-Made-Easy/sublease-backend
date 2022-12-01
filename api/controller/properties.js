@@ -600,6 +600,8 @@ exports.property_create = (req, res, next) => {
     description: req.body.description,
     bed: req.body.bed,
     bath: req.body.bath,
+    securityDeposit: req.body.securityDeposit,
+    availabilityFlexibility: req.body.availabilityFlexibility,
     loc: {
       type: "Point",
       coordinates: coor,
