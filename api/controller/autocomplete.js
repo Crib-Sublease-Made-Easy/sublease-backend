@@ -99,7 +99,9 @@ exports.geocoding_all = (req, res, next) => {
     .then(function (response) {
         let JSONdata = response.data
         console.log(JSONdata)
-        res.json(JSONdata.results[0])      
+       
+        res.json(JSONdata.results[0])    
+       
     })
     .catch(function (error) {
         console.log(error);
