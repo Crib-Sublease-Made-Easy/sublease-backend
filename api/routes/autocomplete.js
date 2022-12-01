@@ -6,5 +6,7 @@ router.get("/places/:query", AutocompleteController.places_autocomplete);
 router.get("/places/", AutocompleteController.places_autocomplete);
 router.get("/reversegeocoding", AutocompleteController.reverse_geocoding);
 router.get("/geocoding", AutocompleteController.geocoding);
+router.get("/geocoding_new", AutocompleteController.geocoding_new);
+
 
 module.exports = router;
