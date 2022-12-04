@@ -47,7 +47,7 @@ router.put(
     checkAuth,
     UserController.user_modify_profilePic
 );
-// router.get("/", UserController.user_get_all);
+router.get("/", UserController.user_get_all);
 router.get("/:id", checkAuth, UserController.user_get_one);
 router.get("/profileImages/:filename", UserController.get_image);
 router.get("/favorites/all", checkAuth, UserController.user_get_favorites);
