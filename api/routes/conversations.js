@@ -6,7 +6,7 @@ const ConversationsController = require("../controller/conversations");
 router.get(
     "/:user_id/:page_number",
     checkAuth,
-    ConversationsController.user_get_one
+    ConversationsController.conversation_get_page
 );
 
 module.exports = router;

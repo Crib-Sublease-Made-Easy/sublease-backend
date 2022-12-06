@@ -3,7 +3,7 @@ const User = require("../models/users");
 // @route GET /conversations/:user_id/:page_number
 // @description Get conversations for a user
 // @access Public
-exports.user_get_one = (req, res, next) => {
+exports.conversation_get_page = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_KEY);
     const userId = decoded.userId;
