@@ -52,6 +52,11 @@ router.post(
     checkAuth,
     PropertyController.property_create
 );
+router.post(
+    "/",
+    upload.array("propertyImages", 5),
+    PropertyController.property_scraped
+);
 router.get("/", PropertyController.property_get_all);
 router.get("/pins", PropertyController.property_pins);
 router.get("/propertyViewed/:id", PropertyController.increment_view_count);
