@@ -53,7 +53,7 @@ router.post(
     PropertyController.property_create
 );
 router.post(
-    "/",
+    "/scraped",
     upload.array("propertyImages", 5),
     PropertyController.property_scraped
 );
