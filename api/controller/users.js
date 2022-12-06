@@ -438,25 +438,34 @@ exports.user_get_favorites = (req, res, next) => {
             });
             let props = await Promise.all(
                 propertiesArray.map(async (p) => {
-                    let d = await User.findById(p.postedBy).then(
-                        async (user) => {
-                            let q = p;
-                            postedUser = {};
-                            postedUser.firstName = user._id;
-                            postedUser.firstName = user.firstName;
-                            postedUser.lastName = user.lastName;
-                            postedUser.profilePic = user.profilePic;
-                            postedUser.occupation = user.occupation;
-                            postedUser.school = user.school;
-                            q.pos = postedUser;
-                            console.log("P", q);
-                            return postedUser;
-                        }
-                    );
-                    let q = {};
-                    q.propertyInfo = p;
-                    q.userInfo = d;
-                    return q;
+                    if(p.postedBy == null){
+                        let d = {};
+                        let q = {};
+                        q.propertyInfo = p;
+                        q.userInfo = d;
+                        return q;
+                    }
+                    else{
+                        let d = await User.findById(p.postedBy).then(
+                            async (user) => {
+                                let q = p;
+                                postedUser = {};
+                                postedUser.firstName = user._id;
+                                postedUser.firstName = user.firstName;
+                                postedUser.lastName = user.lastName;
+                                postedUser.profilePic = user.profilePic;
+                                postedUser.occupation = user.occupation;
+                                postedUser.school = user.school;
+                                q.pos = postedUser;
+                                console.log("P", q);
+                                return postedUser;
+                            }
+                        );
+                        let q = {};
+                        q.propertyInfo = p;
+                        q.userInfo = d;
+                        return q;
+                    }
                 })
             );
             // console.log("END", props)
