@@ -633,6 +633,53 @@ exports.property_create = (req, res, next) => {
     .catch(err => res.status(400).json({ error: 'Unable to add this property', errRaw: err }));
 };
 
+// @route POST /properties
+// @description post property with scraped data
+// @access Public
+exports.property_scraped = (req, res, next) => {
+//   const token = req.headers.authorization.split(" ")[1];
+//   const decoded = jwt.verify(token, process.env.JWT_KEY);
+  console.log(JSON.stringify(req.files))
+  propImgList = []
+  for (let i = 0; i < req.files.length; i++) {
+    propImgList[i] = ('https://crib-llc.herokuapp.com/properties/propertyImages/' + req.files[i].filename)
+  }
+  var coor = []
+  coor[0] = req.body.longitude
+  coor[1] = req.body.latitude
+  const property = new Property({
+    //_id: new mongoose.Types.ObjectId(),
+    title: req.body.title,
+    type: req.body.type,
+    timePosted: req.body.timePosted,
+    postedBy: null,
+    price: req.body.price,
+    availableFrom: req.body.availableFrom,
+    availableTo: req.body.availableTo,
+    imgList: propImgList,
+    amenities: req.body.amenities,
+    description: req.body.description,
+    bed: req.body.bed,
+    bath: req.body.bath,
+    securityDeposit: req.body.securityDeposit,
+    availabilityFlexibility: req.body.availabilityFlexibility,
+    loc: {
+      type: "Point",
+      coordinates: coor,
+      streetAddr: req.body.streetAddr,
+      secondaryTxt: req.body.secondaryTxt,
+    },
+    deleted: false,
+    numberOfViews: 0
+  });
+  property
+  .save()
+  .then(async (property) => {
+    res.json({ msg: 'property added successfully' })
+  })
+  .catch(err => res.status(400).json({ error: 'Unable to add this property', errRaw: err }));
+};
+
 // @route PUT /properties/:id
 // @description Update property
 // @access Public
