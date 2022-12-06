@@ -244,24 +244,37 @@ exports.property_query = (req, res, next) => {
       let arr = properties
       let i = 0;
       let props = await Promise.all(properties.map(async p => {
-          let d = await User.findById(p.postedBy).then(async user => {
-            let q = p
-            postedUser = {}
-            postedUser.firstName = user._id;
-            postedUser.firstName = user.firstName;
-            postedUser.lastName = user.lastName;
-            postedUser.profilePic = user.profilePic;
-            postedUser.occupation = user.occupation;
-            postedUser.school = user.school;
-            q.pos = postedUser
-            console.log("P", q)
-            return postedUser
+            if(p.postedBy != null){
+              let d = await User.findById(p.postedBy).then(async user => {
+              let q = p
+
+              postedUser = {}
+              postedUser.firstName = user._id;
+              postedUser.firstName = user.firstName;
+              postedUser.lastName = user.lastName;
+              postedUser.profilePic = user.profilePic;
+              postedUser.occupation = user.occupation;
+              postedUser.school = user.school;
+              q.pos = postedUser
+              console.log("P", q)
+              return postedUser
+
+              })
+              let q = {}
+              q.propertyInfo = p
+              q.userInfo = d
+              return q
+            }
+            else{
+              let q = {}
+              let d = {}
+              q.propertyInfo = p
+              q.userInfo = d
+              return q
+            }
             
-            })
-            let q = {}
-            q.propertyInfo = p
-            q.userInfo = d
-            return q
+       
+            
         }))
         // console.log("END", props)
         res.json(props)
