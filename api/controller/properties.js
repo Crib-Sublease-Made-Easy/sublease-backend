@@ -512,7 +512,7 @@ exports.property_pins = (req, res, next) => {
 
   query.deleted = false
   console.log("PINSQUERY", query)
-  Property.find(query, '_id loc price imgList availableFrom availableTo bed bath postedBy title')
+  Property.find(query, '_id loc price imgList availableFrom availableTo bed bath postedBy title amenities')
     .then(proprties => res.json(proprties))
     .catch(err => res.status(404).json({ propertiesFound: 'none', error: err }));
 
