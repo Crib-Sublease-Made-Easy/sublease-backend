@@ -55,6 +55,7 @@ router.post(
 router.post(
     "/scraped",
     upload.array("propertyImages", 5),
+    upload.single("userImage"),
     PropertyController.property_scraped
 );
 router.get("/", PropertyController.property_get_all);
