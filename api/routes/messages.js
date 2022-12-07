@@ -5,7 +5,7 @@ const MessagesController = require("../controller/messages");
 
 router.get(
     "/:conversation_id/:page_number",
-    MessagessController.message_get_page
+    MessagesController.message_get_page
 );
 
 module.exports = router;
