@@ -823,10 +823,9 @@ exports.sublease_successful = async(req, res, next) => {
   const decoded = jwt.verify(token, process.env.JWT_KEY);
   const userId = decoded.userId
   const propId = req.body.propId
-
   const completed_obj = new Completed(
     { propId: propId,  
-      date: Date(),
+      time: Date(),
       userId: userId
     });
   completed_obj
