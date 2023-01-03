@@ -74,5 +74,7 @@ router.put(
 );
 router.delete("/:id", checkAuth, PropertyController.property_delete);
 router.get("/propertyImages/:filename", PropertyController.get_image);
+router.post("/subleased", PropertyController.sublease_successful);
+
 
 module.exports = router;

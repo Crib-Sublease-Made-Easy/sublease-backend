@@ -1,5 +1,6 @@
 // Load Properies Model
 const Property = require('../models/property');
+const Completed = require('../models/completed');
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
 
@@ -812,4 +813,26 @@ exports.property_delete = async (req, res, next) => {
     res.status(400).json({ error: 'Unable to update the Database' })
   );
   return res.json({ msg: 'Updated successfully' })
+};
+
+// @route PUT /properties/:id
+// @description Update property
+// @access Public
+exports.sublease_successful = async(req, res, next) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwt.verify(token, process.env.JWT_KEY);
+  const userId = decoded.userId
+  const propId = req.body.propId
+
+  const completed_obj = new Completed(
+    { propId: propId,  
+      date: Date(),
+      userId: userId
+    });
+  completed_obj
+  .save()
+  .then(async (property) => {
+    res.json({ msg: 'Property was successfully subleased' })
+  })
+  .catch(err => res.status(400).json({ error: 'Unable to sublease property ', errRaw: err }));
 };
