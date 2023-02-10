@@ -52,6 +52,7 @@ router.post(
     checkAuth,
     PropertyController.property_create
 );
+
 router.post(
     "/scraped",
     upload.array("propertyImages", 5),

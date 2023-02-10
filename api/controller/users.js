@@ -80,6 +80,7 @@ exports.otp_step1 = (req, resp, next) => {
 // @description send sms
 // @access public
 exports.otp_step2 = (req, resp, next) => {
+    //DEMO ACCOUNT
     if (req.body.authy_id == 999999999) {
         return resp.status(201).json({
             messge: "SMS token was sent",

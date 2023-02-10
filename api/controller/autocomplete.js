@@ -1,5 +1,7 @@
 var axios = require('axios');
 var google_api_key = process.env.GOOGLE_API_KEY;
+const UserSearches = require('../models/user_searches');
+
 // @route GET 
 // @description List all locations given a query
 // @access Public
@@ -73,7 +75,16 @@ exports.geocoding = (req, res, next) => {
     .then(function (response) {
         let JSONdata = response.data
         console.log(JSONdata)
+        const usersearches = new UserSearches({
+            userId: req.body.userId,
+            address: req.body.address,
+            coords: JSONdata.results[0].geometry.location,
+          });
+          usersearches
+            .save()
+
         res.json(JSONdata.results[0].geometry.location)      
+        
     })
     .catch(function (error) {
         console.log(error);
