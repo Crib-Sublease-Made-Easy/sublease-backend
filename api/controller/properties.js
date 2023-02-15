@@ -653,9 +653,10 @@ exports.property_create = (req, res, next) => {
 exports.property_scraped = (req, res, next) => {
 //   const token = req.headers.authorization.split(" ")[1];
 //   const decoded = jwt.verify(token, process.env.JWT_KEY);
+propImgList = []
+
   if(req.files != undefined){
     console.log(JSON.stringify(req.files))
-    propImgList = []
     for (let i = 0; i < req.files.length; i++) {
       propImgList[i] = ('https://crib-llc.herokuapp.com/properties/propertyImages/' + req.files[i].filename)
     }
