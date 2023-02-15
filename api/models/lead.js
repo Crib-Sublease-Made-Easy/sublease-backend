@@ -7,4 +7,4 @@ const LeadSchema = new mongoose.Schema ({
     }
 })
 
-module.exports = Contact = mongoose.model('lead', LeadSchema) 
+module.exports = Lead = mongoose.model('lead', LeadSchema) 

@@ -15,4 +15,4 @@ const UserSearchesSchema = new mongoose.Schema ({
     }
 })
 
-module.exports = UserSearchesSchema = mongoose.model('completed', UserSearchesSchema) 
+module.exports = UserSearches = mongoose.model('userSearches', UserSearchesSchema) 
