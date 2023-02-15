@@ -81,7 +81,7 @@ exports.geocoding = (req, res, next) => {
         console.log(JSONdata)
         const usersearches = new UserSearches({
             userId: userId,
-            address: req.body.address,
+            address: address,
             coords: JSONdata.results[0].geometry.location,
           });
           usersearches
