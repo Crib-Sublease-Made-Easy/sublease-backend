@@ -686,6 +686,8 @@ exports.property_scraped = (req, res, next) => {
     deleted: false,
     numberOfViews: 0
   });
+  console.log("PROPERTY OBJECT")
+  console.log(property)
   property
   .save()
   .then(async (property) => {
