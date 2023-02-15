@@ -63,6 +63,10 @@ exports.reverse_geocoding = (req, res, next) => {
 // @access Public
 exports.geocoding = (req, res, next) => {
     let address = req.query.address    
+    userId = null
+    if(req.body.userId == null || req.body.userId == undefined){
+        userId = "NULL"
+    }
     if(address == undefined){
         res.json([])
     } else{  
@@ -76,7 +80,7 @@ exports.geocoding = (req, res, next) => {
         let JSONdata = response.data
         console.log(JSONdata)
         const usersearches = new UserSearches({
-            userId: req.body.userId,
+            userId: userId,
             address: req.body.address,
             coords: JSONdata.results[0].geometry.location,
           });
