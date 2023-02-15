@@ -54,11 +54,17 @@ router.post(
 );
 
 router.post(
-    "/scraped",
+    "/scraped/images",
     upload.array("propertyImages", 5),
     upload.single("userImage"),
+    PropertyController.property_scraped_images
+);
+
+router.post(
+    "/scraped",
     PropertyController.property_scraped
 );
+
 router.get("/", PropertyController.property_get_all);
 router.get("/pins", PropertyController.property_pins);
 router.get("/propertyViewed/:id", PropertyController.increment_view_count);
