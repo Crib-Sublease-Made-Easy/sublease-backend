@@ -662,7 +662,7 @@ exports.property_scraped = (req, res, next) => {
   coor[0] = req.body.longitude
   coor[1] = req.body.latitude
   console.log("COORDS: " + coor)
-  console.log("BODY: " + req.body)
+  console.log("BODY: " + JSON.stringify(req.body))
 
   const property = new Property({
     //_id: new mongoose.Types.ObjectId(),
