@@ -115,7 +115,7 @@ const PropertySchema = new mongoose.Schema (
             required: false
         },
     })
-    PropertySchema.index({ "loc": "2dsphere" });
+    PropertySchema.index({ "loc.coordinates": "2dsphere" });
 
 
 module.exports = Property = mongoose.model('propertytests', PropertySchema)
