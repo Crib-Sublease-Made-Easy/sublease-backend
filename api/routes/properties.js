@@ -64,7 +64,7 @@ router.get("/pins", PropertyController.property_pins);
 router.get("/propertyViewed/:id", PropertyController.increment_view_count);
 router.get("/pins", PropertyController.property_pins);
 router.get("/query", PropertyController.property_query);
-router.post("/subleased", checkAuth, PropertyController.sublease_successful);
+router.post("/internal/subleased", checkAuth, PropertyController.sublease_successful);
 router.post("/favorite", checkAuth, PropertyController.property_favorite);
 router.post("/:id", PropertyController.property_get_one);
 router.put("/:id", checkAuth, PropertyController.property_modify);
