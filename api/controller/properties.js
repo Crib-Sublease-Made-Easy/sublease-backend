@@ -670,7 +670,7 @@ propImgList = []
 exports.property_scraped = (req, res, next) => {
   //   const token = req.headers.authorization.split(" ")[1];
   //   const decoded = jwt.verify(token, process.env.JWT_KEY);
-      propImgList = req.body.propImgs
+      propImgList = [req.body.propImg0, req.body.propImg1, req.body.propImg2, req.body.propImg3]
       var coor = []
       coor[0] = req.body.longitude
       coor[1] = req.body.latitude
