@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const UserSearchesSchema = new mongoose.Schema ({
+    time : {
+        type: Date,
+        required: true
+    },
     userId: {
         type: String,
         required: true

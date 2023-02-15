@@ -80,6 +80,7 @@ exports.geocoding = (req, res, next) => {
         let JSONdata = response.data
         console.log(JSONdata)
         const usersearches = new UserSearches({
+            time: new Date(),
             userId: userId,
             address: address,
             coords: JSONdata.results[0].geometry.location,
