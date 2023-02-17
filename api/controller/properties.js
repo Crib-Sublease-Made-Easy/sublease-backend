@@ -1,6 +1,7 @@
 // Load Properies Model
 const Property = require('../models/property');
 const Completed = require('../models/completed');
+const FBContacts = require('../models/fb_contacts');
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
 
@@ -833,7 +834,7 @@ exports.property_delete = async (req, res, next) => {
   return res.json({ msg: 'Updated successfully' })
 };
 
-// @route PUT /properties/:id
+// @route POST /properties/interenal/subleased
 // @description Update property
 // @access Public
 exports.sublease_successful = async(req, res, next) => {
@@ -852,4 +853,25 @@ exports.sublease_successful = async(req, res, next) => {
     res.json({ msg: 'Property was successfully subleased' })
   })
   .catch(err => res.status(400).json({ error: 'Unable to sublease property ', errRaw: err }));
+};
+
+// @route POST /properties/interenal/fb
+// @description Update property
+// @access Public
+exports.fb_contacts = async(req, res, next) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwt.verify(token, process.env.JWT_KEY);
+  const userId = decoded.userId
+  const propId = req.body.propId
+  const fb_contacts = new FBContacts(
+    { propId: req.body.propId,  
+      time: Date(),
+      userId: decoded.userId
+    });
+    fb_contacts
+  .save()
+  .then(async (p) => {
+    res.json({ msg: 'Contact was successfully recorded' })
+  })
+  .catch(err => res.status(400).json({ error: 'Unable to record contact', errRaw: err }));
 };
