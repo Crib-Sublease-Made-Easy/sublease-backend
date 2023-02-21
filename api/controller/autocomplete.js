@@ -64,13 +64,11 @@ exports.reverse_geocoding = (req, res, next) => {
 exports.geocoding = (req, res, next) => {
     let address = req.query.address    
     userId = null
-    oneSignalID = null
+  
     if(req.body.userId == null || req.body.userId == undefined){
         userId = "NULL"
     }
-    if(req.body.oneSignalID == null || req.body.oneSignalID == undefined){
-        oneSignalID = "NULL"
-    }
+  
     if(address == undefined){
         res.json([])
     } else{  
@@ -88,7 +86,7 @@ exports.geocoding = (req, res, next) => {
             userId: userId,
             address: address,
             coords: JSONdata.results[0].geometry.location,
-            oneSignalID: oneSignalID
+           
           });
           usersearches
             .save()
