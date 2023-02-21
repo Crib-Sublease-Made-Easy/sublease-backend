@@ -52,6 +52,10 @@ const UserSchema = new mongoose.Schema ({
     favoriteProperties: {
         type: [mongoose.Types.ObjectId],
         required: true
+    },
+    lastActive: {
+        type: Date,
+        required: false
     }
 })
 
