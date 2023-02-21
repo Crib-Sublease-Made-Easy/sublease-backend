@@ -69,11 +69,11 @@ exports.geocoding = (req, res, next) => {
     if(req.body.userId == null || req.body.userId == undefined){
         userId = "NULL"
     }
-    if(req.params.oneSignalID == null || req.params.oneSignalID == undefined){
+    if(req.query.oneSignalID == null || req.query.oneSignalID == undefined){
         oneSignalID = "NULL"
     }
     else{
-         oneSignalID = req.params.oneSignalID
+         oneSignalID = req.query.oneSignalID
     }
   
     if(address == undefined){
