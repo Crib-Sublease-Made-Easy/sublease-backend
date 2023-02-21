@@ -66,12 +66,10 @@ exports.geocoding = (req, res, next) => {
     userId = null
     let oneSignalID = null
   
-    if(req.query.userId == null || req.query.userId == undefined){
+    if(req.body.userId == null || req.body.userId == undefined){
         userId = "NULL"
     }
-    else{
-        userId = req.query.userID
-    }
+   
     if(req.query.oneSignalID == null || req.query.oneSignalID == undefined){
         oneSignalID = "NULL"
     }
