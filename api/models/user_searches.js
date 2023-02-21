@@ -17,9 +17,7 @@ const UserSearchesSchema = new mongoose.Schema ({
         type: Array,
         required: true
     },
-    oneSignalID: {
-        type: String,
-        required: true
+
 })
 
 module.exports = UserSearches = mongoose.model('userSearches', UserSearchesSchema) 
