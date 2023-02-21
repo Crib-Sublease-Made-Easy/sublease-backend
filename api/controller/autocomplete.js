@@ -67,6 +67,9 @@ exports.geocoding = (req, res, next) => {
     if(req.body.userId == null || req.body.userId == undefined){
         userId = "NULL"
     }
+    if(req.body.oneSignalID == null || req.body.oneSignalID == undefined){
+        oneSignalID = "NULL"
+    }
     if(address == undefined){
         res.json([])
     } else{  
@@ -84,6 +87,7 @@ exports.geocoding = (req, res, next) => {
             userId: userId,
             address: address,
             coords: JSONdata.results[0].geometry.location,
+            oneSignalID: oneSignalID
           });
           usersearches
             .save()
