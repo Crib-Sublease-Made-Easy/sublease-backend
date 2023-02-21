@@ -16,7 +16,10 @@ const UserSearchesSchema = new mongoose.Schema ({
     coords: {
         type: Array,
         required: true
-    }
+    },
+    oneSignalID: {
+        type: String,
+        required: true
 })
 
 module.exports = UserSearches = mongoose.model('userSearches', UserSearchesSchema) 
