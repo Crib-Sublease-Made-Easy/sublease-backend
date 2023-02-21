@@ -64,6 +64,7 @@ exports.reverse_geocoding = (req, res, next) => {
 exports.geocoding = (req, res, next) => {
     let address = req.query.address    
     userId = null
+    oneSignalID = null
     if(req.body.userId == null || req.body.userId == undefined){
         userId = "NULL"
     }
