@@ -72,6 +72,9 @@ exports.geocoding = (req, res, next) => {
     if(req.body.oneSignalID == null || req.body.oneSignalID == undefined){
         oneSignalID = "NULL"
     }
+    else{
+         oneSignalID = req.body.oneSignalID
+    }
   
     if(address == undefined){
         res.json([])
