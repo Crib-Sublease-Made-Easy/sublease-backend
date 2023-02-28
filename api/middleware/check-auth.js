@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require("../models/user");
+const ActivityLog = require("../models/activity_log");
+
 
 module.exports = async (req, res, next) => {
     try {
@@ -9,6 +11,17 @@ module.exports = async (req, res, next) => {
         await User.findByIdAndUpdate(decoded.userId, {
             lastActive: new Date(),
         });
+
+        //store user activity log
+        const log = new ActivityLog( 
+            {
+                userId: decoded.userId,
+                time: new Date(),
+                endpoint: req.originalUrl,
+                body: req.body
+            });
+        log.save();
+
         next();
     } catch (error) {
         return res.status(401).json({

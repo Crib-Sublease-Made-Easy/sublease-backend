@@ -56,6 +56,10 @@ const UserSchema = new mongoose.Schema ({
     lastActive: {
         type: Date,
         required: false
+    },
+    lastSearched: {
+        type: String,
+        required: false
     }
 })
 

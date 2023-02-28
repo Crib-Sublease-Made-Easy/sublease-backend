@@ -115,7 +115,7 @@ exports.otp_step2 = (req, resp, next) => {
 };
 
 // @route POST /users/OTP/step3
-// @description send sms
+// @description verify token is correct
 // @access public
 exports.otp_step3 = (req, resp, next) => {
     authy.verify(
