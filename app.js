@@ -44,8 +44,11 @@ app.use("/notifications", notifications);
 const contact = require("./api/routes/contact");
 app.use("/contact", contact);
 
-const website = require('./api/routes/website')
+const website = require('./api/routes/website');
 app.use('/web', website);
+
+const web_users = require('./api/routes/web-users');
+app.use("/web-users", web_users);
 
 // const chat = require('./api/routes/chat')
 // app.use('/chat', chat);
