@@ -34,7 +34,8 @@ const storage = new GridFsStorage({
 const upload = multer({ storage });
 
 //--------------------------------------------
-router.post("/web-users/authy", WebUserController.web_authy);
-router.post("/web-users/login", WebUserController.web_login_token);
+router.post("/users/authy", WebUserController.web_authy);
+router.post("/users/OTP/step2", WebUserController.web_otp_step2);
+router.post("/users/login", WebUserController.web_login_token);
 
 module.exports = router;

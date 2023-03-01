@@ -48,7 +48,7 @@ const website = require('./api/routes/website');
 app.use('/web', website);
 
 const web_users = require('./api/routes/web-users');
-app.use("/web-users", web_users);
+app.use("/website", web_users);
 
 // const chat = require('./api/routes/chat')
 // app.use('/chat', chat);
