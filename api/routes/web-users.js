@@ -34,8 +34,13 @@ const storage = new GridFsStorage({
 const upload = multer({ storage });
 
 //--------------------------------------------
+router.post("/check", WebUserController.web_check_user);
 router.post("/users/authy", WebUserController.web_authy);
-router.post("/users/OTP/step2", WebUserController.web_otp_step2);
 router.post("/users/login", WebUserController.web_login_token);
+
+// OTP Code
+router.post("/users/OTP/step1", WebUserController.web_otp_step1);
+router.post("/users/OTP/step2", WebUserController.web_otp_step2);
+router.post("/users/OTP/step3", WebUserController.web_otp_step3);
 
 module.exports = router;
