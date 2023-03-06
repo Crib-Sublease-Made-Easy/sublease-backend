@@ -2,16 +2,16 @@
 const express = require("express");
 const connectDB = require("./config");
 const app = express();
-const cors = require('cors');
+// const cors = require('cors');
 
 
 // connect database
 connectDB();
 app.use(express.json());
 
-const corsOptions = {origin: process.env.URL || '*', credentials: true};
+// const corsOptions = {origin: process.env.URL || '*', credentials: true};
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
