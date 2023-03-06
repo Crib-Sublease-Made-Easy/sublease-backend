@@ -7,6 +7,10 @@ const app = express();
 connectDB();
 app.use(express.json());
 
+const corsOptions = {origin: process.env.URL || '*', credentials: true};
+
+app.use(cors(corsOptions));
+
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
