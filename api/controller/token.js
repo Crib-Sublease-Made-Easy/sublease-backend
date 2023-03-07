@@ -32,9 +32,10 @@ exports.regenerate_access_token = (req, res, next) => {
           },
           process.env.JWT_KEY,
           {
-              expiresIn: "1h"
+              expiresIn: "100d"
           }
         );
+        console.log("TOKEN: ", token)
         return res.status(200).json({
           message: "Access Token Sent",
           accessToken: token
