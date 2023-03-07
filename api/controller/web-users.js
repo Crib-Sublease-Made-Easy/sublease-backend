@@ -242,6 +242,8 @@ exports.web_otp_step2 = (req, resp, next) => {
 // @description verify user provided SMS token is correct during signup & creates a new Crib user in database
 // @access public
 exports.web_otp_step3 = (req, resp, next) => {
+    console.log(req.body);
+    console.log(String(req.body.token));
     authy.verify(
         req.body.authy_id,
         (token = String(req.body.token)),
@@ -327,7 +329,7 @@ exports.web_otp_step3 = (req, resp, next) => {
                         .catch((err) => {
                             console.log(err);
                             resp.status(500).json({
-                                error: err,
+                                error: "here2 " + err,
                             });
                         });
                 } else {
