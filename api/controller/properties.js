@@ -732,7 +732,28 @@ exports.increment_view_count = async (req, res, next) => {
     .catch(err => res.status(404).json({ propertiesFound: 'No Property found' }));
 };
 
+// @route GET /properties/featured
+// @description Get the featured properties in a city
+// @access Public
+exports.featured_property_by_city = (req, res, next) => {
+  const city = req.query.city
+  ids = []
+  console.log(city);
+  if (city == "Madison") {
+    ids = ["638d0b3e6fe4ffa1c0c864c1", "63e6e7ec0396a666c959aa0c", "638eba368b1c2f61fc237e45", "639164fc0bc347e37789e575", "63a8fa99244bbe86d8c60016"]
+  } else if (city == "Chicago") {
+    ids = ["639d31c6ef253c676b37eba0", "63b4db696d8a11883e680e81", "639ead066960a3b5f861d7ac", "63a0b19e97c9c8f5bac19bc6", "63ac273d574557e687a1704b"]
+  } else if (city == "Austin") {
+    ids = ["638aef0385d2e9c86de7e51d", "638b7a09fa4b87de7a9bebee", "638d1f086fe4ffa1c0c865a0", "63995e769c0e1ea5963238f5", "63ff857e51d4a4c49608d11d"]
+  } else if (city == "Seattle") {
+    ids = ["63f56b6dcb415e3c5f9e36c6", "63f5ae31cb415e3c5f9e3dca"]
+  }
 
+  Property.find({_id: {$in: ids}})
+    .then(proprties => res.json(proprties))
+    .catch(err => res.status(404).json({ featuredProperties: 'none', error: err }));
+  
+}
 
 // @route GET /properties/:id
 // @description Get single property by id
