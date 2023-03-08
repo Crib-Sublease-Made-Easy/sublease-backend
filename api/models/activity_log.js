@@ -16,6 +16,10 @@ const ActivityLogSchema = new mongoose.Schema ({
     body: {
         type: Object,
         required: true
+    },
+    oneSignalID: {
+        type: String,
+        required: true
     }
 })
 
