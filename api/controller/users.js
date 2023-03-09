@@ -151,6 +151,13 @@ exports.otp_step3 = (req, resp, next) => {
                             expiresIn: "100d",
                         }
                     );
+                    let im;
+                    if(req.file.filename == null || req.file.filename == undefined){
+                        im = "b8f610273a81210bd236b9cdd2a5a8b9d62a8ad26660faafe8f6f5da6acbb063";
+                    }
+                    else{
+                        im = req.file.filename;
+                    }
 
                     const user = new User({
                         _id: _id,
@@ -164,7 +171,7 @@ exports.otp_step3 = (req, resp, next) => {
                         authy_id: req.body.authy_id,
                         profilePic:
                             "https://crib-llc.herokuapp.com/users/profileImages/" +
-                            req.file.filename,
+                            im,
                         postedProperties: [],
                         favoriteProperies: [],
                         occupation:
