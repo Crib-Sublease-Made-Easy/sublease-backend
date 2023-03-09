@@ -242,8 +242,8 @@ exports.web_otp_step2 = (req, resp, next) => {
 // @description verify user provided SMS token is correct during signup & creates a new Crib user in database
 // @access public
 exports.web_otp_step3 = (req, resp, next) => {
-    console.log(req.body);
-    console.log(String(req.body.token));
+    // console.log(req.body);
+    // console.log(String(req.body.token));
     authy.verify(
         req.body.authy_id,
         (token = String(req.body.token)),
@@ -284,7 +284,7 @@ exports.web_otp_step3 = (req, resp, next) => {
                         firstName: req.body.firstName,
                         lastName: req.body.lastName,
                         phoneNumber: req.body.phoneNumber,
-                        oneSignalUserId: null,
+                        oneSignalUserId: "null",
                         dob: req.body.dob,
                         gender: req.body.gender,
                         authy_id: req.body.authy_id,
@@ -321,15 +321,15 @@ exports.web_otp_step3 = (req, resp, next) => {
                                 token: {
                                     accessToken: accessToken,
                                     refreshToken: refreshToken,
-                                    sendBirdId: null,
-                                    oneSignalId: null,
+                                    sendBirdId: "null",
+                                    oneSignalId: "null",
                                 },
                             });
                         })
                         .catch((err) => {
                             console.log(err);
                             resp.status(500).json({
-                                error: "here2 " + err,
+                                error: err,
                             });
                         });
                 } else {
