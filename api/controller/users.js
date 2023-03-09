@@ -152,7 +152,7 @@ exports.otp_step3 = (req, resp, next) => {
                         }
                     );
                     let im;
-                    if(req.file.filename == null || req.file.filename == undefined){
+                    if(req.file == null || req.file == undefined){
                         im = "b8f610273a81210bd236b9cdd2a5a8b9d62a8ad26660faafe8f6f5da6acbb063";
                     }
                     else{
