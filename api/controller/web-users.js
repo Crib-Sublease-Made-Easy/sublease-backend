@@ -40,7 +40,7 @@ exports.get_image = async (req, res, next) => {
 //************************* WEB-USER CONTROLLER ***************************//
 
 // @route POST /users/authy
-// @description login a web-user in the database and return access token
+// @description verifies user exists using phone number during login and returns their authy_id
 // @access public
 exports.web_authy = (req, res, next) => {
     User.find({ phoneNumber: req.body.phoneNumber })
@@ -62,37 +62,6 @@ exports.web_authy = (req, res, next) => {
                 error: err,
             });
         });
-};
-
-// @route POST /users/OTP/step2
-// @description send sms
-// @access public
-exports.web_otp_step2 = (req, resp, next) => {
-    authy.request_sms(
-        req.body.authy_id,
-        (force = true),
-        function (err, res) {
-            console.log(err);
-            if (res != undefined) {
-                if (String(res.success) === String("true")) {
-                    resp.status(201).json({
-                        messge: "SMS token was sent",
-                        response: res,
-                    });
-                } else {
-                    resp.status(401).json({
-                        message: "Failed to send OTP SMS",
-                        response: res,
-                    });
-                }
-            } else {
-                resp.status(400).json({
-                    error: err,
-                    success: false,
-                });
-            }
-        }
-    );
 };
 
 // @route POST /users/login
@@ -175,6 +144,201 @@ exports.web_login_token = (req, resp, next) => {
                     error: err,
                     success: false,
                 });
+            }
+        }
+    );
+};
+
+// @route POST /users/check
+// @description check if there is an existing user with the same phone number during signup
+// @access public
+exports.web_check_user = (req, res, next) => {
+    console.log(req.body);
+    User.find({ phoneNumber: req.body.phoneNumber })
+        .exec()
+        .then((user) => {
+            if (user.length >= 1) {
+                return res.status(409).json({
+                    message:
+                        "User already has an account with this phone number",
+                });
+            } else {
+                return res.status(200).json({
+                    message: "This is a valid phone number",
+                });
+            }
+        });
+};
+
+// @route POST /users/OTP/step1
+// @description creates authy_id for user with email & phone number during signup
+// @access public
+exports.web_otp_step1 = (req, resp, next) => {
+    if (req.body.email == undefined || req.body.phoneNumber == undefined) {
+        resp.status(400).json({
+            message: "Email and Phone Number must be provided",
+        });
+    } else {
+        authy.register_user(
+            req.body.email,
+            req.body.phoneNumber,
+            function (err, res) {
+                console.log(err);
+                console.log(res);
+                if (res != undefined) {
+                    if (String(res.success) === String(true)) {
+                        resp.status(201).json({
+                            response: res,
+                        });
+                    } else {
+                        resp.status(401).json({
+                            message: "Incorrect OTP",
+                            response: res,
+                        });
+                    }
+                } else {
+                    resp.status(400).json({
+                        error: err,
+                        success: false,
+                    });
+                }
+            }
+        );
+    }
+};
+
+// @route POST /users/OTP/step2
+// @description sends SMS token to phone number associated with authy_id (login & signup)
+// @access public
+exports.web_otp_step2 = (req, resp, next) => {
+    authy.request_sms(
+        req.body.authy_id,
+        (force = true),
+        function (err, res) {
+            console.log(err);
+            if (res != undefined) {
+                if (String(res.success) === String("true")) {
+                    resp.status(201).json({
+                        messge: "SMS token was sent",
+                        response: res,
+                    });
+                } else {
+                    resp.status(401).json({
+                        message: "Failed to send OTP SMS",
+                        response: res,
+                    });
+                }
+            } else {
+                resp.status(400).json({
+                    error: err,
+                    success: false,
+                });
+            }
+        }
+    );
+};
+
+// @route POST /users/OTP/step3
+// @description verify user provided SMS token is correct during signup & creates a new Crib user in database
+// @access public
+exports.web_otp_step3 = (req, resp, next) => {
+    // console.log(req.body);
+    // console.log(String(req.body.token));
+    authy.verify(
+        req.body.authy_id,
+        (token = String(req.body.token)),
+        function (err, res) {
+            console.log(err);
+            let _id = new mongoose.Types.ObjectId();
+            if (res != undefined) {
+                if (String(res.success) == String(true)) {
+                    const accessToken = jwt.sign(
+                        {
+                            phoneNumber: req.body.phoneNumber,
+                            userId: _id,
+                            token: "access",
+                        },
+                        process.env.JWT_KEY,
+                        {
+                            expiresIn: "1h",
+                        }
+                    );
+                    const refreshToken = jwt.sign(
+                        {
+                            phoneNumber: req.body.phoneNumber,
+                            userId: _id,
+                            email: req.body.email,
+                            firstName: req.body.firstName,
+                            lastName: req.body.lastName,
+                            token: "refresh",
+                        },
+                        process.env.JWT_KEY,
+                        {
+                            expiresIn: "100d",
+                        }
+                    );
+
+                    const user = new User({
+                        _id: _id,
+                        email: req.body.email,
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                        phoneNumber: req.body.phoneNumber,
+                        oneSignalUserId: "null",
+                        dob: req.body.dob,
+                        gender: req.body.gender,
+                        authy_id: req.body.authy_id,
+                        profilePic:
+                            "https://crib-llc.herokuapp.com/users/profileImages/" +
+                            req.file.filename,
+                        postedProperties: [],
+                        favoriteProperies: [],
+                        occupation:
+                            req.body.occupation == undefined
+                                ? null
+                                : req.body.occupation,
+                        school:
+                            req.body.school == undefined
+                                ? null
+                                : req.body.school,
+                        deleted: false,
+                    });
+
+                    user.save()
+                        .then((result) => {
+                            console.log(result);
+                            resp.status(201).json({
+                                message: "User account created successfully",
+                                createdUser: {
+                                    firstName: result.firstName,
+                                    lastName: result.lastName,
+                                    profilePic: result.profilePic,
+                                    phoneNumber: result.phoneNumber,
+                                    occupation: result.occupation,
+                                    school: result.school,
+                                    _id: result._id,
+                                },
+                                token: {
+                                    accessToken: accessToken,
+                                    refreshToken: refreshToken,
+                                    sendBirdId: "null",
+                                    oneSignalId: "null",
+                                },
+                            });
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            resp.status(500).json({
+                                error: err,
+                            });
+                        });
+                } else {
+                    resp.status(400).json({
+                        error: err,
+                        success: false,
+                    });
+                }
+            } else {
             }
         }
     );
