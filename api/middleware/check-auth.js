@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const User = require("../models/user");
 const ActivityLog = require("../models/activity_log");
 
-
 module.exports = async (req, res, next) => {
     try {
         const token = req.headers.authorization.split(" ")[1];
@@ -12,17 +11,25 @@ module.exports = async (req, res, next) => {
         await User.findByIdAndUpdate(decoded.userId, {
             lastActive: new Date(),
         });
+        let id = decoded.userId;
 
-        //store user activity log
-        const log = new ActivityLog( 
-            {
-                userId: decoded.userId,
-                time: new Date(),
-                endpoint: req.originalUrl,
-                body: req.body
-            });
-        log.save();
 
+        User.findById(id, function (err, docs) {
+            if (err) {
+                console.log("No user found with that ID" + err);
+            }
+            else {
+                const log = new ActivityLog(
+                    {
+                        userId: decoded.userId,
+                        time: new Date(),
+                        endpoint: req.originalUrl,
+                        body: req.body,
+                        oneSignalID: docs.oneSignalUserId
+                    });
+                log.save();
+            }
+        });
         next();
     } catch (error) {
         return res.status(401).json({
