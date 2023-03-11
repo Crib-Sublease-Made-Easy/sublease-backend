@@ -1,7 +1,6 @@
 const Lead = require('../models/lead');
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
-const client = require('twilio')("ACe94558aef30193e8601dff1ab409c400", authToken);
 
 
 
