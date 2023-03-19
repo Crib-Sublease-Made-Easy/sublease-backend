@@ -7,9 +7,7 @@ const app = express();
 
 // connect database
 connectDB();
-app.use(express.json({
-    limit: ‘50mb’
-}));
+app.use(express.json());
 
 // const corsOptions ={
 //     origin:'*', 
