@@ -28,3 +28,21 @@ exports.contact_us = (req, res, next) => {
       .catch(err => res.status(400).json({ error: 'Unable to send contact', errRaw: err }));
   }
 };
+
+exports.contact_us_nonuser = (req, res, next) => {
+  if(req.body.title == undefined || req.body.email == undefined || req.body.description == undefined){
+    res.status(400).json({ error: 'Unable to send contact'});
+  } else{
+    const contact = new Contact({
+      title: req.body.title,
+      email: req.body.email,
+      description: req.body.description,
+    });
+    contact
+      .save()
+      .then(async (cont) => {
+        res.json({ msg: 'Contact sent successfully' })
+      })
+      .catch(err => res.status(400).json({ error: 'Unable to send contact'}));
+  }
+};

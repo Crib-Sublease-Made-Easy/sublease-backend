@@ -1,6 +1,7 @@
 const Lead = require('../models/lead');
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
+const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_AUTH_TOKEN);
 
 
 
@@ -28,26 +29,47 @@ exports.collect_leads = (req, res, next) => {
   }
 };
 
-// // @route POST /leads
-// // @description post leads
-// // @access Public
-// exports.ios_leads = (req, res, next) => {
-//   if(req.body.number == undefined){
-//     res.status(400).json({ error: 'Unable to send contact', errRaw: err });
-//   } else{
-//     client.messages
-//     .create({
-//         body: 'With Crib, sublease your apartment in just 30 seconds! Download the mobile app to get notified right away when others are interested in your sublease! https://apps.apple.com/us/app/crib-subleasing-made-easy/id1645127110',
-//         from: '+18775226376',
-//         to: `+1${req.body.number}`
-//     })
-//     .then(async (cont) => {
-//       res.status(200).json({ msg: 'Email Stored Successfully' })
-//     })
-//     .done()
-//     .catch(err => res.status(400).json({ error: 'Unable to store email', errRaw: err }));
-//   }
-// };
+// @route POST /iosleads
+// @description on the website when users type in a phone number, we send them a confirmation code
+// @access Public
+exports.ios_leads = (req, res, next) => {
+  if(req.body.number == undefined){
+    res.status(400).json({ error: 'Unable to send contactsss'});
+  } else{
+    client.messages
+    .create({
+        body: 'With Crib, sublease your apartment in just 30 seconds! Download the mobile app to get notified right away when others are interested in your sublease! https://apps.apple.com/us/app/crib-subleasing-made-easy/id1645127110',
+        from: '+18775226376',
+        to: `+1${req.body.number}`
+    })
+    .then(message => console.log(message))
+    // .then(async (cont) => {
+    //   res.status(200).json({ msg: 'Email Stored Successfully' })
+    // })
+    // .catch(err => res.status(400).json({ error: 'Unable to store email', errRaw: err }));
+  }
+};
+
+// @route POST /androidleads
+// @description on the website when users type in a phone number, we send them a confirmation code
+// @access Public
+exports.android_leads = (req, res, next) => {
+  if(req.body.number == undefined){
+    res.status(400).json({ error: 'Unable to send contactsss'});
+  } else{
+    client.messages
+    .create({
+        body: 'With Crib, sublease your apartment in just 30 seconds! Download the mobile app to get notified right away when others are interested in your sublease! https://play.google.com/store/apps/details?id=com.Crib.SubleasingMadeEasy&hl=en_US&gl=US',
+        from: '+18775226376',
+        to: `+1${req.body.number}`
+    })
+    .then(message => console.log(message))
+    // .then(async (cont) => {
+    //   res.status(200).json({ msg: 'Email Stored Successfully' })
+    // })
+    // .catch(err => res.status(400).json({ error: 'Unable to store email', errRaw: err }));
+  }
+};
 
 
 // @route GET /leads
