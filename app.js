@@ -9,10 +9,6 @@ const app = express();
 connectDB();
 app.use(express.json({limit: "5mb"}));
 app.use(express.urlencoded({limit: "5mb"}));
-<<<<<<< HEAD
-=======
-
->>>>>>> 724df32af5a789fd7a3d9bb75bc3523130045ef8
 // const corsOptions ={
 //     origin:'*', 
 //     credentials:true,            //access-control-allow-credentials:true
