@@ -33,6 +33,7 @@ exports.collect_leads = (req, res, next) => {
 // @description on the website when users type in a phone number, we send them a confirmation code
 // @access Public
 exports.ios_leads = (req, res, next) => {
+  console.log("fuck")
   if(req.body.number == undefined){
     res.status(400).json({ error: 'Unable to send contactsss'});
   } else{
