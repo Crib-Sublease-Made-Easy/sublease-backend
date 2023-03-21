@@ -33,13 +33,12 @@ exports.collect_leads = (req, res, next) => {
 // @description on the website when users type in a phone number, we send them a confirmation code
 // @access Public
 exports.ios_leads = (req, res, next) => {
-  console.log("fuck")
   if(req.body.number == undefined){
     res.status(400).json({ error: 'Unable to send contactsss'});
   } else{
     client.messages
     .create({
-        body: 'With Crib, sublease your apartment in just 30 seconds! Download the mobile app to get notified right away when others are interested in your sublease! https://crib-app.com/download',
+        body: 'Sublease your apartment with Crib in just 30 seconds! Download the mobile app to get notified right away when others are interested in your sublease! https://crib-app.com/download',
         from: '+18775226376',
         to: `+1${req.body.number}`
     })
