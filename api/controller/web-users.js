@@ -25,7 +25,7 @@ dbInstance.once("open", () => {
 });
 
 //-----------Get an Image----------------
-exports.get_image = async (req, res, next) => {
+exports.web_get_image = async (req, res, next) => {
     const file = await gfs.files.findOne({ filename: req.params.filename });
     if (file != null) {
         const readstream = gridfsBucket.openDownloadStream(file._id);
@@ -39,7 +39,7 @@ exports.get_image = async (req, res, next) => {
 
 //************************* WEB-USER CONTROLLER ***************************//
 
-// @route POST /users/authy
+// @route POST /website/users/authy
 // @description verifies user exists using phone number during login and returns their authy_id
 // @access public
 exports.web_authy = (req, res, next) => {
@@ -64,7 +64,7 @@ exports.web_authy = (req, res, next) => {
         });
 };
 
-// @route POST /users/login
+// @route POST /website/users/login
 // @description login a web-user in the database and return access token
 // @access public
 exports.web_login_token = (req, resp, next) => {
@@ -149,7 +149,7 @@ exports.web_login_token = (req, resp, next) => {
     );
 };
 
-// @route POST /users/check
+// @route POST /website/users/check
 // @description check if there is an existing user with the same phone number during signup
 // @access public
 exports.web_check_user = (req, res, next) => {
@@ -170,7 +170,7 @@ exports.web_check_user = (req, res, next) => {
         });
 };
 
-// @route POST /users/OTP/step1
+// @route POST /website/users/OTP/step1
 // @description creates authy_id for user with email & phone number during signup
 // @access public
 exports.web_otp_step1 = (req, resp, next) => {
@@ -207,7 +207,7 @@ exports.web_otp_step1 = (req, resp, next) => {
     }
 };
 
-// @route POST /users/OTP/step2
+// @route POST /website/users/OTP/step2
 // @description sends SMS token to phone number associated with authy_id (login & signup)
 // @access public
 exports.web_otp_step2 = (req, resp, next) => {
@@ -238,7 +238,7 @@ exports.web_otp_step2 = (req, resp, next) => {
     );
 };
 
-// @route POST /users/OTP/step3
+// @route POST /website/users/OTP/step3
 // @description verify user provided SMS token is correct during signup & creates a new Crib user in database
 // @access public
 exports.web_otp_step3 = (req, resp, next) => {
@@ -342,4 +342,167 @@ exports.web_otp_step3 = (req, resp, next) => {
             }
         }
     );
+};
+
+// @route GET /website/users/:id
+// @description Get single user by id
+// @access Public
+exports.web_user_get_one = (req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    const userId = decoded.userId;
+    if (userId == req.params.id) {
+        User.findById(req.params.id)
+            .then((user) => res.json(user))
+            .catch((err) =>
+                res.status(404).json({ usersFound: "No User found" })
+            );
+    } else {
+        return res.status(401).json({
+            message: "Auth failed",
+        });
+    }
+};
+
+// @route PUT /website/users/:id
+// @description Update user
+// @access Public
+exports.web_user_modify = (req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    const userId = decoded.userId;
+    if (userId == req.params.id) {
+        query = {};
+        if (req.body.school != undefined) {
+            query.school = req.body.school;
+        }
+        if (req.body.occupation != undefined) {
+            query.occupation = req.body.occupation;
+        }
+        if (req.body.email != undefined) {
+            query.email = req.body.email;
+        }
+        User.findByIdAndUpdate(req.params.id, query)
+            .then((user) => res.json(user))
+            .catch((err) =>
+                res.status(400).json({ error: "Unable to update the Database" })
+            );
+    } else {
+        return res.status(401).json({
+            message: "Auth failed",
+        });
+    }
+};
+
+// @route DELETE /website/users/:id
+// @description Delete user by id
+// @access Public
+exports.web_user_delete = (req, res, next) => {
+    User.findByIdAndRemove(req.params.id, req.body)
+        .then((user) => res.json({ mgs: "User deleted successfully" }))
+        .catch((err) => res.status(404).json({ error: "No such a user" }));
+    
+    authy.delete_user(req.body.authyID, function (err, res) {
+        console.log(res.message);
+        console.log("ERROR" , err);
+    })
+    return res;
+  };
+
+// @route PUT /website/users/profileImages/:id
+// @description Update user profile pic
+// @access Public
+exports.web_user_modify_profilePic = (req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    const userId = decoded.userId;
+    if (userId == req.params.id) {
+        User.findByIdAndUpdate(req.params.id, {
+            profilePic:
+                "https://crib-llc.herokuapp.com/users/profileImages/" +
+                req.file.filename,
+        })
+            .then((user) =>
+                res.json({
+                    msg: "profile pic successfully changed",
+                    profilePic:
+                        "https://crib-llc.herokuapp.com/users/profileImages/" +
+                        req.file.filename,
+                })
+            )
+            .catch((err) =>
+                res.status(400).json({ error: "Unable to update the Database" })
+            );
+    } else {
+        return res.status(401).json({
+            message: "Auth failed",
+        });
+    }
+};
+
+// @route GET /website/users/favorites/all
+// @description Get a user's favorite properties, doesn't need to be authenticated
+// @access Public
+exports.web_user_get_favorites = (req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    const userId = decoded.userId;
+    User.aggregate([
+        {
+            $match: { _id: mongoose.Types.ObjectId(userId) },
+        },
+        {
+            $lookup: {
+                from: "propertytests",
+                localField: "favoriteProperties",
+                foreignField: "_id",
+                as: "properties",
+            },
+        },
+    ])
+        .then(async (x) => {
+            let propertiesArray = x[0].properties.filter(function (e) {
+                return e.deleted == false;
+            });
+            let props = await Promise.all(
+                propertiesArray.map(async (p) => {
+                    if(p.postedBy == null){
+                        let d = {};
+                        let q = {};
+                        q.propertyInfo = p;
+                        q.userInfo = d;
+                        return q;
+                    }
+                    else{
+                        let d = await User.findById(p.postedBy).then(
+                            async (user) => {
+                                let q = p;
+                                postedUser = {};
+                                postedUser.firstName = user._id;
+                                postedUser.firstName = user.firstName;
+                                postedUser.lastName = user.lastName;
+                                postedUser.profilePic = user.profilePic;
+                                postedUser.occupation = user.occupation;
+                                postedUser.school = user.school;
+                                q.pos = postedUser;
+                                console.log("P", q);
+                                return postedUser;
+                            }
+                        );
+                        let q = {};
+                        q.propertyInfo = p;
+                        q.userInfo = d;
+                        return q;
+                    }
+                })
+            );
+            // console.log("END", props)
+            res.json(props);
+        })
+        .catch((err) => {
+            // console.log(err);
+            res.status(500).json({
+                error: err,
+            });
+        });
 };
