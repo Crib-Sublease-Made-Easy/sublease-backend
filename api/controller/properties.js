@@ -761,34 +761,40 @@ exports.featured_property_by_city = (req, res, next) => {
 exports.property_get_one = async (req, res, next) => {
   await Property.findById(req.params.id)
     .then(async property => {
-      await User.findById(property.postedBy).then(async user => {
+      if(property.postedBy == null){
         postedUserInfo = {}
-        postedUserInfo.firstName = user._id
-        postedUserInfo.firstName = user.firstName
-        postedUserInfo.lastName = user.lastName
-        postedUserInfo.profilePic = user.profilePic
-        postedUserInfo.occupation = user.occupation;
-        postedUserInfo.school = user.school;
-        changeNumberOfViews = {}
-        console.log(req.body.viewCount)
-        if(String(req.body.viewCount) === "true"){
-          changeNumberOfViews.numberOfViews = property.numberOfViews + 1;
-          console.log("INCREMENT")
-        } else{
-          changeNumberOfViews.numberOfViews = property.numberOfViews;
-          console.log("VIEW COUNT NOT CHANGED")
-        }
-        await Property.findByIdAndUpdate(property._id, changeNumberOfViews)
-        .then(property => {
-          console.log("Successfully changed")
-        })
-        .catch(err =>
-          console.log("Error with incrementing view count", err)
-        );
-        console.log("ChangeNumberOfViews,", changeNumberOfViews)
         res.json({ propertyInfo: property, userInfo: postedUserInfo })
-      })
+      }
+      else{
+        await User.findById(property.postedBy).then(async user => {
+          postedUserInfo = {}
+          postedUserInfo.firstName = user._id
+          postedUserInfo.firstName = user.firstName
+          postedUserInfo.lastName = user.lastName
+          postedUserInfo.profilePic = user.profilePic
+          postedUserInfo.occupation = user.occupation;
+          postedUserInfo.school = user.school;
+          changeNumberOfViews = {}
+          console.log(req.body.viewCount)
+          if(String(req.body.viewCount) === "true"){
+            changeNumberOfViews.numberOfViews = property.numberOfViews + 1;
+            console.log("INCREMENT")
+          } else{
+            changeNumberOfViews.numberOfViews = property.numberOfViews;
+            console.log("VIEW COUNT NOT CHANGED")
+          }
+          await Property.findByIdAndUpdate(property._id, changeNumberOfViews)
+          .then(property => {
+            console.log("Successfully changed")
+          })
+          .catch(err =>
+            console.log("Error with incrementing view count", err)
+          );
+          console.log("ChangeNumberOfViews,", changeNumberOfViews)
+          res.json({ propertyInfo: property, userInfo: postedUserInfo })
+        })
         .catch(err => res.status(404).json({ Error: 'Invalid User in Property soldBy field' }));
+      }
     })
     .catch(err => res.status(404).json({ Error: 'No Property found' }));
 };
