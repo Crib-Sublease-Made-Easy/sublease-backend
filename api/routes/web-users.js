@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const WebUserController = require("../controller/web-users");
+const checkAuth = require("../middleware/check-auth");
 
 //---------------Image Specific Code--------------------------
 const mongoose = require("mongoose");
@@ -37,6 +38,17 @@ const upload = multer({ storage });
 router.post("/users/check", WebUserController.web_check_user);
 router.post("/users/authy", WebUserController.web_authy);
 router.post("/users/login", WebUserController.web_login_token);
+router.get("/users/:id", checkAuth, WebUserController.web_user_get_one);
+router.put("/users/:id", checkAuth, WebUserController.web_user_modify);
+router.delete("/users/:id", checkAuth, WebUserController.web_user_delete);
+router.put(
+    "/users/profileImages/:id",
+    upload.single("userImage"),
+    checkAuth,
+    WebUserController.web_user_modify_profilePic
+);
+router.get("/users/profileImages/:filename", WebUserController.web_get_image);
+router.get("/users/favorites/all", checkAuth, WebUserController.web_user_get_favorites);
 
 // OTP Code
 router.post("/users/OTP/step1", WebUserController.web_otp_step1);
