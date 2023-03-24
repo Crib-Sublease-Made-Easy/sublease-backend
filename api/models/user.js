@@ -60,6 +60,10 @@ const UserSchema = new mongoose.Schema ({
     lastSearched: {
         type: String,
         required: false
+    },
+    type: {
+        type: String,
+        required: true
     }
 })
 
