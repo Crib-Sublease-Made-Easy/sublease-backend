@@ -607,3 +607,19 @@ exports.user_modify_profilePic = (req, res, next) => {
   };
 
 
+
+// @route PUT users/referral/storecode
+// @description post referral code
+// @access Private
+exports.store_code = (req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    console.log(JSON.stringify(req.files))
+    User.findOneAndUpdate(
+        { _id: decoded.userId },
+        { $push: { referralCodes: req.body.generated_code} },
+    ).then(resp => {
+        res.json({ msg: 'referral code stored' })
+    }).catch(err => res.status(400).json({ error: 'Unable to store code', errRaw: err }));
+  };
+  
