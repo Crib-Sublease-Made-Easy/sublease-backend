@@ -2,20 +2,10 @@
 const express = require("express");
 const connectDB = require("./config");
 const app = express();
-// const cors = require('cors');
-
 
 // connect database
 connectDB();
-app.use(express.json({limit: "5mb"}));
-app.use(express.urlencoded({limit: "5mb"}));
-// const corsOptions ={
-//     origin:'*', 
-//     credentials:true,            //access-control-allow-credentials:true
-//     optionSuccessStatus:200,
-//  }
-
-// app.use(cors(corsOptions));
+app.use(express.json());
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -32,7 +22,6 @@ app.use((req, res, next) => {
     }
     next();
 });
-
 
 //routes
 app.get("/", (req, res) => res.send("Hello World"));
@@ -57,6 +46,9 @@ app.use("/contact", contact);
 
 const website = require('./api/routes/website');
 app.use('/web', website);
+
+const payments = require('./api/routes/payments');
+app.use('/payments', payments);
 
 const web_users = require('./api/routes/web-users');
 app.use("/website", web_users);
