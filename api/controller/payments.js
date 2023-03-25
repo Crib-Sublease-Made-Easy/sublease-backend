@@ -93,16 +93,16 @@ exports.prem_generate_link = async(req, res, next) => {
             .catch((err) =>
                 res.status(400).json({ error: "Unable to update the Database" })
             );
-            
         }
         else{
             return res.status(400).json({
                 message: "Incomplete info",
             });
         }
+        return square_res
         }
       )
-      .then(json => res.json(json))
+      .then(json => res.status(200).json(json))
       .catch(err => res.status(400).json({ error: 'unable to make request', errRaw: err }));
 };
 
