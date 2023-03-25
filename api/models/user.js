@@ -65,6 +65,10 @@ const UserSchema = new mongoose.Schema ({
         type: String,
         required: false
     },
+     referralCodes: {
+            type: [Object],
+            required: false
+    },
     // cribPremium:{
     //     referralCode: {
     //         type: String,

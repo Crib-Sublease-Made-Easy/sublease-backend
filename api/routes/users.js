@@ -41,7 +41,7 @@ router.post("/authy", UserController.authy);
 router.post("/login", UserController.login_token);
 router.delete("/:id", checkAuth, UserController.user_delete);
 router.put("/:id", checkAuth, UserController.user_modify);
-router.put("/referral/storecode", checkAuth, UserController.user_modify);
+router.put("/referral/storecode", checkAuth, UserController.store_code);
 
 router.put(
     "/profileImages/:id",
