@@ -65,43 +65,47 @@ const UserSchema = new mongoose.Schema ({
         type: String,
         required: false
     },
-     referralCodes: {
-            type: [Object],
-            required: false
+     referralCode: {
+        type: String,
+        required: false
     },
-    // cribPremium:{
-    //     referralCode: {
-    //         type: String,
-    //         required: false
-    //     },
-    //     referred: {
-    //         type: [String],
-    //         require: false,
-    //     },
-    //     premiumAccount: {
-    //         status: {
-    //             type: Boolean,
-    //             required: false
-    //         },
-    //         orderId: {
-    //             type: String,
-    //             required: false
-    //         },
-    //         paymentLink: {
-    //             type: String,
-    //             required: false,
-    //             default: null
-    //         },
-    //         paymentLinkId: {
-    //             type: String,
-    //             required: false
-    //         },
-    //         paymentLinkCreatedAt: {
-    //             type: String,
-    //             required: false
-    //         }
-    //     }
-    // }
+    cribPremium:{
+        referralCode: {
+            type: String,
+            required: false
+        },
+        referred: {
+            type: [String],
+            require: false,
+        },
+        paymentDetails: {
+            status: {
+                type: Boolean,
+                required: false,
+                default: false
+            },
+            orderId: {
+                type: String,
+                required: false
+            },
+            paymentLink: {
+                type: String,
+                required: false,
+                default: null
+            },
+            paymentLinkId: {
+                type: String,
+                required: false
+            },
+            paymentLinkCreatedAt: {
+                type: String,
+                required: false
+            },
+            default: {}
+        },
+        default: {}
+       
+    }
 })
 
 module.exports = User = mongoose.model('user', UserSchema)
