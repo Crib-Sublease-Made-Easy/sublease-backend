@@ -78,6 +78,10 @@ const UserSchema = new mongoose.Schema ({
             type: [String],
             require: false,
         },
+        referredCount: {
+            type: Number,
+            require: false
+        },
         paymentDetails: {
             status: {
                 type: Boolean,
