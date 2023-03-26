@@ -594,7 +594,7 @@ exports.store_code = (req, res, next) => {
 exports.validate_referral = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_KEY);
-    User.findOne({cribPremium: {referralCode: req.body.referral_code}})
+    User.findOne({referralCode: req.body.referralCode})
         .then(async (user) => {
             await User.findByIdAndUpdate(decoded.userId, {
                 referredBy: user._id
