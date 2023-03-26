@@ -57,7 +57,6 @@ exports.prem_generate_link = async(req, res, next) => {
       .then(square_res => {
         //   console.log("THE SQUARE RESPONSE", square_res)
         const userId = decoded.userId;
-        console.log(userId);
         if (userId == req.body.userId) {
             
             let query = {};
@@ -65,7 +64,6 @@ exports.prem_generate_link = async(req, res, next) => {
             // console.log(square_res.related_resources.orders[0].state)
             if (req.body.referralCode != undefined) {
                 query.referralCode = req.body.referralCode;
-                console.log(square_res.related_resources.orders[0].state);
                 let paymentDetails = {};
                 if(square_res.related_resources.orders[0].state == "OPEN"){
                     paymentDetails.status = true
@@ -79,10 +77,8 @@ exports.prem_generate_link = async(req, res, next) => {
                     paymentDetails.paymentLinkCreatedAt= square_res.payment_link.created_at;
                     paymentDetails.paymentLinkId = square_res.payment_link.id;
                 }
-                
                 cribPremium.paymentDetails = paymentDetails;
                 cribPremium.referred = [];
-                
             }
             query.cribPremium = cribPremium;
 
@@ -105,6 +101,30 @@ exports.prem_generate_link = async(req, res, next) => {
       )
       .catch(err => res.status(400).json({ error: 'unable to make request', errRaw: err }));
 };
+
+
+//************************* PAYMENT CONTROLLER ***************************//
+// @route GET /premium/status
+// @description get the status of Crib premium, return either false meaning not premium or true 
+// @access private
+
+exports.prem_status = async(req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    if(req.body.orderId == null || req.body.orderId == undefined){
+        return res.status(401).json({message: "Incomplete data"})
+    }
+    await fetch("https://connect.squareup.com/v2/orders/" + req.body.orderId, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Square-Version': '2023-03-15',
+            'Authorization': 'Bearer ' + sq_access_token
+        }, 
+      }).then(resp => resp.json())
+      .then(data => res.status(200).json(data))
+      .catch(err => res.status(400).json({ error: 'Unable to make request', errRaw: err }));
+}
 
 
 // let squareDetail = await resp.json();
