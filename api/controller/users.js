@@ -598,7 +598,7 @@ exports.validate_referral = (req, res, next) => {
         .then(async (user) => {
             await User.findByIdAndUpdate(decoded.userId, {
                 referredBy: user._id
-            });
+            }).catch((err) => res.status(404).json({error: "Referred user doesn't exist."}));
             res.status(200).json({ referredBy: user._id, message: "Referral recorded."})
         }).catch((err) => res.status(404).json({error: "Invalid referral code"}));
 };
