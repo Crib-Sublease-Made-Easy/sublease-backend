@@ -42,7 +42,7 @@ router.post("/login", UserController.login_token);
 router.delete("/:id", checkAuth, UserController.user_delete);
 router.put("/:id", checkAuth, UserController.user_modify);
 router.put("/referral/storecode", checkAuth, UserController.store_code);
-
+router.put("/referral/validate", checkAuth, UserController.validate_referral);
 router.put(
     "/profileImages/:id",
     upload.single("userImage"),
