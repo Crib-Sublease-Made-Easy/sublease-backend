@@ -114,6 +114,12 @@ exports.prem_status = async(req, res, next) => {
     if(req.body.orderId == null || req.body.orderId == undefined){
         return res.status(401).json({message: "Incomplete data"})
     }
+
+    const userId = decoded.userId;
+    if (userId != req.body.userId) {
+        return res.status(400).json({message: "Auth failed"})
+    }
+
     await fetch("https://connect.squareup.com/v2/orders/" + req.body.orderId, {
         method: "GET",
         headers: {
