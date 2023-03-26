@@ -65,10 +65,9 @@ const UserSchema = new mongoose.Schema ({
         type: String,
         required: false
     },
-     referralCode: {
-        type: String,
-        required: false,
-        default: null
+    referredBy: {
+        type: mongoose.Types.ObjectId,
+        required: false
     },
     cribPremium:{
         referralCode: {
@@ -76,7 +75,7 @@ const UserSchema = new mongoose.Schema ({
             required: false
         },
         referred: {
-            type: [String],
+            type: [mongoose.Types.ObjectId],
             require: false,
         },
         paymentDetails: {

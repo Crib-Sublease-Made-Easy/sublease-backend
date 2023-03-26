@@ -40,8 +40,8 @@ exports.get_image = async (req, res, next) => {
 //************************* USER CONTROLLER ***************************//
 
 // @route POST /users/OTP/step1
-// @description create useraccount
-// @access public
+// @description Create an Authy account for the user and return Authy ID
+// @access Public
 exports.otp_step1 = (req, resp, next) => {
     if (req.body.email == undefined || req.body.phoneNumber == undefined) {
         resp.status(400).json({
@@ -77,8 +77,8 @@ exports.otp_step1 = (req, resp, next) => {
 };
 
 // @route POST /users/OTP/step2
-// @description send sms
-// @access public
+// @description Send Authy SMS token to user
+// @access Public
 exports.otp_step2 = (req, resp, next) => {
     //DEMO ACCOUNT
     if (req.body.authy_id == 999999999) {
@@ -115,8 +115,8 @@ exports.otp_step2 = (req, resp, next) => {
 };
 
 // @route POST /users/OTP/step3
-// @description verify token is correct
-// @access public
+// @description Verify Authy SMS token from user is correct
+// @access Public
 exports.otp_step3 = (req, resp, next) => {
     authy.verify(
         req.body.authy_id,
@@ -229,8 +229,8 @@ exports.otp_step3 = (req, resp, next) => {
 };
 
 // @route POST /users/check
-// @description signup a user in the database
-// @access public
+// @description Check if a user exists with the same phone number
+// @access Public
 exports.check_user = (req, res, next) => {
     console.log(req.body);
     User.find({ phoneNumber: req.body.phoneNumber })
@@ -250,8 +250,8 @@ exports.check_user = (req, res, next) => {
 };
 
 // @route POST /users/authy
-// @description login a user in the database and return access token
-// @access public
+// @description Retrieve an existing user's Authy ID from database
+// @access Public
 exports.authy = (req, res, next) => {
     User.find({ phoneNumber: req.body.phoneNumber })
         .exec()
@@ -275,7 +275,7 @@ exports.authy = (req, res, next) => {
 };
 
 // @route POST /users/login
-// @description login a user in the database and return access token
+// @description Login a user in the database and return access token
 // @access public
 exports.login_token = (req, resp, next) => {
     if (req.body.token == 999999 && req.body.authy_id == 999999999) {
@@ -425,7 +425,9 @@ exports.login_token = (req, resp, next) => {
     }
 };
 
-//Don't need validate user because who cares if someone else see's this information
+// @route GET /users/favorites/all
+// @description Get a users favorite properties
+// @access Public
 exports.user_get_favorites = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_KEY);
@@ -490,18 +492,8 @@ exports.user_get_favorites = (req, res, next) => {
         });
 };
 
-//INACTIVE SERVICE
-// @route GET /users
-// @description lists all of the users in the market
-// @access public
-exports.user_get_all = (req, res, next) => {
-    User.find()
-        .then((proprties) => res.json(proprties))
-        .catch((err) => res.status(404).json({ propertiesFound: "none" }));
-};
-
 // @route GET /users/:id
-// @description Get single user by id
+// @description Get a single user by id
 // @access Public
 exports.user_get_one = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
@@ -520,17 +512,8 @@ exports.user_get_one = (req, res, next) => {
     }
 };
 
-// @route POST /users
-// @description post user
-// @access Public
-// router.post('/', (req, res) => {
-//   User.create(req.body)
-//     .then(user => res.json({ msg: 'user added successfully' }))
-//     .catch(err => res.status(400).json({ error: 'Unable to add this user', errRaw: err }));
-// });
-
 // @route PUT /users/:id
-// @description Update user
+// @description Update a user's school, occupation, or email
 // @access Public
 exports.user_modify = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
@@ -560,7 +543,7 @@ exports.user_modify = (req, res, next) => {
 };
 
 // @route PUT /users/profileImages/:id
-// @description Update user profile pic
+// @description Update a user's profile pic
 // @access Public
 exports.user_modify_profilePic = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
@@ -590,11 +573,43 @@ exports.user_modify_profilePic = (req, res, next) => {
     }
 };
 
-//INACTIVE SERVICE
+// @route PUT users/referral/storecode
+// @description Stores the referral code for a Crib Premium user
+// @access Private
+exports.store_code = (req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    console.log(JSON.stringify(req.files))
+    User.findOneAndUpdate(
+        { _id: decoded.userId },
+        { $push: { cribPremium: {referralCode: req.body.generated_code} } },
+    ).then(resp => {
+        res.json({ msg: 'referral code stored' })
+    }).catch(err => res.status(400).json({ error: 'Unable to store code', errRaw: err }));
+};
+
+// @route PUT users/referral/validate
+// @description Validates referral code for a new Crib user
+// @access Private
+exports.validate_referral = (req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    User.findOne({cribPremium: {referralCode: req.body.referral_code}})
+        .then(async (user) => {
+            await User.findByIdAndUpdate(decoded.userId, {
+                referredBy: user._id
+            });
+            res.status(200).json({ referredBy: user._id, message: "Referral recorded."})
+        }).catch((err) => res.status(404).json({error: "Invalid referral code"}));
+};
+
+
+//************************* INACTIVE SERVICES ***************************//
+
 // @route DELETE /users/:id
 // @description Delete user by id
 // @access Public
-  exports.user_delete = (req, res, next) => {
+exports.user_delete = (req, res, next) => {
     User.findByIdAndRemove(req.params.id, req.body)
         .then((user) => res.json({ mgs: "User deleted successfully" }))
         .catch((err) => res.status(404).json({ error: "No such a user" }));
@@ -606,20 +621,11 @@ exports.user_modify_profilePic = (req, res, next) => {
     return res;
   };
 
-
-
-// @route PUT users/referral/storecode
-// @description post referral code
-// @access Private
-exports.store_code = (req, res, next) => {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_KEY);
-    console.log(JSON.stringify(req.files))
-    User.findOneAndUpdate(
-        { _id: decoded.userId },
-        { $push: { referralCodes: req.body.generated_code} },
-    ).then(resp => {
-        res.json({ msg: 'referral code stored' })
-    }).catch(err => res.status(400).json({ error: 'Unable to store code', errRaw: err }));
-  };
-  
+// @route GET /users
+// @description lists all of the users in the market
+// @access public
+exports.user_get_all = (req, res, next) => {
+    User.find()
+        .then((proprties) => res.json(proprties))
+        .catch((err) => res.status(404).json({ propertiesFound: "none" }));
+};
