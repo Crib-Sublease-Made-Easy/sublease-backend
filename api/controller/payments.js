@@ -93,7 +93,7 @@ exports.prem_generate_link = async(req, res, next) => {
             .catch((err) =>
                 res.status(400).json({ error: "Unable to update the Database" })
             );
-            return res.status(200).json(json)
+            return res.status(200).json(square_res)
         }
         else{
             return res.status(400).json({
