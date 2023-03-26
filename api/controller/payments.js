@@ -121,15 +121,30 @@ exports.prem_status = async(req, res, next) => {
     }
 
     await fetch("https://connect.squareup.com/v2/orders/" + req.body.orderId, {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-            'Square-Version': '2023-03-15',
-            'Authorization': 'Bearer ' + sq_access_token
-        }, 
-      }).then(resp => resp.json())
-      .then(data => res.status(200).json(data))
-      .catch(err => res.status(400).json({ error: 'Unable to make request', errRaw: err }));
+    method: "GET",
+    headers: {
+        'Content-Type': 'application/json',
+        'Square-Version': '2023-03-15',
+        'Authorization': 'Bearer ' + sq_access_token
+    }, 
+    }).then(resp => resp.json())
+    .then(data => {
+        
+       
+        console.log(data)
+        console.log(data.order.state)
+        //The payment is paid
+        if(data.order.state == "OPEN"){
+            User.findByIdAndUpdate(req.body.userId, {$set: {'cribPremium.paymentDetails.status': true}})
+            .catch((err) =>
+                res.status(400).json({ error: "Unable to update the Database" })
+            );   
+        }
+        
+
+        return res.status(200).json(data)
+    })
+    .catch(err => res.status(400).json({ error: 'Unable to make request', errRaw: err }));
 }
 
 
