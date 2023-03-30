@@ -75,7 +75,7 @@ const PropertySchema = new mongoose.Schema (
             type: [String],
             required: false
         },
-        amenities: {
+        preference: {
             type: String,
             required: false,
             default: null
