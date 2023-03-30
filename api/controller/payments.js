@@ -15,7 +15,7 @@ var data = {
 	"quick_pay":{
 		"name": "Crib Connect",
 		"price_money": {
-			"amount": 999,
+			"amount": 100,
 			"currency": "USD"
 		},
 		"location_id": "LGZXV3FXE9F2J"
