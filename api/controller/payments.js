@@ -14,7 +14,7 @@ var data = {
 	"quick_pay":{
 		"name": "Crib Premium",
 		"price_money": {
-			"amount": 100,
+			"amount": 999,
 			"currency": "USD"
 		},
 		"location_id": "LGZXV3FXE9F2J"
