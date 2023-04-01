@@ -75,6 +75,11 @@ const PropertySchema = new mongoose.Schema (
             type: [String],
             required: false
         },
+        preference: {
+            type: String,
+            required: false,
+            default: null
+        },
         loc: {
             type: {
               type: String,

@@ -11,8 +11,9 @@ var sq_access_token = process.env.SQUARE_ACCESS_TOKEN;
 //************************* PAYMENTS CONTROLLER ***************************//
 
 var data = {
+    "description": "Crib Connect immediately connects tenants with reliable and interested subtenants at a very small fee $9.99. With Crib Connect you will receive a list of 5 to 10 potential subtenants.",
 	"quick_pay":{
-		"name": "Crib Premium",
+		"name": "Crib Connect",
 		"price_money": {
 			"amount": 999,
 			"currency": "USD"
