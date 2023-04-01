@@ -72,6 +72,8 @@ exports.send_message = async (req, res, next) => {
           contents: {
             en: 'New message from ' + sender.firstName,
           },
+          ios_badgeType: "Increase",
+          ios_badgeCount: 1  
           };
         console.log("DEBUG", body)
         createNotication(body);
