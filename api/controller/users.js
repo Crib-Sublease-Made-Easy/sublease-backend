@@ -596,7 +596,11 @@ exports.validate_referral = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_KEY);
     User.findOne({referralCode: req.body.referralCode})
         .then(async (user) => {
-            await User.findByIdAndUpdate(decoded.userId, {
+            let decodedId = await decoded.userId
+            if(decodedId == user._id){
+                return res.status(401).json({error: "Can't refer self"});
+            }
+            await User.findByIdAndUpdate(decodedId, {
                 referredBy: user._id
             }).catch((err) => res.status(404).json({error: "Referred user doesn't exist."}));
             res.status(200).json({ referredBy: user._id, message: "Referral recorded."})
