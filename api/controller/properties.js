@@ -768,12 +768,13 @@ exports.property_get_one = async (req, res, next) => {
       else{
         await User.findById(property.postedBy).then(async user => {
           postedUserInfo = {}
-          postedUserInfo.firstName = user._id
+          postedUserInfo.id = user._id
           postedUserInfo.firstName = user.firstName
           postedUserInfo.lastName = user.lastName
           postedUserInfo.profilePic = user.profilePic
           postedUserInfo.occupation = user.occupation;
           postedUserInfo.school = user.school;
+          
           changeNumberOfViews = {}
           console.log(req.body.viewCount)
           if(String(req.body.viewCount) === "true"){
