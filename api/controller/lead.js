@@ -1,4 +1,5 @@
 const Lead = require('../models/lead');
+const Property = require('../models/property');
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
 const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_AUTH_TOKEN);
@@ -89,4 +90,28 @@ exports.get_leads = (req, res, next) => {
   .catch(err => res.status(404).json({ leadsFound: 'none' }));
   
 };
+
+// //route POST /generateFacebookPost
+// // @description given property detail, generate a FB post
+// // @access Private
+
+// exports.gen_fb_post = (req, res, next) => {
+//   const token = req.headers.authorization.split(" ")[1];
+//   const decoded = jwt.verify(token, process.env.JWT_KEY);
+//   const userId = decoded.userId;
+//   if(userId == req.body.userId){
+//     Property.findOne({_id: req.body.propId})
+//     .then(prop =>{
+//       let respond = {}
+//       console.log(prop)
+//       res.status(200).json({ error: "ok" })
+//     })
+//   }
+//   else{
+//     return res.status(401).json({
+//       message: "Auth failed",
+//     });
+//   }
+
+// }
 
