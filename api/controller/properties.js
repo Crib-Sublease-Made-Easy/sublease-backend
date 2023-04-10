@@ -861,12 +861,12 @@ exports.property_create = (req, res, next) => {
           }
         }
       )
-      console.log("setting tim ")
-      let curTime = new Date().getTime();
-      let startTime = new Date(req.body.availableFrom).getTime();
+      // console.log("setting tim ")
+      // let curTime = new Date().getTime();
+      // let startTime = new Date(req.body.availableFrom).getTime();
 
-      let days = Math.floor((startTime - curTime)/(1000*60*60*24))
-      await User.findById(decoded.userId).then(async user => {
+      // let days = Math.floor((startTime - curTime)/(1000*60*60*24))
+      // await User.findById(decoded.userId).then(async user => {
       //   client
       //   .create({
       //     body: `Thank you for posting your room on Crib! Be sure to check out Crib Connect, we find interested and reliable tenants to take over your sublease so you don't have to. You are ${days} away from the start of sublease! `,
@@ -880,7 +880,7 @@ exports.property_create = (req, res, next) => {
 
       // })
   
-      return res.status(201).json({data:"message sent!"}, {message:"not successfully sent!"})
+      return res.status(201).json({data:"message sent!"})
     })
     .catch(err => res.status(400).json({ error: 'Unable to add this property', errRaw: err }));
 };
