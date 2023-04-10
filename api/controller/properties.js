@@ -3,7 +3,10 @@ const Property = require('../models/property');
 const Completed = require('../models/completed');
 const FBContacts = require('../models/fb_contacts');
 const mongoose = require("mongoose");
+const User = require("../models/user");
 const jwt = require('jsonwebtoken');
+const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_AUTH_TOKEN);
+
 
 // ------------ Image Specific Code----------
 
@@ -855,8 +858,25 @@ exports.property_create = (req, res, next) => {
           }
         }
       )
+      let curTime = new Date().getTime();
+      let startTime = new Date(req.body.availableFrom).getTime();
 
-      res.json({ msg: 'property added successfully' })
+      let days = Math.floor((startTime - curTime)/(1000*60*60*24))
+      await User.findById(decoded.userId).then(async user => {
+        client
+        .create({
+          body: `Thank you for posting your room on Crib! Be sure to check out Crib Connect, we find interested and reliable tenants to take over your sublease so you don't have to. You are ${days} away from the start of sublease! `,
+          from: '+18775226376',
+          to: `+1${user.phoneNumber}`
+        })
+        .then(message => {
+          console.log(message)
+          return res.status(200).json({data:"message sent!"})
+        })
+
+      })
+    
+      return res.status(201).json({data:"message sent!"}, {message:"not successfully sent!"})
     })
     .catch(err => res.status(400).json({ error: 'Unable to add this property', errRaw: err }));
 };
@@ -916,6 +936,7 @@ exports.property_scraped = (req, res, next) => {
       deleted: false,
       numberOfViews: 0
     });
+
     console.log("PROPERTY OBJECT")
     console.log(property)
     property
