@@ -858,24 +858,24 @@ exports.property_create = (req, res, next) => {
           }
         }
       )
-      let curTime = new Date().getTime();
-      let startTime = new Date(req.body.availableFrom).getTime();
+      // let curTime = new Date().getTime();
+      // let startTime = new Date(req.body.availableFrom).getTime();
 
-      let days = Math.floor((startTime - curTime)/(1000*60*60*24))
-      await User.findById(decoded.userId).then(async user => {
-        client
-        .create({
-          body: `Thank you for posting your room on Crib! Be sure to check out Crib Connect, we find interested and reliable tenants to take over your sublease so you don't have to. You are ${days} away from the start of sublease! `,
-          from: '+18775226376',
-          to: `+1${user.phoneNumber}`
-        })
-        .then(message => {
-          console.log(message)
-          return res.status(200).json({data:"message sent!"})
-        })
+      // let days = Math.floor((startTime - curTime)/(1000*60*60*24))
+      // await User.findById(decoded.userId).then(async user => {
+      //   client
+      //   .create({
+      //     body: `Thank you for posting your room on Crib! Be sure to check out Crib Connect, we find interested and reliable tenants to take over your sublease so you don't have to. You are ${days} away from the start of sublease! `,
+      //     from: '+18775226376',
+      //     to: `+1${user.phoneNumber}`
+      //   })
+      //   .then(message => {
+      //     console.log(message)
+      //     return res.status(200).json({data:"message sent!"})
+      //   })
 
-      })
-    
+      // })
+  
       return res.status(201).json({data:"message sent!"}, {message:"not successfully sent!"})
     })
     .catch(err => res.status(400).json({ error: 'Unable to add this property', errRaw: err }));
