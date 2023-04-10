@@ -842,11 +842,14 @@ exports.property_create = (req, res, next) => {
     deleted: false,
     numberOfViews: 0
   });
+
+  console.log("create")
   property
     .save()
     .then(async (property) => {
       console.log(property)
-      console.log(decoded.userId)
+
+      console.log("DECODEEEEDEE ID ", decoded.userId)
       User.findOneAndUpdate(
         { _id: decoded.userId },
         { $push: { postedProperties: property._id } },
@@ -858,11 +861,12 @@ exports.property_create = (req, res, next) => {
           }
         }
       )
-      // let curTime = new Date().getTime();
-      // let startTime = new Date(req.body.availableFrom).getTime();
+      console.log("setting tim ")
+      let curTime = new Date().getTime();
+      let startTime = new Date(req.body.availableFrom).getTime();
 
-      // let days = Math.floor((startTime - curTime)/(1000*60*60*24))
-      // await User.findById(decoded.userId).then(async user => {
+      let days = Math.floor((startTime - curTime)/(1000*60*60*24))
+      await User.findById(decoded.userId).then(async user => {
       //   client
       //   .create({
       //     body: `Thank you for posting your room on Crib! Be sure to check out Crib Connect, we find interested and reliable tenants to take over your sublease so you don't have to. You are ${days} away from the start of sublease! `,
