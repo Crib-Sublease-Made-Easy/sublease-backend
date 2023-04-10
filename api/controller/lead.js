@@ -11,7 +11,7 @@ const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_
 //************************* LEADS CONTROLLER ***************************//
 
 
-// @route POST /leads
+// @route POST /web/leads
 // @description post leads
 // @access Public
 exports.collect_leads = (req, res, next) => {
@@ -30,20 +30,26 @@ exports.collect_leads = (req, res, next) => {
   }
 };
 
-// @route POST /iosleads
+// @route POST /web/iosleads
 // @description on the website when users type in a phone number, we send them a confirmation code
 // @access Public
 exports.ios_leads = (req, res, next) => {
+  console.log("hello")
+  console.log(req.body.number)
   if(req.body.number == undefined){
     res.status(400).json({ error: 'Unable to send contactsss'});
   } else{
     client.messages
     .create({
-        body: 'Sublease your apartment with Crib in just 30 seconds! Download the mobile app to get notified right away when others are interested in your sublease! Download it here: linktree.com/crib.subleasing',
+        body: 'Sublease your apartment with Crib in just 30 seconds! Download the mobile app to get notified right away when others are interested in your sublease! Check it out: linktree.com/crib.subleasing',
         from: '+18775226376',
         to: `+1${req.body.number}`
     })
-    .then(message => console.log(message))
+    .then(message => {
+        console.log(message)
+        return res.status(200).json({data:"message sent!"})
+      }
+      )
     // .then(async (cont) => {
     //   res.status(200).json({ msg: 'Email Stored Successfully' })
     // })
