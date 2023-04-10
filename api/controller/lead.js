@@ -39,7 +39,7 @@ exports.ios_leads = (req, res, next) => {
   } else{
     client.messages
     .create({
-        body: 'Sublease your apartment with Crib in just 30 seconds! Download the mobile app to get notified right away when others are interested in your sublease! https://crib-app.com/download',
+        body: 'Sublease your apartment with Crib in just 30 seconds! Download the mobile app to get notified right away when others are interested in your sublease! Download it here: linktree.com/crib.subleasing',
         from: '+18775226376',
         to: `+1${req.body.number}`
     })
