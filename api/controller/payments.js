@@ -59,8 +59,11 @@ var testData = {
 
 
 exports.prem_generate_link = async(req, res, next) => {
-    console.log("HELLLOOOOOOOOOO")
     const token = req.headers.authorization.split(" ")[1];
+    let price = 1999;
+    if(req.body.price != undefined || req.body.price != null){
+        price = Number(req.body.price*100)
+    }
     const decoded = jwt.verify(token, process.env.JWT_KEY);
     await fetch("https://connect.squareup.com/v2/online-checkout/payment-links", {
         method: "POST",
@@ -69,11 +72,23 @@ exports.prem_generate_link = async(req, res, next) => {
             'Square-Version': '2023-03-15',
             'Authorization': 'Bearer ' + sq_access_token
         }, 
-        body: JSON.stringify(data)
+        body: JSON.stringify({
+            "description": "Crib Connect immediately connects tenants with reliable and interested subtenants at a very small fee $9.99. With Crib Connect you will receive a list of 5 to 10 potential subtenants.",
+            "quick_pay":{
+                "name": "Crib Connect",
+                "price_money": {
+                    "amount": price,
+                    "currency": "USD"
+                },
+                "location_id": "LGZXV3FXE9F2J"
+
+            }
+        })
       }).then(resp => resp.json())
       .then(square_res => {
         //   console.log("THE SQUARE RESPONSE", square_res)
         const userId = decoded.userId;
+       
         if (userId == req.body.userId) {
             
             let query = {};
@@ -88,6 +103,7 @@ exports.prem_generate_link = async(req, res, next) => {
                 else{
                     paymentDetails.status = false
                 }
+               
                 if(square_res.payment_link != undefined){
                     paymentDetails.orderId = square_res.payment_link.order_id;
                     paymentDetails.paymentLink = square_res.payment_link.url;
@@ -97,6 +113,7 @@ exports.prem_generate_link = async(req, res, next) => {
                 cribPremium.paymentDetails = paymentDetails;
                 cribPremium.referred = [];
             }
+            console.log("fucl")
             query.cribPremium = cribPremium;
 
             console.log("Update user")
