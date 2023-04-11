@@ -61,8 +61,10 @@ var testData = {
 exports.prem_generate_link = async(req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     let price = 1999;
-    if(req.body.price != undefined || req.body.price != null){
-        price = Number(req.body.price*100)
+    if(req.body.price != undefined && req.body.price != null){
+
+        price = Number(req.body.price)*100
+        console.log(price)
     }
     const decoded = jwt.verify(token, process.env.JWT_KEY);
     await fetch("https://connect.squareup.com/v2/online-checkout/payment-links", {
