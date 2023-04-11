@@ -226,7 +226,7 @@ exports.prem_status = async(req, res, next) => {
 }
 
 //************************* PAYMENT CONTROLLER ***************************//
-// @route GET /premium/getprice
+// @route POST /premium/getprice
 // @description get price depening on the sublease
 // @access private
 exports.prem_get_price = async(req, res, next) => {
@@ -271,12 +271,12 @@ exports.prem_get_price = async(req, res, next) => {
         let diffDays = Math.floor((diff)/(1000*60*60*24))
 
         if(diffDays < 15){
-            price += 60
+            price += 40
             data.daysToBegin = "short"
 
         }
         else if(diffDays < 30){
-            price += 40
+            price += 20
             data.daysToBegin = "medium"
         }
         else{
