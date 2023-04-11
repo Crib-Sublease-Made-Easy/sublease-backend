@@ -265,6 +265,14 @@ exports.prem_get_price = async(req, res, next) => {
           
           
         }
+        else if(city.indexOf("sanfrancisco") == 0 || city.indexOf("sf") == 0 ){
+            
+            
+        }
+        else if(city.indexOf("sanjose") == 0 || city.indexOf("ca") == 0 ){
+            
+            
+        }
         else{
             data.loc = p.loc.secondaryTxt
             data.locPrice = "10"
