@@ -1,6 +1,8 @@
 const fetch = require('node-fetch');
 const jwt = require("jsonwebtoken");
 const { query } = require('express');
+const Property = require('../models/property');
+
 
 var sq_access_token = process.env.SQUARE_ACCESS_TOKEN;
 
@@ -221,6 +223,74 @@ exports.prem_status = async(req, res, next) => {
         return res.status(200).json(data)
     })
     .catch(err => res.status(400).json({ error: 'Unable to make request', errRaw: err }));
+}
+
+//************************* PAYMENT CONTROLLER ***************************//
+// @route GET /premium/getprice
+// @description get price depening on the sublease
+// @access private
+exports.prem_get_price = async(req, res, next) => {
+    let price = 19.99;
+    Property.findById(req.body.propId).then(async p => {
+        let data = {}
+
+        //take out comma and change to lower case
+        let city = p.loc.secondaryTxt.replaceAll(",","").replaceAll(" ","").toLowerCase();
+
+        if(city.indexOf("madison") == 0 ){
+            price += 20
+            data.loc = "Madison"
+        }
+        else if(city.indexOf("losangeles") == 0 || city.indexOf("la") == 0 ){
+            
+            data.loc = "Los Angeles"
+        }
+        else if(city.indexOf("newyork") == 0 || city.indexOf("ny") == 0){
+          
+            data.loc = "New York"
+        }
+        else if(city.indexOf("austin") == 0){
+          
+            data.loc = "Austin"
+        }
+        else if(city.indexOf("sanmarcos") == 0){
+          
+            data.loc = "San Marcos"
+        }
+        
+        else{
+            data.loc = ""
+            price += 10
+        }
+
+        let curTime = new Date().getTime()
+        let startTime = new Date(p.availableFrom).getTime()
+
+        let diff = startTime - curTime;
+
+        let diffDays = Math.floor((diff)/(1000*60*60*24))
+
+        if(diffDays < 15){
+            price += 60
+            data.daysToBegin = "short"
+
+        }
+        else if(diffDays < 30){
+            price += 40
+            data.daysToBegin = "medium"
+        }
+        else{
+            data.daysToBegin = "long"
+        }
+
+        data.price = price
+       
+        return res.status(200).json(data);
+    })
+    .catch(e => {
+        return res.status(404).json({price: null})
+    })
+
 }
 
 
