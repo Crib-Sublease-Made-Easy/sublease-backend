@@ -233,6 +233,7 @@ exports.prem_get_price = async(req, res, next) => {
     let price = 19.99;
     Property.findById(req.body.propId).then(async p => {
         let data = {}
+        data.basePrice = price;
 
         //take out comma and change to lower case
         let city = p.loc.secondaryTxt.replaceAll(",","").replaceAll(" ","").toLowerCase();
@@ -240,10 +241,12 @@ exports.prem_get_price = async(req, res, next) => {
         if(city.indexOf("madison") == 0 ){
             price += 20
             data.loc = "Madison"
+            data.locPrice = "20"
         }
         else if(city.indexOf("losangeles") == 0 || city.indexOf("la") == 0 ){
             
             data.loc = "Los Angeles"
+            
         }
         else if(city.indexOf("newyork") == 0 || city.indexOf("ny") == 0){
           
@@ -260,6 +263,7 @@ exports.prem_get_price = async(req, res, next) => {
         
         else{
             data.loc = ""
+            data.locPrice = "10"
             price += 10
         }
 
@@ -273,15 +277,15 @@ exports.prem_get_price = async(req, res, next) => {
         if(diffDays < 15){
             price += 40
             data.daysToBegin = "short"
+            data.daysToBeginPrice = "40"
 
         }
         else if(diffDays < 30){
             price += 20
             data.daysToBegin = "medium"
+            data.daysToBeginPrice = "20"
         }
-        else{
-            data.daysToBegin = "long"
-        }
+        
 
         data.price = price
        
