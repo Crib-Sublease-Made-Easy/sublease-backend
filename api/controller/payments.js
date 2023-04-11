@@ -86,7 +86,7 @@ exports.prem_generate_link = async(req, res, next) => {
         })
       }).then(resp => resp.json())
       .then(square_res => {
-        //   console.log("THE SQUARE RESPONSE", square_res)
+          console.log("THE SQUARE RESPONSE", square_res)
         const userId = decoded.userId;
        
         if (userId == req.body.userId) {
