@@ -243,23 +243,23 @@ exports.prem_get_price = async(req, res, next) => {
             data.loc = "Madison"
             data.locPrice = "20"
         }
-        else if(city.indexOf("losangeles") == 0 || city.indexOf("la") == 0 ){
+        // else if(city.indexOf("losangeles") == 0 || city.indexOf("la") == 0 ){
             
-            data.loc = "Los Angeles"
+        //     data.loc = "Los Angeles"
             
-        }
-        else if(city.indexOf("newyork") == 0 || city.indexOf("ny") == 0){
+        // }
+        // else if(city.indexOf("newyork") == 0 || city.indexOf("ny") == 0){
           
-            data.loc = "New York"
-        }
-        else if(city.indexOf("austin") == 0){
+        //     data.loc = "New York"
+        // }
+        // else if(city.indexOf("austin") == 0){
           
-            data.loc = "Austin"
-        }
-        else if(city.indexOf("sanmarcos") == 0){
+        //     data.loc = "Austin"
+        // }
+        // else if(city.indexOf("sanmarcos") == 0){
           
-            data.loc = "San Marcos"
-        }
+        //     data.loc = "San Marcos"
+        // }
         
         else{
             data.loc = ""
