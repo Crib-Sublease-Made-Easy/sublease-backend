@@ -238,29 +238,33 @@ exports.prem_get_price = async(req, res, next) => {
         //take out comma and change to lower case
         let city = p.loc.secondaryTxt.replaceAll(",","").replaceAll(" ","").toLowerCase();
 
+        //Madison and cit
         if(city.indexOf("madison") == 0 ){
             price += 20
             data.loc = "Madison"
             data.locPrice = "20"
         }
-        // else if(city.indexOf("losangeles") == 0 || city.indexOf("la") == 0 ){
+        else if(city.indexOf("losangeles") == 0 || city.indexOf("la") == 0 ){
             
-        //     data.loc = "Los Angeles"
+           
             
-        // }
-        // else if(city.indexOf("newyork") == 0 || city.indexOf("ny") == 0){
+        }
+        else if(city.indexOf("newyork") == 0 || city.indexOf("ny") == 0){
           
-        //     data.loc = "New York"
-        // }
-        // else if(city.indexOf("austin") == 0){
+           
+        }
+        else if(city.indexOf("austin") == 0){
           
-        //     data.loc = "Austin"
-        // }
-        // else if(city.indexOf("sanmarcos") == 0){
+           
+        }
+        else if(city.indexOf("sanmarcos") == 0){
           
-        //     data.loc = "San Marcos"
-        // }
         
+        }
+        else if(city.indexOf("berkeley") == 0 || city.indexOf("california") == 0){
+          
+          
+        }
         else{
             data.loc = p.loc.secondaryTxt
             data.locPrice = "10"
