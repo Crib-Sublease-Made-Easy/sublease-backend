@@ -274,6 +274,8 @@ exports.prem_get_price = async(req, res, next) => {
 
         let diffDays = Math.floor((diff)/(1000*60*60*24))
 
+        data.days = diffDays
+
         if(diffDays < 15){
             price += 40
             data.daysToBegin = "short"
