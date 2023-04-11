@@ -63,7 +63,7 @@ exports.prem_generate_link = async(req, res, next) => {
     let price = 1999;
     if(req.body.price != undefined && req.body.price != null){
 
-        price = Number(req.body.price)*100
+        price = Math.floor(Number(req.body.price)*100)
         console.log(price)
     }
     const decoded = jwt.verify(token, process.env.JWT_KEY);
