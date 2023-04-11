@@ -262,7 +262,7 @@ exports.prem_get_price = async(req, res, next) => {
         // }
         
         else{
-            data.loc = ""
+            data.loc = p.loc.secondaryTxt
             data.locPrice = "10"
             price += 10
         }
