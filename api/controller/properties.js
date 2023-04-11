@@ -880,7 +880,7 @@ exports.property_create = (req, res, next) => {
 
       // })
   
-      return res.status(201).json({data:"message sent!"})
+      return res.status(200).json({data:"message sent!"})
     })
     .catch(err => res.status(400).json({ error: 'Unable to add this property', errRaw: err }));
 };
