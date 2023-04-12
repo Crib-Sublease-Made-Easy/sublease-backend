@@ -6,11 +6,8 @@ const Property = require('../models/property');
 const { response } = require("express");
 
 const IGID = "17841457359703661";
-const SECRET = "01781d1e760b2cee17fefedc8a80e161";
-const FBID = "106993905701800";
 const IGTOKEN = "EAAMoc0mnE3EBAM6oqriGt8P1yvBTpLMlZCVkeKFZCbzUAR57un6woEQZAlSK0SONwZBiqTKvy5mmJZC53ZC7xNK5EKWpEyB2Uh8rsxImA7nnHZBd6K5Cwu4YkJKeG57fQMMu4hmDBhUZBOcJdIVqABd3sqXR29CbsNlKGzQ5sudEnt0v5RWkixkT";
 
-// 17959750892450075,18238657804163295,18254208718154264,18135959536294375
 
 exports.automate_instagram = (req, res, next) => {
     User.find({ phoneNumber: req.body.phoneNumber })
