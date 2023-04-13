@@ -55,7 +55,7 @@ var testData = {
 //       }).then(resp => resp.json())
 //       .then(json => res.json(json))
 //       .catch(err => res.status(400).json({ error: 'unable to make request', errRaw: err }));
-// };
+// }
 
 
 exports.prem_generate_link = async(req, res, next) => {
