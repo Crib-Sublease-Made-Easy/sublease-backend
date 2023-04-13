@@ -38,7 +38,7 @@ exports.automate_instagram = (req, res, next) => {
 
                         imageContainerIds.push(containerId)
                     }
-
+                    
                     // Create carousel container
                     children = imageContainerIds.join('%2C')
                     start = prop.availableFrom.getMonth() + '%2F' + prop.availableFrom.getDate() + '%2F' + prop.availableFrom.getFullYear()
@@ -50,9 +50,6 @@ exports.automate_instagram = (req, res, next) => {
                         "/media?media_type=CAROUSEL&children=" + children + "&caption=" + description + "&access_token=" + IGTOKEN, 
                     {
                         method: 'POST',
-                        body: {
-                            "caption": description
-                        },
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -82,7 +79,7 @@ exports.automate_instagram = (req, res, next) => {
                     .catch(err => {
                         res.status(500).json({message: "Unable to post to Instagram", status: err})
                     });
-
+                    
                     res.status(200).json({status: "Success", posted: postId});
 
                 }).catch((err) => {
