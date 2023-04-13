@@ -288,6 +288,15 @@ exports.prem_get_price = async(req, res, next) => {
             
             
         }
+	else if(city.indexOf("seattle") == 0 || city.indexOf("wa") == 0 ){
+            
+            
+        }
+	else if(city.indexOf("chicago") == 0 || city.indexOf("il") == 0 ){
+            
+            
+        }
+	    
         else if(city.indexOf("sanjose") == 0 || city.indexOf("ca") == 0 ){
             
             
