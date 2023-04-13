@@ -53,6 +53,9 @@ app.use('/payments', payments);
 const web_users = require('./api/routes/web-users');
 app.use("/website", web_users);
 
+const automation = require('./api/routes/automation');
+app.use('/automation', automation);
+
 // const chat = require('./api/routes/chat')
 // app.use('/chat', chat);
 
