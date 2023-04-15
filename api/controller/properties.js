@@ -807,6 +807,8 @@ exports.property_get_one = async (req, res, next) => {
 // @description post property
 // @access Public
 exports.property_create = (req, res, next) => {
+ 
+
   const token = req.headers.authorization.split(" ")[1];
   const decoded = jwt.verify(token, process.env.JWT_KEY);
   console.log(JSON.stringify(req.files))
@@ -865,15 +867,18 @@ exports.property_create = (req, res, next) => {
   })
   .catch(err => res.status(400).json({ error: 'Unable to add this property', errRaw: err }));
 
-  let curTime = new Date().getTime();
-  let startTime = new Date(req.body.availableFrom).getTime();
-  let endTime = new Date(req.body.availableTo).getTime();
+  let curTime = Number(new Date().getTime());
+  let startTime = Number(req.body.availableFrom);
+  let endTime = Number(req.body.availableTo);
+  const subleaseDays =  Math.floor((endTime - startTime)/(1000*60*60*24*30))
 
-  let estimatedSavings =  Math.floor(Math.floor((endTime - startTime)/(1000*60*60*40))*req.body.price);
 
-  let days = Math.floor((startTime - curTime)/(1000*60*60*24))
+
+  const days = Number(Math.floor(((startTime - curTime)/(1000*60*60*24))))
+
 
   User.findById(decoded.userId).then(user => {
+   
 
     fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
     method: 'POST',
@@ -884,7 +889,7 @@ exports.property_create = (req, res, next) => {
     body: JSON.stringify({
       number: user.phoneNumber,
       days: days,
-      estimatedSavings:  estimatedSavings
+      estimatedSavings:  subleaseDays*Number(req.body.price)
     })
     }).then(async e => {
       return res.status(200).json({data:e})

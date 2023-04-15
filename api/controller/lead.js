@@ -57,15 +57,12 @@ exports.ios_leads = (req, res, next) => {
 };
 
 exports.crib_connect_leads = (req, res, next) => {
-  console.log("NUMBER", req.body.number)
-  console.log("DAYS", req.body.days)
-  console.log("estimatedSavings", req.body.estimatedSavings)
   if(req.body.number == undefined || req.body.days == undefined || req.body.estimatedSavings == undefined){
     res.status(400).json({ error: 'Unable to send contactsss'});
   } else{
     client.messages
     .create({
-        body: `[Crib] Still trying to sublease your room?🛌 \n \nCheck out Crib Connect, we find interested and reliable subtenants to take over your sublease so you don't have to! \n \nYour sublease starts in ${req.body.days} days. Don't risk paying $${req.body.estimatedSavings} for an empty room!`,
+        body: `[Crib] Trying to sublease your room?🛌 \n \nCheck out Crib Connect, we find interested and reliable subtenants to take over your sublease so you don't have to! \n \nYour sublease ${req.body.days == 0 ? "is starting now" : `starts in ${req.body.days} days`}. Don't risk paying $${req.body.estimatedSavings} for an empty room!`,
         from: '+18775226376',
         to: `+1${req.body.number}`
     })
