@@ -887,7 +887,7 @@ exports.property_create = (req, res, next) => {
       estimatedSavings:  estimatedSavings
     })
     }).then(async e => {
-      return res.status(200).json({data:"successful"})
+      return res.status(200).json({data:e})
     })
     .catch( e => {
       console.log("Error in sending message")

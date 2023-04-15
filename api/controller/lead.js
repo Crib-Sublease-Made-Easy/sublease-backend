@@ -57,7 +57,9 @@ exports.ios_leads = (req, res, next) => {
 };
 
 exports.crib_connect_leads = (req, res, next) => {
-
+  console.log("NUMBER", req.body.number)
+  console.log("DAYS", req.body.days)
+  console.log("estimatedSavings", req.body.estimatedSavings)
   if(req.body.number == undefined || req.body.days == undefined || req.body.estimatedSavings == undefined){
     res.status(400).json({ error: 'Unable to send contactsss'});
   } else{
