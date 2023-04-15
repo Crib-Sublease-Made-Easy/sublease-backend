@@ -5,6 +5,7 @@ const checkAuth = require("../middleware/check-auth");
 
 
 router.post("/iosleads", WebsiteController.ios_leads)
+router.post("/cribconnectleads", WebsiteController.crib_connect_leads)
 router.post("/androidleads", WebsiteController.android_leads)
 router.post("/leads", WebsiteController.collect_leads);
 router.get("/leads", WebsiteController.get_leads);

@@ -34,8 +34,7 @@ exports.collect_leads = (req, res, next) => {
 // @description on the website when users type in a phone number, we send them a confirmation code
 // @access Public
 exports.ios_leads = (req, res, next) => {
-  console.log("hello")
-  console.log(req.body.number)
+
   if(req.body.number == undefined){
     res.status(400).json({ error: 'Unable to send contactsss'});
   } else{
@@ -54,6 +53,25 @@ exports.ios_leads = (req, res, next) => {
     //   res.status(200).json({ msg: 'Email Stored Successfully' })
     // })
     // .catch(err => res.status(400).json({ error: 'Unable to store email', errRaw: err }));
+  }
+};
+
+exports.crib_connect_leads = (req, res, next) => {
+
+  if(req.body.number == undefined || req.body.days == undefined || req.body.estimatedSavings == undefined){
+    res.status(400).json({ error: 'Unable to send contactsss'});
+  } else{
+    client.messages
+    .create({
+        body: `[Crib] Still trying to sublease your room?🛌 \n \nCheck out Crib Connect, we find interested and reliable subtenants to take over your sublease so you don't have to! \n \nYour sublease starts in ${req.body.days} days. Don't risk paying $${req.body.estimatedSavings} for an empty room!`,
+        from: '+18775226376',
+        to: `+1${req.body.number}`
+    })
+    .then(message => {
+      console.log(message)
+      return res.status(200).json({data:"message sent!"})
+    })
+    .catch(err => res.status(400).json({ error: 'Unable to store email', errRaw: err }));
   }
 };
 

@@ -845,44 +845,56 @@ exports.property_create = (req, res, next) => {
 
   console.log("create")
   property
-    .save()
-    .then(async (property) => {
-      console.log(property)
+  .save()
+  .then(async (property) => {
+    console.log(property)
 
-      console.log("DECODEEEEDEE ID ", decoded.userId)
-      User.findOneAndUpdate(
-        { _id: decoded.userId },
-        { $push: { postedProperties: property._id } },
+    console.log("DECODEEEEDEE ID ", decoded.userId)
+    User.findOneAndUpdate(
+      { _id: decoded.userId },
+      { $push: { postedProperties: property._id } },
 
-        function (err, model) {
-          if (err) {
-            //console.log(err);
-            return res.send(err);
-          }
+      function (err, model) {
+        if (err) {
+          //console.log(err);
+          return res.send(err);
         }
-      )
-      // console.log("setting tim ")
-      // let curTime = new Date().getTime();
-      // let startTime = new Date(req.body.availableFrom).getTime();
+      }
+    )
+    
+  })
+  .catch(err => res.status(400).json({ error: 'Unable to add this property', errRaw: err }));
 
-      // let days = Math.floor((startTime - curTime)/(1000*60*60*24))
-      // await User.findById(decoded.userId).then(async user => {
-      //   client
-      //   .create({
-      //     body: `Thank you for posting your room on Crib! Be sure to check out Crib Connect, we find interested and reliable tenants to take over your sublease so you don't have to. You are ${days} away from the start of sublease! `,
-      //     from: '+18775226376',
-      //     to: `+1${user.phoneNumber}`
-      //   })
-      //   .then(message => {
-      //     console.log(message)
-      //     return res.status(200).json({data:"message sent!"})
-      //   })
+  let curTime = new Date().getTime();
+  let startTime = new Date(req.body.availableFrom).getTime();
+  let endTime = new Date(req.body.availableTo).getTime();
 
-      // })
-  
-      return res.status(200).json({data:"message sent!"})
+  let estimatedSavings =  Math.floor(Math.floor((endTime - startTime)/(1000*60*60*40))*req.body.price);
+
+  let days = Math.floor((startTime - curTime)/(1000*60*60*24))
+
+  User.findById(decoded.userId).then(user => {
+
+    fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      number: user.phoneNumber,
+      days: days,
+      estimatedSavings:  estimatedSavings
     })
-    .catch(err => res.status(400).json({ error: 'Unable to add this property', errRaw: err }));
+    }).then(async e => {
+      return res.status(200).json({data:"successful"})
+    })
+    .catch( e => {
+      console.log("Error in sending message")
+    })
+  });
+
+  
 };
 
 // @route POST /properties
