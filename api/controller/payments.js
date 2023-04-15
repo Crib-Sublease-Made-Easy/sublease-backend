@@ -259,9 +259,9 @@ exports.prem_get_price = async(req, res, next) => {
 
         //Madison and cit
         if(city.indexOf("madison") == 0 ){
-            price += 20
+            price += 30
             data.loc = "Madison"
-            data.locPrice = "20"
+            data.locPrice = "30"
         }
         else if(city.indexOf("losangeles") == 0 || city.indexOf("la") == 0 ){
             
@@ -300,6 +300,11 @@ exports.prem_get_price = async(req, res, next) => {
         else if(city.indexOf("sanjose") == 0 || city.indexOf("ca") == 0 ){
             
             
+        }
+	else if(city.indexOf("mn") == 0){
+            price += 20
+            data.loc = "Minnesota"
+            data.locPrice = "20"
         }
         else{
             data.loc = p.loc.secondaryTxt
