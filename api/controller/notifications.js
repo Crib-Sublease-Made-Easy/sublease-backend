@@ -68,7 +68,7 @@ exports.send_message = async (req, res, next) => {
         console.log(user.oneSignalUserId)
         const body = {
           app_id: ONESIGNAL_APP_ID,
-          include_player_ids: [user.oneSignalUserId],
+          include_player_ids: [user.oneSignalUserId, sender.oneSignalUserId],
           contents: {
             en: 'New message from ' + sender.firstName,
           },
