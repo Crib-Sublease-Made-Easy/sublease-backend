@@ -41,15 +41,22 @@ exports.automate_instagram = (req, res, next) => {
                     
                     // Create carousel container
                     children = imageContainerIds.join('%2C')
-                    start = prop.availableFrom.getMonth() + '%2F' + prop.availableFrom.getDate() + '%2F' + prop.availableFrom.getFullYear()
-                    end = prop.availableTo.getMonth() + '%2F' + prop.availableTo.getDate() + '%2F' + prop.availableTo.getFullYear()
+                    start = prop.availableFrom.getMonth() + '/' + prop.availableFrom.getDate() + '/' + prop.availableFrom.getFullYear()
+                    end = prop.availableTo.getMonth() + '/' + prop.availableTo.getDate() + '/' + prop.availableTo.getFullYear()
                     description = "%24" + prop.price + "%20%2Fmo.%20" + start + "-" + end + "%20%7C%20" + "Property%20details%20on%20the%20Crib%20App!%20Contact%20608-515-8038%20if%20interested."
                     let carouselId;
 
                     await fetch("https://graph.facebook.com/v16.0/" + IGID + 
-                        "/media?media_type=CAROUSEL&children=" + children + "&caption=" + description + "&access_token=" + IGTOKEN, 
+                        "/media?media_type=CAROUSEL&children=" + children + "&access_token=" + IGTOKEN, 
                     {
                         method: 'POST',
+                        body: JSON.stringify({
+                            caption: '[NEW SUBLEASE]\n'
+                            + 'Price: $' + prop.price + ' /mo.\n'
+                            + 'Available: ' + start + ' - ' + end + '\n'
+                            + 'Description: ' + prop.description + '\n\n'
+                            + 'Text (608)-515-8038 if interested and check out the Crib App for exact location and details!'
+                        }),
                         headers: {
                             'Content-Type': 'application/json'
                         }
