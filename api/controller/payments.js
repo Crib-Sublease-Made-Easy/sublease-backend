@@ -295,12 +295,13 @@ exports.prem_get_price = async(req, res, next) => {
 	else if(city.indexOf("chicago") == 0 || city.indexOf("il") == 0 ){
             
             
-        }
+    }
 	    
-        else if(city.indexOf("sanjose") == 0 || city.indexOf("ca") == 0 ){
-            
-            
-        }
+    else if(city.indexOf("sanjose") == 0 || city.indexOf("ca") == 0 ){
+        price += Math.floor(p.price*0.1)
+        data.loc = "CA"
+        data.locPrice = (Math.floor(p.price*0.1)).toString()        
+    }
 	else if(city.indexOf("mn") == 0){
             price += 20
             data.loc = "Minnesota"
