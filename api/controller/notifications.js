@@ -64,11 +64,10 @@ exports.send_message = async (req, res, next) => {
     console.log(recipient)
     await User.findById(senderId).then(async sender =>{
       await User.findById(recipient).then(user =>{
-        console.log("INSIDE ")
-        console.log(user.oneSignalUserId)
+
         const body = {
           app_id: ONESIGNAL_APP_ID,
-          include_player_ids: [user.oneSignalUserId, sender.oneSignalUserId],
+          include_player_ids: [sender.oneSignalUserId, user.oneSignalUserId],
           contents: {
             en: 'New message from ' + sender.firstName,
           },

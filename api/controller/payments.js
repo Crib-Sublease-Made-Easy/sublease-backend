@@ -259,9 +259,9 @@ exports.prem_get_price = async(req, res, next) => {
 
         //Madison and cit
         if(city.indexOf("madison") == 0 ){
-            price += 30
+            price += Math.floor(p.price*0.15)
             data.loc = "Madison"
-            data.locPrice = "30"
+            data.locPrice = (Math.floor(p.price*0.15)).toString()
         }
         else if(city.indexOf("losangeles") == 0 || city.indexOf("la") == 0 ){
             
@@ -308,8 +308,8 @@ exports.prem_get_price = async(req, res, next) => {
         }
         else{
             data.loc = p.loc.secondaryTxt
-            data.locPrice = "10"
-            price += 10
+            data.locPrice = (Math.floor(p.price*0.15)).toString()
+            price += Math.floor(p.price*0.15)
         }
 
         let curTime = new Date().getTime()
