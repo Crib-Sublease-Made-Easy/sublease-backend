@@ -189,33 +189,51 @@ exports.otp_step3 = (req, resp, next) => {
                     });
 
                     user.save()
-                        .then((result) => {
-                            console.log(result);
-                            resp.status(201).json({
-                                message: "User account created successfully",
-                                createdUser: {
-                                    firstName: result.firstName,
-                                    lastName: result.lastName,
-                                    profilePic: result.profilePic,
-                                    phoneNumber: result.phoneNumber,
-                                    occupation: result.occupation,
-                                    school: result.school,
-                                    _id: result._id,
-                                },
-                                token: {
-                                    accessToken: accessToken,
-                                    refreshToken: refreshToken,
-                                    sendBirdId: sendBirdAppId,
-                                    oneSignalId: oneSignalAppId,
-                                },
-                            });
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                            resp.status(500).json({
-                                error: err,
-                            });
+                    .then((result) => {
+                        console.log(result);
+                        resp.status(201).json({
+                            message: "User account created successfully",
+                            createdUser: {
+                                firstName: result.firstName,
+                                lastName: result.lastName,
+                                profilePic: result.profilePic,
+                                phoneNumber: result.phoneNumber,
+                                occupation: result.occupation,
+                                school: result.school,
+                                _id: result._id,
+                            },
+                            token: {
+                                accessToken: accessToken,
+                                refreshToken: refreshToken,
+                                sendBirdId: sendBirdAppId,
+                                oneSignalId: oneSignalAppId,
+                            },
                         });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        resp.status(500).json({
+                            error: err,
+                        });
+                    });
+                    
+                    if(req.body.type == "Looking for a sublease" || req.body.type == "Both"){
+                        fetch('https://crib-llc.herokuapp.com/web/lookingforsublease', {
+                        method: 'POST',
+                        headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            number: req.body.phoneNumber,
+                            name: req.body.firstName
+                        })
+                        }).then(async e => {
+                        })
+                        .catch( e => {
+                        console.log("Error in sending message")
+                        })
+                    }
                 } else {
                     resp.status(400).json({
                         error: err,

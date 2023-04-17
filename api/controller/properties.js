@@ -878,7 +878,6 @@ exports.property_create = (req, res, next) => {
 
 
   User.findById(decoded.userId).then(user => {
-   
 
     fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
     method: 'POST',
