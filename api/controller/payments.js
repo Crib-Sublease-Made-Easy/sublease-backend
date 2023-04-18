@@ -293,9 +293,11 @@ exports.prem_get_price = async(req, res, next) => {
             
         }
 	else if(city.indexOf("chicago") == 0 || city.indexOf("il") == 0 ){
+            	price += Math.floor(p.price*0.1)
+        	data.loc = "Chicago"
+        	data.locPrice = (Math.floor(p.price*0.1)).toString()        
             
-            
-    }
+   	 }
 	    
     else if(city.indexOf("sanjose") == 0 || city.indexOf("ca") == 0 ){
         price += Math.floor(p.price*0.05)
