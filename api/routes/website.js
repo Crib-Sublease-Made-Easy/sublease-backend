@@ -10,6 +10,7 @@ router.post("/lookingforsublease", WebsiteController.looking_for_sublease)
 router.post("/androidleads", WebsiteController.android_leads)
 router.post("/leads", WebsiteController.collect_leads);
 router.get("/leads", WebsiteController.get_leads);
+router.post("/cribconnectreminder", WebsiteController.crib_connect_reminder)
 // router.post("/generateFacebookPost",checkAuth, WebsiteController.gen_fb_post);
 
 module.exports = router; 

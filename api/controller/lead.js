@@ -74,6 +74,29 @@ exports.crib_connect_leads = (req, res, next) => {
   }
 };
 
+// @route POST /web/cribConnectReminder
+// @description remind users to get Crib Connect
+// @access Public 
+
+exports.crib_connect_reminder = (req, res, next) => {
+  if(req.body.number == undefined || req.body.days == undefined || req.body.estimatedSavings == undefined){
+    res.status(400).json({ error: 'Unable to send contactsss'});
+  } else{
+    client.messages
+    .create({
+        body: `[Crib] Still trying to sublease your room?🛌 \n \nCheck out Crib Connect, we find interested and reliable subtenants to take over your sublease so you don't have to! \n \nYour sublease ${req.body.days == 0 ? "is starting now" : `starts in ${req.body.days} days`}. Don't risk paying $${req.body.estimatedSavings} for an empty room!`,
+        from: '+18775226376',
+        to: `+1${req.body.number}`
+    })
+    .then(message => {
+      console.log(message)
+      return res.status(200).json({data:"message sent!"})
+    })
+    .catch(err => res.status(400).json({ error: 'Unable to store email', errRaw: err }));
+  }
+};
+
+
 // @route POST /web/lookingforsublease
 // @description user sign up as "Looking for a sublease"
 // @access Public 

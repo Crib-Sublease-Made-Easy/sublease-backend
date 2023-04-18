@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const User = require("../models/user");
 const Property = require('../models/property');
 const { response } = require("express");
+const { json } = require("body-parser");
+const user = require("../models/user");
 
 const IGID = "17841457359703661";
 const IGTOKEN = "EAAMoc0mnE3EBAM6oqriGt8P1yvBTpLMlZCVkeKFZCbzUAR57un6woEQZAlSK0SONwZBiqTKvy5mmJZC53ZC7xNK5EKWpEyB2Uh8rsxImA7nnHZBd6K5Cwu4YkJKeG57fQMMu4hmDBhUZBOcJdIVqABd3sqXR29CbsNlKGzQ5sudEnt0v5RWkixkT";
@@ -96,3 +98,125 @@ exports.automate_instagram = (req, res, next) => {
             });
         });
 }
+
+//Send users a message about filling out the google form
+exports.automate_google_form = (req, res, next) => {
+  
+    User.find({type: "Looking for a sublease"})
+    .then(async user=> {
+        user.forEach((userData) =>{
+
+            fetch('https://crib-llc.herokuapp.com/web/lookingforsublease', {
+                method: 'POST',
+                headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    number: userData.phoneNumber,
+                    name: userData.firstName
+                })
+            }).then(async e => {})
+            .catch( e => {
+                console.log("Error in sending message")
+            })
+        })
+    })
+    User.find({type: "Both"})
+    .then(async user=> {
+        user.forEach((userData) =>{
+            fetch('https://crib-llc.herokuapp.com/web/lookingforsublease', {
+                method: 'POST',
+                headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    number: userData.phoneNumber,
+                    name: userData.firstName
+                })
+            }).then(async e => {})
+            .catch( e => {
+                console.log("Error in sending message")
+            })    
+        })
+    })
+    res.status(200).json({data: "success"})
+}
+
+
+//Remind people to use Crib Conenect
+
+exports.automate_crib_connect_reminder = (req, res, next) => {
+
+    User.find()
+    .then( users => {
+        users.forEach(user =>{
+           
+            if(user.postedProperties.length != 0 && (user.cribPremium.paymentDetails.paymentLink == null || user.cribPremium.paymentDetails.paymentLink == undefined)){
+                Property.findById(user.postedProperties[0])
+                .then(p => {
+                    let curTime = Number(new Date().getTime());
+                    let startTime = Number(p.availableFrom);
+                    let endTime = Number(p.availableTo);
+                    const subleaseDays =  Math.floor((endTime - startTime)/(1000*60*60*24*30))
+                    const days = Number(Math.floor(((startTime - curTime)/(1000*60*60*24))))
+
+                    if(days > -30){
+                        //This is for checking
+                        if(user.firstName == "Vasudha"){
+                            // console.log(user.firstName + "  " + `Estimated saving: ${subleaseDays*p.price} ` + `Days until start: ${days}`);
+                            fetch('https://crib-llc.herokuapp.com/web/cribconnectreminder', {
+                            method: 'POST',
+                            headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                            number: user.phoneNumber,
+                            days: days,
+                            estimatedSavings:  subleaseDays*Number(p.price)
+                            })
+                            }).then(async e => {
+                           
+                            })
+                            .catch( e => {
+                            console.log("Error in sending message")
+                            })
+  
+                        }
+                    }
+                })
+            }
+        })
+       
+        return res.status(200).json({data: "success"})
+        
+    })
+
+//   User.findById(decoded.userId).then(user => {
+
+//     fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
+//     method: 'POST',
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//       number: user.phoneNumber,
+//       days: days,
+//       estimatedSavings:  subleaseDays*Number(req.body.price)
+//     })
+//     }).then(async e => {
+//       return res.status(200).json({data:e})
+//     })
+//     .catch( e => {
+//       console.log("Error in sending message")
+//     })
+//   });
+
+
+
+}
+
+
