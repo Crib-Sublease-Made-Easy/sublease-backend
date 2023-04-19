@@ -259,9 +259,9 @@ exports.prem_get_price = async(req, res, next) => {
 
         //Madison and cit
         if(city.indexOf("madison") == 0 ){
-            price += Math.floor(p.price*0.05)
+            price += 40
             data.loc = "Madison"
-            data.locPrice = (Math.floor(p.price*0.05)).toString()
+            data.locPrice = "40"
         }
         else if(city.indexOf("losangeles") == 0 || city.indexOf("la") == 0 ){
             
@@ -293,16 +293,16 @@ exports.prem_get_price = async(req, res, next) => {
             
         }
 	else if(city.indexOf("chicago") == 0 || city.indexOf("il") == 0 ){
-            	price += Math.floor(p.price*0.1)
+            	price += 40
         	data.loc = "Chicago"
-        	data.locPrice = (Math.floor(p.price*0.1)).toString()        
+        	data.locPrice = "40"
             
    	 }
 	    
     else if(city.indexOf("sanjose") == 0 || city.indexOf("ca") == 0 ){
-        price += Math.floor(p.price*0.05)
+        price += 50
         data.loc = "CA"
-        data.locPrice = (Math.floor(p.price*0.05)).toString()        
+        data.locPrice = "50"
     }
 	else if(city.indexOf("mn") == 0){
         price += 20
@@ -311,8 +311,8 @@ exports.prem_get_price = async(req, res, next) => {
     }
     else{
         data.loc = p.loc.secondaryTxt
-        data.locPrice = (Math.floor(p.price*0.05)).toString()
-        price += Math.floor(p.price*0.05)
+        data.locPrice = "30"
+        price += 30
     }
 
         let curTime = new Date().getTime()
