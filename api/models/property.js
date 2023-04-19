@@ -80,6 +80,14 @@ const PropertySchema = new mongoose.Schema (
             required: false,
             default: null
         },
+        roommates: {
+            type: Boolean,
+            required: false
+        },
+        shared: {
+            type: Boolean,
+            required: false
+        },
         loc: {
             type: {
               type: String,

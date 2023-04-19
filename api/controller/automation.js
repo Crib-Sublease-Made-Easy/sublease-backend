@@ -99,13 +99,15 @@ exports.automate_instagram = (req, res, next) => {
         });
 }
 
-//Send users a message about filling out the google form
+//*** Dangerous code ***
+//Messaged all people about Google form
+//Send google form link to people who are looking for a sublease
 exports.automate_google_form = (req, res, next) => {
   
     User.find({type: "Looking for a sublease"})
     .then(async user=> {
         user.forEach((userData) =>{
-
+           
             fetch('https://crib-llc.herokuapp.com/web/lookingforsublease', {
                 method: 'POST',
                 headers: {
@@ -120,6 +122,7 @@ exports.automate_google_form = (req, res, next) => {
             .catch( e => {
                 console.log("Error in sending message")
             })
+        
         })
     })
     User.find({type: "Both"})
@@ -148,7 +151,7 @@ exports.automate_google_form = (req, res, next) => {
 //Remind people to use Crib Conenect
 
 exports.automate_crib_connect_reminder = (req, res, next) => {
-
+    let counter = 0;
     User.find()
     .then( users => {
         users.forEach(user =>{
@@ -163,8 +166,9 @@ exports.automate_crib_connect_reminder = (req, res, next) => {
                     const days = Number(Math.floor(((startTime - curTime)/(1000*60*60*24))))
 
                     if(days > -30){
-                        //This is for checking
-                        if(user.firstName == "Vasudha"){
+                        
+                        // This is for checking
+                        // if(user.phoneNumber == "6089991395"){
                             // console.log(user.firstName + "  " + `Estimated saving: ${subleaseDays*p.price} ` + `Days until start: ${days}`);
                             fetch('https://crib-llc.herokuapp.com/web/cribconnectreminder', {
                             method: 'POST',
@@ -184,11 +188,12 @@ exports.automate_crib_connect_reminder = (req, res, next) => {
                             console.log("Error in sending message")
                             })
   
-                        }
+                        // }
                     }
                 })
             }
         })
+        console.log(counter)
        
         return res.status(200).json({data: "success"})
         
@@ -218,5 +223,8 @@ exports.automate_crib_connect_reminder = (req, res, next) => {
 
 
 }
+
+
+
 
 

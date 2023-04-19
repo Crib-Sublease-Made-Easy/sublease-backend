@@ -56,6 +56,26 @@ exports.ios_leads = (req, res, next) => {
   }
 };
 
+// exports.posting_a_sublease = (res, req, next) => {
+//   console.log(req.body.name)
+//   if(req.body.name == undefined || req.body.number == undefined){
+//     res.status(400).json({ error: 'Unable to send contactsss'});
+//   } else{
+//     client.messages
+//     .create({
+//         body: `[Crib] Hello ${req.body.name}, \n \nThank you for signing up on Crib! We are 1 step away from subleasing your Crib. \n \nWe want to assist you in finding the best subleases possible. A lot of students are looking for subleases now, sublease you room and save thousands over the summer!`,
+//         from: '+18775226376',
+//         to: `+1${req.body.number}`
+//     })
+//     .then(message => {
+//       console.log(message)
+//       return res.status(200).json({data:"message sent!"})
+//     })
+//     .catch(err => res.status(400).json({ error: 'Unable to store email', errRaw: err }));
+//   }
+  
+// }
+
 exports.crib_connect_leads = (req, res, next) => {
   if(req.body.number == undefined || req.body.days == undefined || req.body.estimatedSavings == undefined){
     res.status(400).json({ error: 'Unable to send contactsss'});

@@ -835,6 +835,8 @@ exports.property_create = (req, res, next) => {
     bath: req.body.bath,
     securityDeposit: req.body.securityDeposit,
     availabilityFlexibility: req.body.availabilityFlexibility,
+    roommates: req.body.roommates,
+    shared: req.body.shared,
     loc: {
       type: "Point",
       coordinates: coor,
