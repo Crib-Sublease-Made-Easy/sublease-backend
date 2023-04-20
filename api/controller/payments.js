@@ -249,7 +249,7 @@ exports.prem_status = async(req, res, next) => {
 // @description get price depening on the sublease
 // @access private
 exports.prem_get_price = async(req, res, next) => {
-    let price = 39.99;
+    let price = 19.99;
     Property.findById(req.body.propId).then(async p => {
         let data = {}
         data.basePrice = price;
@@ -264,10 +264,14 @@ exports.prem_get_price = async(req, res, next) => {
             data.locPrice = "40"
         }
         else if(city.indexOf("losangeles") == 0 || city.indexOf("la") == 0 ){
-            	
+            	price += 40
+        	data.loc = "Los Angeles"
+        	data.locPrice = "40"
         }
         else if(city.indexOf("newyork") == 0 || city.indexOf("ny") == 0){
-          
+          	price += 40
+        	data.loc = "New York"
+        	data.locPrice = "40"
            
         }
         else if(city.indexOf("austin") == 0){
@@ -275,19 +279,27 @@ exports.prem_get_price = async(req, res, next) => {
            
         }
         else if(city.indexOf("sanmarcos") == 0){
-          
+          	price += 40
+        	data.loc = "San Marocs"
+        	data.locPrice = "40"
         
         }
         else if(city.indexOf("berkeley") == 0 || city.indexOf("california") == 0){
-          
+          	price += 40
+        	data.loc = "Berkeley"
+        	data.locPrice = "40"
           
         }
         else if(city.indexOf("sanfrancisco") == 0 || city.indexOf("sf") == 0 ){
-            
+            	price += 40
+        	data.loc = "San Francisco"
+        	data.locPrice = "40"
             
         }
 	else if(city.indexOf("seattle") == 0 || city.indexOf("wa") == 0 ){
-            
+            	price += 40
+        	data.loc = "Seattle"
+        	data.locPrice = "40"
             
         }
 	else if(city.indexOf("chicago") == 0 || city.indexOf("il") == 0 ){
