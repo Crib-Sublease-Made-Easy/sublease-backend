@@ -249,7 +249,7 @@ exports.prem_status = async(req, res, next) => {
 // @description get price depening on the sublease
 // @access private
 exports.prem_get_price = async(req, res, next) => {
-    let price = 19.99;
+    let price = 39.99;
     Property.findById(req.body.propId).then(async p => {
         let data = {}
         data.basePrice = price;
@@ -264,9 +264,7 @@ exports.prem_get_price = async(req, res, next) => {
             data.locPrice = "40"
         }
         else if(city.indexOf("losangeles") == 0 || city.indexOf("la") == 0 ){
-            
-           
-            
+            	
         }
         else if(city.indexOf("newyork") == 0 || city.indexOf("ny") == 0){
           
