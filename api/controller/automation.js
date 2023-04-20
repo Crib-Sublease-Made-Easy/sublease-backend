@@ -225,6 +225,21 @@ exports.automate_crib_connect_reminder = (req, res, next) => {
 }
 
 
-
+exports.automate_didnt_pay_crib_connect = (req, res, next) => {
+    User.find()
+    .then(users => {
+        users.forEach((user)=>{
+            if(user.cribPremium != undefined && user.referralCode != undefined){
+                if(user.cribPremium.paymentDetails.status == false && user.referralCode != null){
+                    console.log(user.firstName + " " + user.lastName);
+                }
+            }
+        })
+        res.status(200).json({data:"success"})
+    })
+    .catch(e => {
+        res.status(400).json({data:"error"})
+    })
+}
 
 

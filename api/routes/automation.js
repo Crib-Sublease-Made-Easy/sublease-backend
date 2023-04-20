@@ -8,4 +8,7 @@ router.get("/googleform", AutomationController.automate_google_form);
 
 router.post("/cribconnectreminder", AutomationController.automate_crib_connect_reminder)
 
+router.get("/didntpaycribconnect", AutomationController.automate_didnt_pay_crib_connect)
+
+
 module.exports = router;
