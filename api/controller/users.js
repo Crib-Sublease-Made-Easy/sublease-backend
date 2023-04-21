@@ -651,3 +651,24 @@ exports.user_get_all = (req, res, next) => {
         .then((proprties) => res.json(proprties))
         .catch((err) => res.status(404).json({ propertiesFound: "none" }));
 };
+
+
+// @route POST /enrollCribConnect
+// @description enroll in Crib Connect but havent paid for Crib Connect
+// @access public 
+
+exports.enroll_crib_connect = (req, res, next) => {
+    if(req.body.userId == undefined || req.body.userId == null){
+        res.status(404).json({data: "Must specify id"})
+        return
+    }
+    console.log(req.body.userId)
+    User.findByIdAndUpdate(req.body.userId, {
+        "cribConnectEnrolled": false
+    })
+    .then(prop => res.status(200).json({ msg: 'Updated successfully' }))
+    .catch(err =>
+        res.status(400).json({ error: 'Unable to update the Database' })
+    );
+    
+}
