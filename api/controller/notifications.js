@@ -101,7 +101,7 @@ exports.send_message = async (req, res, next) => {
             app_id: ONESIGNAL_APP_ID,
             include_player_ids: [user.oneSignalUserId],
             contents: {
-              en: sender.firstName + ` liked your sublease. Get Crib Connect to tell him more about your room!`,
+              en: sender.firstName + ` liked your sublease. Get Crib Connect to connect with them!`,
             },
             ios_badgeType: "Increase",
             ios_badgeCount: 1,
