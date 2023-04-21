@@ -664,7 +664,7 @@ exports.enroll_crib_connect = (req, res, next) => {
     }
     console.log(req.body.userId)
     User.findByIdAndUpdate(req.body.userId, {
-        "cribConnectEnrolled": false
+        "cribConnectEnrolled": true
     })
     .then(prop => res.status(200).json({ msg: 'Updated successfully' }))
     .catch(err =>
