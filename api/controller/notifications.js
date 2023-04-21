@@ -62,33 +62,68 @@ exports.send_message = async (req, res, next) => {
       recipient = part1
     }
     console.log(recipient)
-    await User.findById(senderId).then(async sender =>{
-      await User.findById(recipient).then(user =>{
+    
+    if(req.body.like == undefined || req.body.like == null){
+      await User.findById(senderId).then(async sender =>{
+        await User.findById(recipient).then(user =>{
 
-        const body = {
-          app_id: ONESIGNAL_APP_ID,
-          include_player_ids: [user.oneSignalUserId],
-          contents: {
-            en: 'New message from ' + sender.firstName,
-          },
-          ios_badgeType: "Increase",
-          ios_badgeCount: 1,
-          data:{
-            type: "message"
-          }
-          
-          };
-        console.log("DEBUG", body)
-        createNotication(body);
-        console.log("TRANSFERING MESSAGE RETURN")
-        res.json({status: "Notification Successfully Sent"})
+          const body = {
+            app_id: ONESIGNAL_APP_ID,
+            include_player_ids: [user.oneSignalUserId],
+            contents: {
+              en: 'New message from ' + sender.firstName,
+            },
+            ios_badgeType: "Increase",
+            ios_badgeCount: 1,
+            data:{
+              type: "message"
+            }
+            
+            };
+          console.log("DEBUG", body)
+          createNotication(body);
+          console.log("TRANSFERING MESSAGE RETURN")
+          res.json({status: "Notification Successfully Sent"})
 
-      }).catch(Exception=>
+        }).catch(Exception=>
+          res.status(404).json({ error: 'No such uuser' })
+        )
+      })
+      .catch(Exception=>
         res.status(404).json({ error: 'No such uuser' })
       )
-    }).catch(Exception=>
-      res.status(404).json({ error: 'No such uuser' })
-    )
+    }
+    else{
+      await User.findById(senderId).then(async sender =>{
+        await User.findById(recipient).then(user =>{
+
+          const body = {
+            app_id: ONESIGNAL_APP_ID,
+            include_player_ids: [user.oneSignalUserId],
+            contents: {
+              en: sender.firstName + ` liked your sublease. Get Crib Connect to tell him more about your room!`,
+            },
+            ios_badgeType: "Increase",
+            ios_badgeCount: 1,
+            data:{
+              type: "cribconnect"
+            }
+            
+            };
+          console.log("DEBUG", body)
+          createNotication(body);
+          console.log("TRANSFERING MESSAGE RETURN")
+          res.json({status: "Notification Successfully Sent"})
+
+        }).catch(Exception=>
+          res.status(404).json({ error: 'No such uuser' })
+        )
+      })
+      .catch(Exception=>
+        res.status(404).json({ error: 'No such uuser' })
+      )
+    }
+
   }
 }; 
   
