@@ -80,6 +80,12 @@ const UserSchema = new mongoose.Schema ({
         required: false,
         default: false
     },
+    cribConnectSubtenants:{
+        type: [mongoose.Types.ObjectId],
+        required: false,
+        default: []
+        
+    },
     cribPremium:{
         referralCode: {
             type: String,
