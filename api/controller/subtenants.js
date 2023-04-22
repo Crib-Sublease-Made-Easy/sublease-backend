@@ -43,7 +43,7 @@ exports.get_one = (req, res, next) => {
     }
     else{
         Subtenant.findById(req.body.subtenantID)
-        .then(subtenant =>  {return res.status(200).json({data: subtenant})})
+        .then((subtenant) =>  {res.json({data: subtenant})})
         .catch(e =>{ return res.status(400).json({data:"Error in retrieving"})})
     }
 }
