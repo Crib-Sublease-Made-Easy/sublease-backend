@@ -1,4 +1,3 @@
-const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 // Load Properies Model
 const Subtenant = require("../models/subtenants");
@@ -38,12 +37,15 @@ exports.create = (req, res, next) => {
 }
 
 exports.get_one = (req, res, next) => {
-    if(req.body.subtenantId == undefined){
+    console.log("getting")
+    if(req.params.subtenantId == undefined){
         return res.status(404).json({data:"missing info"})
     }
     else{
-        Subtenant.findById(req.body.subtenantID)
-        .then((subtenant) =>  {res.json({data: subtenant})})
+        Subtenant.findById(req.params.subtenantID)
+        .then((subtenant) =>  {
+            console.log(subtenant)
+        })
         .catch(e =>{ return res.status(400).json({data:"Error in retrieving"})})
     }
 }
