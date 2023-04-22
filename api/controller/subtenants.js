@@ -38,7 +38,7 @@ exports.create = (req, res, next) => {
 }
 
 exports.get_one = (req, res, next) => {
-    if(req.body.subtenantID == undefined){
+    if(req.body.subtenantId == undefined){
         return res.status(404).json({data:"missing info"})
     }
     else{
