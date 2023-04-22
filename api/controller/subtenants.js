@@ -37,15 +37,18 @@ exports.create = (req, res, next) => {
 }
 
 exports.get_one = (req, res, next) => {
-    console.log("getting")
-    if(req.params.subtenantId == undefined){
-        return res.status(404).json({data:"missing info"})
-    }
-    else{
-        Subtenant.findById(req.params.subtenantID)
-        .then((subtenant) =>  {
-            console.log(subtenant)
-        })
-        .catch(e =>{ return res.status(400).json({data:"Error in retrieving"})})
-    }
+    // console.log("getting")
+    // if(req.params.subtenantId == undefined){
+    //     return res.status(404).json({data:"missing info"})
+    // }
+    // else{
+    //     Subtenant.findById(req.params.subtenantID)
+    //     .then((subtenant) =>  {
+    //         console.log(subtenant)
+    //     })
+    //     .catch(e =>{ return res.status(400).json({data:"Error in retrieving"})})
+    // }
+    Subtenant.find({_id: req.body.subtenantId})
+    .then((data) => res.status(200).json(data))
+    .catch(e => { res.status(400).json({data: "Error"})})
 }
