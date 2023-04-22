@@ -818,6 +818,24 @@ exports.property_create = (req, res, next) => {
   var coor = []
   coor[0] = req.body.longitude
   coor[1] = req.body.latitude
+
+  let roommatesGender;
+  let sharedGender;
+
+  if(req.body.roommatesGender == undefined || req.body.roommatesGender == null){
+    roommatesGender = "";
+  }
+  else{
+    roommatesGender = req.body.roommatesGender;
+  }
+
+  if(req.body.sharedGender == undefined || req.body.sharedGender == null){
+    sharedGender = "";
+  }
+  else{
+    sharedGender = req.body.sharedGender;
+  }
+
   const property = new Property({
     //_id: new mongoose.Types.ObjectId(),
     title: req.body.title,
@@ -835,7 +853,9 @@ exports.property_create = (req, res, next) => {
     securityDeposit: req.body.securityDeposit,
     availabilityFlexibility: req.body.availabilityFlexibility,
     roommates: req.body.roommates,
+    roommatesGender: roommatesGender,
     shared: req.body.shared,
+    sharedGender: sharedGender,
     loc: {
       type: "Point",
       coordinates: coor,
