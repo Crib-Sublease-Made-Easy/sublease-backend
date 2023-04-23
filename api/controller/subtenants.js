@@ -22,7 +22,9 @@ exports.create = (req, res, next) => {
         age: req.body.age,
         gender: req.body.gender,
         sharedRoomFlexibility: req.body.sharedRoomFlexibility,
-        roommatesFlexibility: req.body.roommatesFlexibility
+        roommatesFlexibility: req.body.roommatesFlexibility,
+        deleted: false,
+        createdAt: new Date()
     })
 
     subtenant.save()

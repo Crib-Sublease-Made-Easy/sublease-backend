@@ -41,6 +41,15 @@ const SubtenantSchema = new mongoose.Schema (
         roommatesFlexibility: {
             type: Boolean,
             required: true
+        },
+        createdAt: {
+            type: Date,
+            required: true,
+        },
+        deleted: {
+            type: Boolean,
+            required: true,
+            default: false 
         }
     }
 )
