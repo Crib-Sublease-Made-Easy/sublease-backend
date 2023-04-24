@@ -243,3 +243,90 @@ exports.automate_didnt_pay_crib_connect = (req, res, next) => {
 }
 
 
+
+/*---------IMPORTANT DO NOT TOUCH--------*/
+exports.get_non_deleted_props = (req, res, next) => {
+    User.aggregate(
+        [
+            {
+              $match:
+                /**
+                 * query: The query in MQL.
+                 */
+                {
+                  $or: [
+                    {
+                      "cribPremium.paymentDetails.status": true,
+                    },
+                    {
+                      "cribPremium.paymentDetails.status": false,
+                    },
+                    {
+                      "cribPremium.paymentDetails.status":
+                        null,
+                    },
+                  ],
+                },
+            },
+            {
+              $project: {
+                postedProperty: {
+                  $toObjectId: {
+                    $arrayElemAt: ["$postedProperties", 0],
+                  },
+                },
+                firstName: "$firstName",
+                lastName: "$lastName",
+                gender: "$gender",
+                occupation: "$occupation",
+                email: "$email",
+                phoneNumber: "$phoneNumber",
+                cribConnect: "$cribPremium.paymentDetails",
+              },
+            },
+            {
+              $lookup:
+                /**
+                 * query: The query in MQL.
+                 */
+                {
+                  from: "propertytests",
+                  localField: "postedProperty",
+                  foreignField: "_id",
+                  as: "propertyDetails",
+                },
+            },
+            {
+              $project: {
+                property: {
+                  $arrayElemAt: ["$propertyDetails", 0],
+                },
+                firstName: "$firstName",
+                lastName: "$lastName",
+                gender: "$gender",
+                occupation: "$occupation",
+                email: "$email",
+                phoneNumber: "$phoneNumber",
+                cribConnect: {
+                  $ifNull: ["$cribConnect.status", false],
+                },
+              },
+            },
+            {
+              $match:
+                /**
+                 * query: The query in MQL.
+                 */
+                {
+                  "property.deleted": false,
+                },
+            },
+          ]
+    )
+    .then(tenants => {
+        res.status(200).json({data: tenants})
+    })
+    .catch(e => {
+        res.status(400).json({data: e})
+    })
+}

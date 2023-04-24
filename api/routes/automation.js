@@ -10,5 +10,7 @@ router.post("/cribconnectreminder", AutomationController.automate_crib_connect_r
 
 router.get("/didntpaycribconnect", AutomationController.automate_didnt_pay_crib_connect)
 
+router.get("/nondeletedprops", AutomationController.get_non_deleted_props)
+
 
 module.exports = router;
