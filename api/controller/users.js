@@ -183,6 +183,7 @@ exports.otp_step3 = (req, resp, next) => {
                                 ? null
                                 : req.body.school,
                         deleted: false,
+                        cribConnectSubtenants:[],
                         type: req.body.type == undefined
                             ? null
                             : req.body.type,

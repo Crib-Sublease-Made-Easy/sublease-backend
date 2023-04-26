@@ -9,7 +9,7 @@ exports.create = (req, res, next) => {
     if(req.body.name == undefined || req.body.subleaseStart == undefined || req.body.subleaseEnd == undefined || 
         req.body.budget == undefined || req.body.bio == undefined || req.body.phoneNumber == undefined || 
         req.body.age == undefined || req.body.gender == undefined || req.body.sharedRoomFlexibility == undefined
-        || req.body.roommatesFlexibility == undefined ){
+        || req.body.roommatesFlexibility == undefined || req.body.location == undefined || req.body.coords == undefined){
             return res.status(404).json({data:"Incomplete Info"})
     }
 
@@ -24,6 +24,8 @@ exports.create = (req, res, next) => {
         gender: req.body.gender,
         sharedRoomFlexibility: req.body.sharedRoomFlexibility,
         roommatesFlexibility: req.body.roommatesFlexibility,
+        location: req.body.location,
+        coords: req.body.coords
         deleted: false,
         createdAt: new Date()
     })

@@ -1,5 +1,6 @@
 // Load Properies Model
 const Property = require('../models/property');
+const Subtenant = require("../models/subtenants");
 const Completed = require('../models/completed');
 const FBContacts = require('../models/fb_contacts');
 const mongoose = require("mongoose");
@@ -899,6 +900,13 @@ exports.property_create = (req, res, next) => {
 
 
   User.findById(decoded.userId).then(async user => {
+    await Subtenant.find({}).then(async subtenants=>{
+      subtenants.forEach( dude =>{
+        if(new Date(req.body.availableFrom) <= new Date(dude.subleaseStart) && new Date(req.body.availableTo) >= new Date(dude.subleaseEnd)  && getDistInMiles(coor[1], coor[0], subLat, subLong) <= 20){
+          
+        }
+      })
+    })
 
     let numSubtenants = await fetch('https://crib-llc.herokuapp.com/automation/tenantautomation', {
       method: 'POST',
@@ -940,6 +948,32 @@ exports.property_create = (req, res, next) => {
 });
   
 };
+
+
+
+function getDistInMiles(lat1, lon1, lat2, lon2) {
+  return _getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) * 0.621371;
+}
+
+function _getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  var R = 6371; // Radius of the earth in kilometers
+  var dLat = deg2rad(lat2 - lat1); // deg2rad below
+  var dLon = deg2rad(lon2 - lon1);
+  var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c; // Distance in KM
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI / 180)
+}
+
+
+
 
 // @route POST /properties
 // @description post property with scraped data
