@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 // Load Properies Model
 const Subtenant = require("../models/subtenants");
+const User = require("../models/user");
 
 
 exports.create = (req, res, next) => {
@@ -54,3 +55,36 @@ exports.get_one = (req, res, next) => {
     .then((data) => res.status(200).json(data))
     .catch(e => { res.status(400).json({data: "Error"})})
 }
+
+exports.add_subtenant_to_tenant = (req, res, next) => {
+    const subtenant_id = req.body.subtenant_id
+    const tenant_id = req.body.tenant_id
+
+    User.updateOne(
+      { _id: tenant_id },
+      [
+          {
+              $set: {
+                cribConnectSubtenants: {
+                      $cond: [
+                          {
+                              $in: [mongoose.Types.ObjectId(req.body.subtenant_id),"$cribConnectSubtenants"]
+                          },
+                          {
+                              $setDifference: ["$cribConnectSubtenants", [mongoose.Types.ObjectId(req.body.subtenant_id)]]
+                          },
+                          {
+                              $concatArrays: ["$cribConnectSubtenants",[mongoose.Types.ObjectId(req.body.subtenant_id)]]
+                          }
+                      ]
+                  }
+              }
+          }
+      ]
+  )
+    .then(user => res.json({ msg: 'Updated successfully', matches: user.cribConnectSubtenants }))
+    .catch(err =>
+      res.status(400).json({ error: 'Unable to update the Database' })
+    );
+  
+  };
