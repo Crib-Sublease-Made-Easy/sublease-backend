@@ -12,5 +12,7 @@ router.get("/didntpaycribconnect", AutomationController.automate_didnt_pay_crib_
 
 router.get("/nondeletedprops", AutomationController.get_non_deleted_props)
 
+router.post("/tenantautomation", AutomationController.tenant_automation)
+
 
 module.exports = router;

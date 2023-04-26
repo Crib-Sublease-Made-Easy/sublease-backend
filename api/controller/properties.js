@@ -900,25 +900,49 @@ exports.property_create = (req, res, next) => {
 
   User.findById(decoded.userId).then(user => {
 
-    fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      number: user.phoneNumber,
-      days: days,
-      estimatedSavings:  subleaseDays*Number(req.body.price)
-    })
-    }).then(async e => {
-      return res.status(200).json({data:e})
-    })
-    .catch( e => {
-      console.log("Error in sending message")
-    })
-  });
-
+    fetch('https://crib-llc.herokuapp.com/web/tenantautomation', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        firstName: user.firstName,
+        phoneNumber: user.phoneNumber,
+        availableFrom: req.body.availableFrom,
+        availableTo: req.body.availableTo,
+        lat: coor[0],
+        long: coor[1]
+      })
+    }).then(async data => {
+        return data.json()
+    }).then(async ppl => {
+        fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          number: user.phoneNumber,
+          days: days,
+          estimatedSavings:  subleaseDays*Number(req.body.price),
+          subtenants: ppl.count
+        })
+        }).then(async e => {
+          return res.status(200).json({data:e})
+        })
+        .catch( e => {
+          console.log("Error in sending message")
+        })
+  })
+  .then(async e => {
+    return res.status(200).json({data:e})
+  })
+  .catch( e => {
+    console.log("Error in sending message")
+  })
+});
   
 };
 
