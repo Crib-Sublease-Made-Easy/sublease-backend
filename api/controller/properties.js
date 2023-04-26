@@ -928,7 +928,7 @@ exports.property_create = (req, res, next) => {
           number: user.phoneNumber,
           days: days,
           estimatedSavings:  subleaseDays*Number(req.body.price),
-          subtenants: numSubtenants.count
+          subtenants: number.count
         })
         }).then(async e => {
           return res.status(200).json({data:e})
