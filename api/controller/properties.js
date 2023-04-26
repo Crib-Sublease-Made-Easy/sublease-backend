@@ -915,7 +915,7 @@ exports.property_create = (req, res, next) => {
         long: coor[1]
       })
     }).then(async data => {
-        console.log("DATA", data)
+        console.log("DATA", data.json())
         return data.json()
     }).then(async ppl => {
       console.log("SENDING msg", ppl)
