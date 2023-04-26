@@ -31,7 +31,7 @@ exports.create = (req, res, next) => {
     subtenant.save()
     .then((result) => {
         console.log(result);
-        res.status(200).json({data: "Subtenant created"})
+        res.status(200).json({data: "Subtenant created", _id: result._id})
     })
     .catch((err) => {
         console.log(err);
