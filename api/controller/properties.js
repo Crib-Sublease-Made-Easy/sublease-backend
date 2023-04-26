@@ -911,7 +911,7 @@ exports.property_create = (req, res, next) => {
         phoneNumber: user.phoneNumber,
         availableFrom: req.body.availableFrom,
         availableTo: req.body.availableTo,
-        lat: coor[1],
+        lat: coor[1] ,
         long: coor[0]
       })
     }).then(numSubtenants => numSubtenants.json())

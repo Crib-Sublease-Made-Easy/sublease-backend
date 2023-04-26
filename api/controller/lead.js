@@ -82,7 +82,7 @@ exports.crib_connect_leads = (req, res, next) => {
   } else{
     client.messages
     .create({
-        body: `[Crib] Trying to sublease your room?🛌 \n \nCheck out Crib Connect, we find interested and reliable subtenants to take over your sublease so you don't have to! \n \nYour sublease ${req.body.days == 0 ? "is starting now" : `starts in ${req.body.days} days`}. There are ${req.body.subtenants} interested in your property. Don't risk paying $${req.body.estimatedSavings} for an empty room!`,
+        body: `[Crib] Trying to sublease your room?🛌 \n \nCheck out Crib Connect, we find interested and reliable subtenants to take over your sublease so you don't have to! \n \nYour sublease ${req.body.days == 0 ? "is starting now" : `starts in ${req.body.days} days`}. There are ${req.body.subtenants < 3 ? "subtenants": ""+req.body.subtenants+ " subtenants"} interested in your property. Don't risk paying $${req.body.estimatedSavings} for an empty room!`,
         from: '+18775226376',
         to: `+1${req.body.number}`
     })
