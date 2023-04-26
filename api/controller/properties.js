@@ -914,9 +914,9 @@ exports.property_create = (req, res, next) => {
         lat: coor[0],
         long: coor[1]
       })
-    })
-    let number = numSubtenants.json()
-    console.log("Num Subtenants", number)
+    }).then(numSubtenants => numSubtenants.json())
+    .then( prop => {
+    console.log("Num Subtenants", prop)
 
         await fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
         method: 'POST',
@@ -928,7 +928,7 @@ exports.property_create = (req, res, next) => {
           number: user.phoneNumber,
           days: days,
           estimatedSavings:  subleaseDays*Number(req.body.price),
-          subtenants: number.count
+          subtenants: prop.count
         })
         }).then(async e => {
           return res.status(200).json({data:e})
@@ -936,7 +936,7 @@ exports.property_create = (req, res, next) => {
         .catch( e => {
           console.log("Error in sending message")
         })
-
+      })
 });
   
 };
