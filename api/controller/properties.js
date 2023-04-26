@@ -916,7 +916,7 @@ exports.property_create = (req, res, next) => {
       })
     })
     numSubtenants = numSubtenants.json()
-
+    console.log("Num Subtenants", numSubtenants)
 
         await fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
         method: 'POST',
