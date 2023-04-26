@@ -898,9 +898,9 @@ exports.property_create = (req, res, next) => {
   const days = Number(Math.floor(((startTime - curTime)/(1000*60*60*24))))
 
 
-  User.findById(decoded.userId).then(user => {
+  User.findById(decoded.userId).then(async user => {
 
-    fetch('https://crib-llc.herokuapp.com/web/tenantautomation', {
+    let numSubtenants = await fetch('https://crib-llc.herokuapp.com/web/tenantautomation', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -914,13 +914,11 @@ exports.property_create = (req, res, next) => {
         lat: coor[0],
         long: coor[1]
       })
-    }).then(async data => {
-        console.log("DATA", data.json())
-        return data.json()
-    }).then(async ppl => {
-      console.log("SENDING msg", ppl)
+    })
+    numSubtenants = numSubtenants.json()
 
-        fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
+
+        await fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -930,7 +928,7 @@ exports.property_create = (req, res, next) => {
           number: user.phoneNumber,
           days: days,
           estimatedSavings:  subleaseDays*Number(req.body.price),
-          subtenants: ppl.count
+          subtenants: numSubtenants.count
         })
         }).then(async e => {
           return res.status(200).json({data:e})
@@ -938,13 +936,7 @@ exports.property_create = (req, res, next) => {
         .catch( e => {
           console.log("Error in sending message")
         })
-  })
-  .then(async e => {
-    return res.status(200).json({data:e})
-  })
-  .catch( e => {
-    console.log("Error in sending message")
-  })
+
 });
   
 };
