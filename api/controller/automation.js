@@ -393,6 +393,7 @@ exports.tenant_automation = async (req, res, next) => {
             }
         });
 
+        console.log("SUBTENANTS", countSubtenants)
         // try {
         //     console.log("SENDING")
 
