@@ -918,7 +918,7 @@ exports.property_create = (req, res, next) => {
     .then( prop => {
     console.log("Num Subtenants", prop)
 
-        await fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
+        fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
