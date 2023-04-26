@@ -59,7 +59,7 @@ exports.get_one = (req, res, next) => {
 exports.add_subtenant_to_tenant = (req, res, next) => {
     const subtenant_id = req.body.subtenant_id
     const tenant_id = req.body.tenant_id
-
+    console.log(req.body)
     User.updateOne(
       { _id: tenant_id },
       [
