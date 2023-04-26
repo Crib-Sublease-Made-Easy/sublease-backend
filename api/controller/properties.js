@@ -900,7 +900,7 @@ exports.property_create = (req, res, next) => {
 
   User.findById(decoded.userId).then(async user => {
 
-    let numSubtenants = await fetch('https://crib-llc.herokuapp.com/web/tenantautomation', {
+    let numSubtenants = await fetch('https://crib-llc.herokuapp.com/automation/tenantautomation', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -915,8 +915,8 @@ exports.property_create = (req, res, next) => {
         long: coor[1]
       })
     })
-    numSubtenants = numSubtenants.json()
-    console.log("Num Subtenants", numSubtenants)
+    let number = numSubtenants.json()
+    console.log("Num Subtenants", number)
 
         await fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
         method: 'POST',
