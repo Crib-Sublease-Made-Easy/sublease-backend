@@ -25,7 +25,7 @@ exports.create = (req, res, next) => {
         sharedRoomFlexibility: req.body.sharedRoomFlexibility,
         roommatesFlexibility: req.body.roommatesFlexibility,
         location: req.body.location,
-        coords: req.body.coords
+        coords: req.body.coords,
         deleted: false,
         createdAt: new Date()
     })
