@@ -880,7 +880,7 @@ exports.property_create = (req, res, next) => {
 
       function (err, model) {
         if (err) {
-          //console.log(err);
+          //console.log(err);q
           return res.send(err);
         }
       }
@@ -902,8 +902,8 @@ exports.property_create = (req, res, next) => {
   User.findById(decoded.userId).then(async user => {
     await Subtenant.find({}).then(async subtenants=>{
       subtenants.forEach( dude =>{
-        if(new Date(req.body.availableFrom) <= new Date(dude.subleaseStart) && new Date(req.body.availableTo) >= new Date(dude.subleaseEnd)  && getDistInMiles(coor[1], coor[0], subLat, subLong) <= 20){
-          
+        if(new Date(req.body.availableFrom) <= new Date(dude.subleaseStart) && new Date(req.body.availableTo) >= new Date(dude.subleaseEnd)  && getDistInMiles(coor[1], coor[0], dude.coords[1], dude.coords[0]) <= 20){
+          console.log("Match", dude)
         }
       })
     })
