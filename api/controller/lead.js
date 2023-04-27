@@ -34,8 +34,7 @@ exports.collect_leads = (req, res, next) => {
 // @description on the website when users type in a phone number, we send them a confirmation code
 // @access Public
 exports.ios_leads = (req, res, next) => {
-  console.log("hello")
-  console.log(req.body.number)
+
   if(req.body.number == undefined){
     res.status(400).json({ error: 'Unable to send contactsss'});
   } else{
@@ -56,6 +55,89 @@ exports.ios_leads = (req, res, next) => {
     // .catch(err => res.status(400).json({ error: 'Unable to store email', errRaw: err }));
   }
 };
+
+// exports.posting_a_sublease = (res, req, next) => {
+//   console.log(req.body.name)
+//   if(req.body.name == undefined || req.body.number == undefined){
+//     res.status(400).json({ error: 'Unable to send contactsss'});
+//   } else{
+//     client.messages
+//     .create({
+//         body: `[Crib] Hello ${req.body.name}, \n \nThank you for signing up on Crib! We are 1 step away from subleasing your Crib. \n \nWe want to assist you in finding the best subleases possible. A lot of students are looking for subleases now, sublease you room and save thousands over the summer!`,
+//         from: '+18775226376',
+//         to: `+1${req.body.number}`
+//     })
+//     .then(message => {
+//       console.log(message)
+//       return res.status(200).json({data:"message sent!"})
+//     })
+//     .catch(err => res.status(400).json({ error: 'Unable to store email', errRaw: err }));
+//   }
+  
+// }
+
+exports.crib_connect_leads = (req, res, next) => {
+  if(req.body.number == undefined || req.body.days == undefined || req.body.estimatedSavings == undefined){
+    res.status(400).json({ error: 'Unable to send contactsss'});
+  } else{
+    client.messages
+    .create({
+        body: `[Crib] Trying to sublease your room?🛌 \n \nCheck out Crib Connect, we find interested and reliable subtenants to take over your sublease so you don't have to! \n \nYour sublease ${req.body.days == 0 ? "is starting now" : `starts in ${req.body.days} days`}. There are ${req.body.subtenants < 3 ? "subtenants": ""+req.body.subtenants+ " subtenants"} interested in your property. Don't risk paying $${req.body.estimatedSavings} for an empty room!`,
+        from: '+18775226376',
+        to: `+1${req.body.number}`
+    })
+    .then(message => {
+      console.log(message)
+      return res.status(200).json({data:"message sent!"})
+    })
+    .catch(err => res.status(400).json({ error: 'Unable to store email', errRaw: err }));
+  }
+};
+
+// @route POST /web/cribConnectReminder
+// @description remind users to get Crib Connect
+// @access Public 
+
+exports.crib_connect_reminder = (req, res, next) => {
+  if(req.body.number == undefined || req.body.days == undefined || req.body.estimatedSavings == undefined){
+    res.status(400).json({ error: 'Unable to send contactsss'});
+  } else{
+    client.messages
+    .create({
+        body: `[Crib] Still trying to sublease your room?🛌 \n \nCheck out Crib Connect, we find interested and reliable subtenants to take over your sublease so you don't have to! \n \nYour sublease ${req.body.days == 0 ? "is starting now" : `starts in ${req.body.days} days`}. Don't risk paying $${req.body.estimatedSavings} for an empty room!`,
+        from: '+18775226376',
+        to: `+1${req.body.number}`
+    })
+    .then(message => {
+      console.log(message)
+      return res.status(200).json({data:"message sent!"})
+    })
+    .catch(err => res.status(400).json({ error: 'Unable to store email', errRaw: err }));
+  }
+};
+
+
+// @route POST /web/lookingforsublease
+// @description user sign up as "Looking for a sublease"
+// @access Public 
+exports.looking_for_sublease = (req, res, next) => {
+  if(req.body.name == undefined || req.body.number == undefined){
+    res.status(400).json({ error: 'Unable to send contactsss'});
+  } else{
+    client.messages
+    .create({
+        body: `[Crib] Hello ${req.body.name}, \n \nThank you for signing up on Crib! We are 1 step away from finding you a Crib. \n \nWe want to assist you in finding the best subleases possible. Please fill out this Google form (https://forms.gle/JKFtePpZZAgfkw1D8) so we can understand your needs!`,
+        from: '+18775226376',
+        to: `+1${req.body.number}`
+    })
+    .then(message => {
+      console.log(message)
+      return res.status(200).json({data:"message sent!"})
+    })
+    .catch(err => res.status(400).json({ error: 'Unable to store email', errRaw: err }));
+  }
+};
+
 
 // @route POST /androidleads
 // @description on the website when users type in a phone number, we send them a confirmation code

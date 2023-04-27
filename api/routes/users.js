@@ -53,6 +53,8 @@ router.put(
 router.get("/:id", checkAuth, UserController.user_get_one);
 router.get("/profileImages/:filename", UserController.get_image);
 router.get("/favorites/all", checkAuth, UserController.user_get_favorites);
+router.post("/enrollCribConnect", UserController.enroll_crib_connect)
+
 
 //OTP Code
 router.post("/OTP/step1", UserController.otp_step1);

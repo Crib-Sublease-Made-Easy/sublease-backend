@@ -183,39 +183,58 @@ exports.otp_step3 = (req, resp, next) => {
                                 ? null
                                 : req.body.school,
                         deleted: false,
+                        cribConnectSubtenants:[],
                         type: req.body.type == undefined
                             ? null
                             : req.body.type,
                     });
 
                     user.save()
-                        .then((result) => {
-                            console.log(result);
-                            resp.status(201).json({
-                                message: "User account created successfully",
-                                createdUser: {
-                                    firstName: result.firstName,
-                                    lastName: result.lastName,
-                                    profilePic: result.profilePic,
-                                    phoneNumber: result.phoneNumber,
-                                    occupation: result.occupation,
-                                    school: result.school,
-                                    _id: result._id,
-                                },
-                                token: {
-                                    accessToken: accessToken,
-                                    refreshToken: refreshToken,
-                                    sendBirdId: sendBirdAppId,
-                                    oneSignalId: oneSignalAppId,
-                                },
-                            });
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                            resp.status(500).json({
-                                error: err,
-                            });
+                    .then((result) => {
+                        console.log(result);
+                        resp.status(201).json({
+                            message: "User account created successfully",
+                            createdUser: {
+                                firstName: result.firstName,
+                                lastName: result.lastName,
+                                profilePic: result.profilePic,
+                                phoneNumber: result.phoneNumber,
+                                occupation: result.occupation,
+                                school: result.school,
+                                _id: result._id,
+                            },
+                            token: {
+                                accessToken: accessToken,
+                                refreshToken: refreshToken,
+                                sendBirdId: sendBirdAppId,
+                                oneSignalId: oneSignalAppId,
+                            },
                         });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        resp.status(500).json({
+                            error: err,
+                        });
+                    });
+                    
+                    if(req.body.type == "Looking for a sublease" || req.body.type == "Both"){
+                        fetch('https://crib-llc.herokuapp.com/web/lookingforsublease', {
+                        method: 'POST',
+                        headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            number: req.body.phoneNumber,
+                            name: req.body.firstName
+                        })
+                        }).then(async e => {
+                        })
+                        .catch( e => {
+                        console.log("Error in sending message")
+                        })
+                    }
                 } else {
                     resp.status(400).json({
                         error: err,
@@ -633,3 +652,24 @@ exports.user_get_all = (req, res, next) => {
         .then((proprties) => res.json(proprties))
         .catch((err) => res.status(404).json({ propertiesFound: "none" }));
 };
+
+
+// @route POST /enrollCribConnect
+// @description enroll in Crib Connect but havent paid for Crib Connect
+// @access public 
+
+exports.enroll_crib_connect = (req, res, next) => {
+    if(req.body.userId == undefined || req.body.userId == null){
+        res.status(404).json({data: "Must specify id"})
+        return
+    }
+    console.log(req.body.userId)
+    User.findByIdAndUpdate(req.body.userId, {
+        "cribConnectEnrolled": true
+    })
+    .then(prop => res.status(200).json({ msg: 'Updated successfully' }))
+    .catch(err =>
+        res.status(400).json({ error: 'Unable to update the Database' })
+    );
+    
+}

@@ -1,6 +1,8 @@
 const fetch = require('node-fetch');
 const jwt = require("jsonwebtoken");
 const { query } = require('express');
+const Property = require('../models/property');
+
 
 var sq_access_token = process.env.SQUARE_ACCESS_TOKEN;
 
@@ -53,12 +55,17 @@ var testData = {
 //       }).then(resp => resp.json())
 //       .then(json => res.json(json))
 //       .catch(err => res.status(400).json({ error: 'unable to make request', errRaw: err }));
-// };
+// }
 
 
 exports.prem_generate_link = async(req, res, next) => {
-    console.log("HELLLOOOOOOOOOO")
     const token = req.headers.authorization.split(" ")[1];
+    let price = 1999;
+    if(req.body.price != undefined && req.body.price != null){
+
+        price = Math.floor(Number(req.body.price)*100)
+        console.log(price)
+    }
     const decoded = jwt.verify(token, process.env.JWT_KEY);
     await fetch("https://connect.squareup.com/v2/online-checkout/payment-links", {
         method: "POST",
@@ -67,11 +74,23 @@ exports.prem_generate_link = async(req, res, next) => {
             'Square-Version': '2023-03-15',
             'Authorization': 'Bearer ' + sq_access_token
         }, 
-        body: JSON.stringify(data)
+        body: JSON.stringify({
+            "description": "Crib Connect immediately connects tenants with reliable and interested subtenants at a very small fee $9.99. With Crib Connect you will receive a list of 5 to 10 potential subtenants.",
+            "quick_pay":{
+                "name": "Crib Connect",
+                "price_money": {
+                    "amount": price,
+                    "currency": "USD"
+                },
+                "location_id": "LGZXV3FXE9F2J"
+
+            }
+        })
       }).then(resp => resp.json())
       .then(square_res => {
-        //   console.log("THE SQUARE RESPONSE", square_res)
+          console.log("THE SQUARE RESPONSE", square_res)
         const userId = decoded.userId;
+       
         if (userId == req.body.userId) {
             
             let query = {};
@@ -86,6 +105,7 @@ exports.prem_generate_link = async(req, res, next) => {
                 else{
                     paymentDetails.status = false
                 }
+               
                 if(square_res.payment_link != undefined){
                     paymentDetails.orderId = square_res.payment_link.order_id;
                     paymentDetails.paymentLink = square_res.payment_link.url;
@@ -95,6 +115,7 @@ exports.prem_generate_link = async(req, res, next) => {
                 cribPremium.paymentDetails = paymentDetails;
                 cribPremium.referred = [];
             }
+            console.log("fucl")
             query.cribPremium = cribPremium;
 
             console.log("Update user")
@@ -222,6 +243,127 @@ exports.prem_status = async(req, res, next) => {
     })
     .catch(err => res.status(400).json({ error: 'Unable to make request', errRaw: err }));
 }
+
+//************************* PAYMENT CONTROLLER ***************************//
+// @route POST /premium/getprice
+// @description get price depening on the sublease
+// @access private
+exports.prem_get_price = async(req, res, next) => {
+    let price = 19.99;
+    Property.findById(req.body.propId).then(async p => {
+        let data = {}
+        data.basePrice = price;
+
+        //take out comma and change to lower case
+        let city = p.loc.secondaryTxt.replaceAll(",","").replaceAll(" ","").toLowerCase();
+
+        //Madison and cit
+        if(city.indexOf("madison") == 0 ){
+            price += 40
+            data.loc = "Madison"
+            data.locPrice = "40"
+        }
+        else if(city.indexOf("losangeles") == 0 || city.indexOf("la") == 0 ){
+            	price += 40
+        	data.loc = "Los Angeles"
+        	data.locPrice = "40"
+        }
+        else if(city.indexOf("newyork") == 0 || city.indexOf("ny") == 0){
+          	price += 40
+        	data.loc = "New York"
+        	data.locPrice = "40"
+           
+        }
+        else if(city.indexOf("austin") == 0){
+          
+           
+        }
+        else if(city.indexOf("sanmarcos") == 0){
+          	price += 40
+        	data.loc = "San Marocs"
+        	data.locPrice = "40"
+        
+        }
+        else if(city.indexOf("berkeley") == 0 || city.indexOf("california") == 0){
+          	price += 40
+        	data.loc = "Berkeley"
+        	data.locPrice = "40"
+          
+        }
+        else if(city.indexOf("sanfrancisco") == 0 || city.indexOf("sf") == 0 ){
+            	price += 40
+        	data.loc = "San Francisco"
+        	data.locPrice = "40"
+            
+        }
+	else if(city.indexOf("seattle") == 0 || city.indexOf("wa") == 0 ){
+            	price += 40
+        	data.loc = "Seattle"
+        	data.locPrice = "40"
+            
+        }
+	else if(city.indexOf("chicago") == 0 || city.indexOf("il") == 0 ){
+            	price += 40
+        	data.loc = "Chicago"
+        	data.locPrice = "40"
+            
+   	 }
+	    
+    else if(city.indexOf("sanjose") == 0 || city.indexOf("ca") == 0 ){
+        price += 50
+        data.loc = "CA"
+        data.locPrice = "50"
+    }
+	else if(city.indexOf("mn") == 0){
+        price += 20
+        data.loc = "Minnesota"
+        data.locPrice = "20"
+    }
+    else{
+        data.loc = p.loc.secondaryTxt
+        data.locPrice = "30"
+        price += 30
+    }
+
+        let curTime = new Date().getTime()
+        let startTime = new Date(p.availableFrom).getTime()
+
+        let diff = startTime - curTime;
+
+        let diffDays = Math.floor((diff)/(1000*60*60*24))
+
+        data.days = diffDays
+	    
+	if(diffDays < 10){
+            price += 60
+            data.daysToBegin = "short"
+            data.daysToBeginPrice = "60"
+
+        }
+        else if(diffDays < 15){
+            price += 40
+            data.daysToBegin = "short"
+            data.daysToBeginPrice = "40"
+
+        }
+        else if(diffDays < 30){
+            price += 20
+            data.daysToBegin = "medium"
+            data.daysToBeginPrice = "20"
+        }
+        
+
+        data.price = price
+       
+        return res.status(200).json(data);
+    })
+    .catch(e => {
+        return res.status(404).json({price: null})
+    })
+
+}
+
+
 
 
 // let squareDetail = await resp.json();

@@ -1,5 +1,6 @@
 // Load Properies Model
 const Property = require('../models/property');
+const Subtenant = require("../models/subtenants");
 const Completed = require('../models/completed');
 const FBContacts = require('../models/fb_contacts');
 const mongoose = require("mongoose");
@@ -807,9 +808,10 @@ exports.property_get_one = async (req, res, next) => {
 // @description post property
 // @access Public
 exports.property_create = (req, res, next) => {
+ 
+
   const token = req.headers.authorization.split(" ")[1];
   const decoded = jwt.verify(token, process.env.JWT_KEY);
-  console.log(JSON.stringify(req.files))
   propImgList = []
   for (let i = 0; i < req.files.length; i++) {
     propImgList[i] = ('https://crib-llc.herokuapp.com/properties/propertyImages/' + req.files[i].filename)
@@ -817,6 +819,24 @@ exports.property_create = (req, res, next) => {
   var coor = []
   coor[0] = req.body.longitude
   coor[1] = req.body.latitude
+
+  let roommatesGender;
+  let sharedGender;
+
+  if(req.body.roommatesGender == undefined || req.body.roommatesGender == null){
+    roommatesGender = "";
+  }
+  else{
+    roommatesGender = req.body.roommatesGender;
+  }
+
+  if(req.body.sharedGender == undefined || req.body.sharedGender == null){
+    sharedGender = "";
+  }
+  else{
+    sharedGender = req.body.sharedGender;
+  }
+
   const property = new Property({
     //_id: new mongoose.Types.ObjectId(),
     title: req.body.title,
@@ -833,6 +853,10 @@ exports.property_create = (req, res, next) => {
     bath: req.body.bath,
     securityDeposit: req.body.securityDeposit,
     availabilityFlexibility: req.body.availabilityFlexibility,
+    roommates: req.body.roommates,
+    roommatesGender: roommatesGender,
+    shared: req.body.shared,
+    sharedGender: sharedGender,
     loc: {
       type: "Point",
       coordinates: coor,
@@ -842,44 +866,122 @@ exports.property_create = (req, res, next) => {
     deleted: false,
     numberOfViews: 0
   });
+
+  console.log("create")
   property
-    .save()
-    .then(async (property) => {
-      console.log(property)
-      console.log(decoded.userId)
-      User.findOneAndUpdate(
-        { _id: decoded.userId },
-        { $push: { postedProperties: property._id } },
+  .save()
+  .then(async (property) => {
+    console.log(property)
 
-        function (err, model) {
-          if (err) {
-            //console.log(err);
-            return res.send(err);
-          }
+    console.log("DECODEEEEDEE ID ", decoded.userId)
+    User.findOneAndUpdate(
+      { _id: decoded.userId },
+      { $push: { postedProperties: property._id } },
+
+      function (err, model) {
+        if (err) {
+          //console.log(err);q
+          return res.send(err);
         }
-      )
-      // let curTime = new Date().getTime();
-      // let startTime = new Date(req.body.availableFrom).getTime();
+      }
+    )
+    
+  })
+  .catch(err => res.status(400).json({ error: 'Unable to add this property', errRaw: err }));
 
-      // let days = Math.floor((startTime - curTime)/(1000*60*60*24))
-      // await User.findById(decoded.userId).then(async user => {
-      //   client
-      //   .create({
-      //     body: `Thank you for posting your room on Crib! Be sure to check out Crib Connect, we find interested and reliable tenants to take over your sublease so you don't have to. You are ${days} away from the start of sublease! `,
-      //     from: '+18775226376',
-      //     to: `+1${user.phoneNumber}`
-      //   })
-      //   .then(message => {
-      //     console.log(message)
-      //     return res.status(200).json({data:"message sent!"})
-      //   })
+  let curTime = Number(new Date().getTime());
+  let startTime = Number(req.body.availableFrom);
+  let endTime = Number(req.body.availableTo);
+  const subleaseDays =  Math.floor((endTime - startTime)/(1000*60*60*24*30))
 
-      // })
-  
-      return res.status(201).json({data:"message sent!"}, {message:"not successfully sent!"})
+
+
+  const days = Number(Math.floor(((startTime - curTime)/(1000*60*60*24))))
+
+
+  User.findById(decoded.userId).then(async user => {
+    await Subtenant.find({}).then(async subtenants=>{
+      subtenants.forEach( dude =>{
+        console.log(dude)
+        console.log("FROM COND: " + new Date(req.body.availableFrom) <= new Date(dude.subleaseStart))
+        console.log("TO COND: " + new Date(req.body.availableTo) >= new Date(dude.subleaseEnd))
+        console.log("DISTANCE: ", getDistInMiles(coor[1], coor[0], dude.coords[1], dude.coords[0]))
+        if(new Date(req.body.availableFrom) <= new Date(dude.subleaseStart) && new Date(req.body.availableTo) >= new Date(dude.subleaseEnd)  && getDistInMiles(coor[1], coor[0], dude.coords[1], dude.coords[0]) <= 20){
+          console.log("Match", dude)
+          Subtenant.updateOne(
+            { _id: dude._id },
+            { $push: { cribConnectSubtenants: _id } }
+         )
+        }
+      })
     })
-    .catch(err => res.status(400).json({ error: 'Unable to add this property', errRaw: err }));
+
+    let numSubtenants = await fetch('https://crib-llc.herokuapp.com/automation/tenantautomation', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        firstName: user.firstName,
+        phoneNumber: user.phoneNumber,
+        availableFrom: req.body.availableFrom,
+        availableTo: req.body.availableTo,
+        lat: coor[1] ,
+        long: coor[0]
+      })
+    }).then(numSubtenants => numSubtenants.json())
+    .then( prop => {
+    console.log("Num Subtenants", prop)
+
+        fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          number: user.phoneNumber,
+          days: days,
+          estimatedSavings:  subleaseDays*Number(req.body.price),
+          subtenants: prop.count
+        })
+        }).then(async e => {
+          return res.status(200).json({data:e})
+        })
+        .catch( e => {
+          console.log("Error in sending message")
+        })
+      })
+});
+  
 };
+
+
+
+function getDistInMiles(lat1, lon1, lat2, lon2) {
+  return _getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) * 0.621371;
+}
+
+function _getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  var R = 6371; // Radius of the earth in kilometers
+  var dLat = deg2rad(lat2 - lat1); // deg2rad below
+  var dLon = deg2rad(lon2 - lon1);
+  var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c; // Distance in KM
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI / 180)
+}
+
+
+
 
 // @route POST /properties
 // @description post property with scraped data
