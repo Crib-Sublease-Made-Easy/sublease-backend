@@ -9,13 +9,6 @@ const { response } = require("express");
 const { json } = require("body-parser");
 const user = require("../models/user");
 
-const IGID = "17841457359703661";
-const IGTOKEN = "EAAMoc0mnE3EBAM6oqriGt8P1yvBTpLMlZCVkeKFZCbzUAR57un6woEQZAlSK0SONwZBiqTKvy5mmJZC53ZC7xNK5EKWpEyB2Uh8rsxImA7nnHZBd6K5Cwu4YkJKeG57fQMMu4hmDBhUZBOcJdIVqABd3sqXR29CbsNlKGzQ5sudEnt0v5RWkixkT";
-
-const TWILIO_ACC_SID = process.env.TWILIO_ACC_SID
-const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN
-
-
 exports.automate_instagram = (req, res, next) => {
     User.find({ phoneNumber: req.body.phoneNumber })
         .then(async (user) => {
@@ -27,8 +20,8 @@ exports.automate_instagram = (req, res, next) => {
                     // Create container for each image
                     for (var i=0; i < images.length; i++) {
                         let containerId;
-                        await fetch("https://graph.facebook.com/v16.0/" + IGID + 
-                            "/media?is_carousel_item=true&image_url=" + images[i] + "&access_token=" + IGTOKEN, 
+                        await fetch("https://graph.facebook.com/v16.0/" + IG_ID + 
+                            "/media?is_carousel_item=true&image_url=" + images[i] + "&access_token=" + IG_TOKEN, 
                         {
                             method: 'POST',
                             headers: {
@@ -48,15 +41,22 @@ exports.automate_instagram = (req, res, next) => {
                     
                     // Create carousel container
                     children = imageContainerIds.join('%2C')
-                    start = prop.availableFrom.getMonth() + '%2F' + prop.availableFrom.getDate() + '%2F' + prop.availableFrom.getFullYear()
-                    end = prop.availableTo.getMonth() + '%2F' + prop.availableTo.getDate() + '%2F' + prop.availableTo.getFullYear()
+                    start = prop.availableFrom.getMonth() + '/' + prop.availableFrom.getDate() + '/' + prop.availableFrom.getFullYear()
+                    end = prop.availableTo.getMonth() + '/' + prop.availableTo.getDate() + '/' + prop.availableTo.getFullYear()
                     description = "%24" + prop.price + "%20%2Fmo.%20" + start + "-" + end + "%20%7C%20" + "Property%20details%20on%20the%20Crib%20App!%20Contact%20608-515-8038%20if%20interested."
                     let carouselId;
 
-                    await fetch("https://graph.facebook.com/v16.0/" + IGID + 
-                        "/media?media_type=CAROUSEL&children=" + children + "&caption=" + description + "&access_token=" + IGTOKEN, 
+                    await fetch("https://graph.facebook.com/v16.0/" + IG_ID + 
+                        "/media?media_type=CAROUSEL&children=" + children + "&access_token=" + IG_TOKEN, 
                     {
                         method: 'POST',
+                        body: JSON.stringify({
+                            caption: '[NEW SUBLEASE]\n'
+                            + 'Price: $' + prop.price + ' /mo.\n'
+                            + 'Available: ' + start + ' - ' + end + '\n'
+                            + 'Description: ' + prop.description + '\n\n'
+                            + 'Text (608)-515-8038 if interested and check out the Crib App for exact location and details!'
+                        }),
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -71,8 +71,8 @@ exports.automate_instagram = (req, res, next) => {
                     
                     // Create post on Instagram
                     let postId;
-                    await fetch("https://graph.facebook.com/v16.0/" + IGID + 
-                        "/media_publish?creation_id=" + carouselId + "&access_token=" + IGTOKEN,
+                    await fetch("https://graph.facebook.com/v16.0/" + IG_ID + 
+                        "/media_publish?creation_id=" + carouselId + "&access_token=" + IG_TOKEN,
                     {
                         method: 'POST',
                         headers: {
