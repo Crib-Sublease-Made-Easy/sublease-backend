@@ -903,8 +903,8 @@ exports.property_create = (req, res, next) => {
     await Subtenant.find({}).then(async subtenants=>{
       subtenants.forEach( dude =>{
         console.log(dude)
-        console.log("FROM COND: " + String(new Date(req.body.availableFrom))+ "     " + String(new Date(req.body.availableFrom)),(new Date(req.body.availableFrom) <= new Date(dude.subleaseStart)))
-        console.log("TO COND: " + String(new Date(req.body.availableFrom))+ "     " + String(new Date(req.body.availableFrom)), (new Date(req.body.availableTo) >= new Date(dude.subleaseEnd)))
+        console.log("FROM COND: " + String(req.body.availableFrom)+ "     " + String(dude.subleaseStart),(new Date(req.body.availableFrom) <= new Date(dude.subleaseStart)))
+        console.log("TO COND: " + String(req.body.availableTo)+ "     " + String(dude.subleaseEnd), (new Date(req.body.availableTo) >= new Date(dude.subleaseEnd)))
         console.log("DISTANCE: ", getDistInMiles(coor[1], coor[0], dude.coords[1], dude.coords[0]))
         if(new Date(req.body.availableFrom) <= new Date(dude.subleaseStart) && new Date(req.body.availableTo) >= new Date(dude.subleaseEnd)  && getDistInMiles(coor[1], coor[0], dude.coords[1], dude.coords[0]) <= 20){
           console.log("Match", dude)
