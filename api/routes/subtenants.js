@@ -7,4 +7,5 @@ router.post("/getone", SubtenantController.get_one)
 
 //used to add subtenant to the tenant cribConnectSubtenants
 router.post("/addsubtoten", SubtenantController.add_subtenant_to_tenant)
+// router.put("/clearsubarray", SubtenantController.clear_array)
 module.exports = router;

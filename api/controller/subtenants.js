@@ -90,3 +90,20 @@ exports.add_subtenant_to_tenant = (req, res, next) => {
     );
   
   };
+
+//   exports.clear_array = (req, res, next) => {
+//     // console.log("getting")
+//     // if(req.params.subtenantId == undefined){
+//     //     return res.status(404).json({data:"missing info"})
+//     // }
+//     // else{
+//     //     Subtenant.findById(req.params.subtenantID)
+//     //     .then((subtenant) =>  {
+//     //         console.log(subtenant)
+//     //     })
+//     //     .catch(e =>{ return res.status(400).json({data:"Error in retrieving"})})
+//     // }
+//     User.update({}, {cribConnectSubtenants:[]})
+//     .then((data) => res.status(200).json(data))
+//     .catch(e => { res.status(400).json({data: "Error"})})
+// }
