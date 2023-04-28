@@ -899,22 +899,22 @@ exports.property_create = (req, res, next) => {
   const days = Number(Math.floor(((startTime - curTime)/(1000*60*60*24))))
 
 
-  // User.findById(decoded.userId).then(async user => {
-  //   await Subtenant.find({}).then(async subtenants=>{
-  //     subtenants.forEach( dude =>{
-  //       console.log(dude)
-  //       console.log("FROM COND: " + (new Date(String(req.body.availableFrom)))+  "     " + (new Date(String(dude.subleaseStart))),(new Date(req.body.availableFrom) <= new Date(dude.subleaseStart)))
-  //       console.log("TO COND: " + String(req.body.availableTo)+ "     " + String(dude.subleaseEnd), (new Date(req.body.availableTo) >= new Date(dude.subleaseEnd)))
-  //       console.log("DISTANCE: ", getDistInMiles(coor[1], coor[0], dude.coords[1], dude.coords[0]))
-  //       if(new Date(req.body.availableFrom) <= new Date(dude.subleaseStart) && new Date(req.body.availableTo) >= new Date(dude.subleaseEnd)  && getDistInMiles(coor[1], coor[0], dude.coords[1], dude.coords[0]) <= 20){
-  //         console.log("Match", dude)
-  //         Subtenant.updateOne(
-  //           { _id: dude._id },
-  //           { $push: { cribConnectSubtenants: _id } }
-  //        )
-  //       }
-  //     })
-  //   })
+  User.findById(decoded.userId).then(async user => {
+    // await Subtenant.find({}).then(async subtenants=>{
+    //   subtenants.forEach( dude =>{
+    //     console.log(dude)
+    //     console.log("FROM COND: " + (new Date(String(req.body.availableFrom)))+  "     " + (new Date(String(dude.subleaseStart))),(new Date(req.body.availableFrom) <= new Date(dude.subleaseStart)))
+    //     console.log("TO COND: " + String(req.body.availableTo)+ "     " + String(dude.subleaseEnd), (new Date(req.body.availableTo) >= new Date(dude.subleaseEnd)))
+    //     console.log("DISTANCE: ", getDistInMiles(coor[1], coor[0], dude.coords[1], dude.coords[0]))
+    //     if(new Date(req.body.availableFrom) <= new Date(dude.subleaseStart) && new Date(req.body.availableTo) >= new Date(dude.subleaseEnd)  && getDistInMiles(coor[1], coor[0], dude.coords[1], dude.coords[0]) <= 20){
+    //       console.log("Match", dude)
+    //       Subtenant.updateOne(
+    //         { _id: dude._id },
+    //         { $push: { cribConnectSubtenants: _id } }
+    //      )
+    //     }
+    //   })
+    // })
 
     let numSubtenants = await fetch('https://crib-llc.herokuapp.com/automation/tenantautomation', {
       method: 'POST',
