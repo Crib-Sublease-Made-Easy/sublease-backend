@@ -369,8 +369,8 @@ exports.tenant_automation = async (req, res, next) => {
             let latT = req.body.lat
             let longT = req.body.long
 
-            var twilioUrl = 'https://api.twilio.com/2010-04-01/Accounts/' + TWILIO_ACC_SID + '/Messages.json';
-            var authenticationString = TWILIO_ACC_SID + ':' + TWILIO_AUTH_TOKEN;
+            // var twilioUrl = 'https://api.twilio.com/2010-04-01/Accounts/' + TWILIO_ACC_SID + '/Messages.json';
+            // var authenticationString = TWILIO_ACC_SID + ':' + TWILIO_AUTH_TOKEN;
 
             // console.log("subF: ", subAvailableFrom)
             // console.log("tenF: ", availableFromT)
