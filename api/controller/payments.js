@@ -2,6 +2,8 @@ const fetch = require('node-fetch');
 const jwt = require("jsonwebtoken");
 const { query } = require('express');
 const Property = require('../models/property');
+const User = require("../models/user");
+
 
 
 var sq_access_token = process.env.SQUARE_ACCESS_TOKEN;
@@ -361,6 +363,22 @@ exports.prem_get_price = async(req, res, next) => {
         return res.status(404).json({price: null})
     })
 
+}
+
+exports.prem_get_crib_connect_user_number = (req, res, next) => {
+    let number = 100;
+    User.find()
+    .then( users => {
+        users.forEach(user => {
+            if(user.cribConnectEnrolled == true ){
+                number++;
+            }
+        })
+        res.status(200).json({data: number})
+    })
+    .catch( e=> {
+        res.status(400).json({data: "Error"})
+    })
 }
 
 
