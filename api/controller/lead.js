@@ -203,3 +203,26 @@ exports.get_leads = (req, res, next) => {
 
 // }
 
+exports.phoneNumber_promo = (req, res, next) => {
+  
+
+  let arr = [3326991131,8149969211,6467092048,3472971279,9299778961,9299778961,6144043920,9174289423,6462869638,4849359168,6468525143,9176919195,6467533643,9177690577,2013591619,6464044585,9296182394,6265549516, 6089991395]
+  // let arr = [6089991395]
+  
+      arr.forEach((number) => {
+          client.messages
+      .create({
+          body: `hihi, 你好呀，我是Isaac 是University of Wisocnsin Madison 的一个学生，我们和哥大學生做了一个转租的平台，比微信和FB的好用非常多，叫做 "Crib - subleasing" 在 App Store 和 Google Play (linktree.com/crib.subleasing)，我们有上千个人在上面转租和找房子，在纽约也有几百个用户在找转租. 如果你想转租，30s就可以搞定。有什么问题都可以问我哦～整个过程都是免费的！请多多支持`,
+          from: '+18775226376',
+          to: `+1${number}`
+      })
+      .then(message => {
+      console.log(message)
+     
+      })
+      .catch(err => res.status(400).json({ error: 'Unable to store email', errRaw: err }));
+      })
+
+      return res.status(200).json({data:"message sent!"})
+}
+
