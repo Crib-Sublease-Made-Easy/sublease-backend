@@ -76,6 +76,9 @@ router.post("/internal/contact/fb", checkAuth, PropertyController.fb_contacts);
 router.post("/favorite", checkAuth, PropertyController.property_favorite);
 router.post("/:id", PropertyController.property_get_one);
 router.put("/:id", checkAuth, PropertyController.property_modify);
+
+router.get("/getDetails/:id", PropertyController.property_get_one);
+
 router.put(
     "/propertyImages/:id",
     upload.single("propertyImage"),

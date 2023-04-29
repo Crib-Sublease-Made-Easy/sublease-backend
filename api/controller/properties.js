@@ -1,5 +1,6 @@
 // Load Properies Model
 const Property = require('../models/property');
+const Subtenant = require("../models/subtenants");
 const Completed = require('../models/completed');
 const FBContacts = require('../models/fb_contacts');
 const mongoose = require("mongoose");
@@ -879,7 +880,7 @@ exports.property_create = (req, res, next) => {
 
       function (err, model) {
         if (err) {
-          //console.log(err);
+          //console.log(err);q
           return res.send(err);
         }
       }
@@ -898,29 +899,89 @@ exports.property_create = (req, res, next) => {
   const days = Number(Math.floor(((startTime - curTime)/(1000*60*60*24))))
 
 
-  User.findById(decoded.userId).then(user => {
+  User.findById(decoded.userId).then(async user => {
+    // await Subtenant.find({}).then(async subtenants=>{
+    //   subtenants.forEach( dude =>{
+    //     console.log(dude)
+    //     console.log("FROM COND: " + (new Date(String(req.body.availableFrom)))+  "     " + (new Date(String(dude.subleaseStart))),(new Date(req.body.availableFrom) <= new Date(dude.subleaseStart)))
+    //     console.log("TO COND: " + String(req.body.availableTo)+ "     " + String(dude.subleaseEnd), (new Date(req.body.availableTo) >= new Date(dude.subleaseEnd)))
+    //     console.log("DISTANCE: ", getDistInMiles(coor[1], coor[0], dude.coords[1], dude.coords[0]))
+    //     if(new Date(req.body.availableFrom) <= new Date(dude.subleaseStart) && new Date(req.body.availableTo) >= new Date(dude.subleaseEnd)  && getDistInMiles(coor[1], coor[0], dude.coords[1], dude.coords[0]) <= 20){
+    //       console.log("Match", dude)
+    //       Subtenant.updateOne(
+    //         { _id: dude._id },
+    //         { $push: { cribConnectSubtenants: _id } }
+    //      )
+    //     }
+    //   })
+    // })
 
-    fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      number: user.phoneNumber,
-      days: days,
-      estimatedSavings:  subleaseDays*Number(req.body.price)
-    })
-    }).then(async e => {
-      return res.status(200).json({data:e})
-    })
-    .catch( e => {
-      console.log("Error in sending message")
-    })
-  });
+    let numSubtenants = await fetch('https://crib-llc.herokuapp.com/automation/tenantautomation', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        firstName: user.firstName,
+        phoneNumber: user.phoneNumber,
+        availableFrom: req.body.availableFrom,
+        availableTo: req.body.availableTo,
+        lat: coor[1] ,
+        long: coor[0]
+      })
+    }).then(numSubtenants => numSubtenants.json())
+    .then( prop => {
+    console.log("Num Subtenants", prop)
 
+        fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          number: user.phoneNumber,
+          days: days,
+          estimatedSavings:  subleaseDays*Number(req.body.price),
+          subtenants: prop.count
+        })
+        }).then(async e => {
+          return res.status(200).json({data:e})
+        })
+        .catch( e => {
+          console.log("Error in sending message")
+        })
+      })
+});
   
 };
+
+
+
+function getDistInMiles(lat1, lon1, lat2, lon2) {
+  return _getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) * 0.621371;
+}
+
+function _getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  var R = 6371; // Radius of the earth in kilometers
+  var dLat = deg2rad(lat2 - lat1); // deg2rad below
+  var dLon = deg2rad(lon2 - lon1);
+  var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c; // Distance in KM
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI / 180)
+}
+
+
+
 
 // @route POST /properties
 // @description post property with scraped data

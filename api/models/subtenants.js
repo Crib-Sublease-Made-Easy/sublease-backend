@@ -42,6 +42,14 @@ const SubtenantSchema = new mongoose.Schema (
             type: Boolean,
             required: true
         },
+        location: {
+            type: String,
+            required: true
+        },
+        coords: {
+            type: Array,
+            required: true
+        },
         createdAt: {
             type: Date,
             required: true,
