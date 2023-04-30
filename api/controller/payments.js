@@ -381,6 +381,22 @@ exports.prem_get_crib_connect_user_number = (req, res, next) => {
     })
 }
 
+exports.prem_crib_connect_total_saving = (req, res, next) => {
+    let number = 100;
+    User.find()
+    .then( users => {
+        users.forEach(user => {
+            if(user.cribConnectEnrolled == true ){
+                number++;
+            }
+        })
+        res.status(200).json({saving: 1257*3*number})
+    })
+    .catch( e=> {
+        res.status(400).json({data: "Error"})
+    })
+}
+
 
 
 
