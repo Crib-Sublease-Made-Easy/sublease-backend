@@ -337,9 +337,9 @@ exports.prem_get_price = async(req, res, next) => {
         data.days = diffDays
 	    
         if(diffDays < 15){
-            price += 40
+            price += 30
             data.daysToBegin = "short"
-            data.daysToBeginPrice = "40"
+            data.daysToBeginPrice = "30"
 
         }
         else if(diffDays < 30){
