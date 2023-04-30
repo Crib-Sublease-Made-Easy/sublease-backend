@@ -14,5 +14,7 @@ router.get("/nondeletedprops", AutomationController.get_non_deleted_props)
 
 router.post("/tenantautomation", AutomationController.tenant_automation)
 
+router.get("/subtenantarrayautomation", AutomationController.subtenant_arr_automation)
+
 
 module.exports = router;
