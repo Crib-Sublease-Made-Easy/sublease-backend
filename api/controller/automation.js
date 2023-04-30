@@ -520,13 +520,13 @@ exports.subtenant_arr_automation = async (req, res, next) => {
                         'name': subName,
                         'subleaseStart': subAvailableFrom,
                         'subleaseEnd': subAvailableTo,
-                        'budget': subBudget,
+                        'budget': Number(subBudget),
                         'bio': subAbout,
                         'phoneNumber': subPhoneNumber,
-                        'age': subAge,
+                        'age': Number(subAge),
                         'gender': subGender,
-                        'sharedRoomFlexibility': subSharedRoom,
-                        'roommatesFlexibility': subRoommate,
+                        'sharedRoomFlexibility': subSharedRoom == "TRUE",
+                        'roommatesFlexibility': subRoommate == "TRUE",
                         'location': subLocation ,
                         'coords':[subLong,subLat]
                     })
