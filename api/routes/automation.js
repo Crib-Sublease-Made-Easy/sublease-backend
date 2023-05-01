@@ -16,5 +16,7 @@ router.post("/tenantautomation", AutomationController.tenant_automation)
 
 router.get("/subtenantarrayautomation", AutomationController.subtenant_arr_automation)
 
+router.post("/generatesubtenantarrayforuser", AutomationController.automate_subtenant_array_for_user)
+
 
 module.exports = router;

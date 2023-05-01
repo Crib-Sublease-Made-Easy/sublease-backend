@@ -5,9 +5,11 @@ const fetch = require('node-fetch');
 // Load Properties and Users Models
 const User = require("../models/user");
 const Property = require('../models/property');
+const Subtenant = require("../models/subtenants")
 const { response } = require("express");
 const { json } = require("body-parser");
 const user = require("../models/user");
+
 
 exports.automate_instagram = (req, res, next) => {
     User.find({ phoneNumber: req.body.phoneNumber })
@@ -203,30 +205,6 @@ exports.automate_crib_connect_reminder = (req, res, next) => {
         return res.status(200).json({data: "success"})
         
     })
-
-//   User.findById(decoded.userId).then(user => {
-
-//     fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
-//     method: 'POST',
-//     headers: {
-//       Accept: 'application/json',
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({
-//       number: user.phoneNumber,
-//       days: days,
-//       estimatedSavings:  subleaseDays*Number(req.body.price)
-//     })
-//     }).then(async e => {
-//       return res.status(200).json({data:e})
-//     })
-//     .catch( e => {
-//       console.log("Error in sending message")
-//     })
-//   });
-
-
-
 }
 
 
@@ -247,6 +225,38 @@ exports.automate_didnt_pay_crib_connect = (req, res, next) => {
     })
 }
 
+exports.automate_subtenant_array_for_user = (req, res, next) => {
+    if(req.body.propId == undefined){
+        res.status(404).json({data: "Error"})
+    }
+    else{
+        Property.findById(req.body.propId).then(p => {
+            let subtenantArr = [];
+            Subtenant.find().then(subtenants =>{
+                subtenants.forEach(subtenant =>{
+                    if(getDistInMiles(p.loc.coordinates[1],p.loc.coordinates[0], subtenant.coords[1], subtenant.coords[0]) < 20){
+                        if(new Date(p.availableFrom) < new Date(subtenant.subleaseStart) && new Date(p.availableTo) > new Date(subtenant.subleaseEnd)){
+                            subtenantArr.push(subtenant._id)
+                        }
+                    }
+                })
+
+            }).then(r => {
+                User.findByIdAndUpdate(p.postedBy, {cribConnectSubtenants: subtenantArr})
+                .then(rr => {
+                    res.status(200).json({ msg: 'success' })
+                }).catch(err => res.status(400).json({ error: 'Unable to store code', errRaw: err }));
+               
+            })
+            .catch(e=> {
+                res.status(400).json({data:"Error"})
+                console.log("Error")
+            })
+        })
+       
+    }
+
+}
 
 
 /*---------IMPORTANT DO NOT TOUCH--------*/
