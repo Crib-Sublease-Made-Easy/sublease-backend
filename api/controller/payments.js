@@ -271,9 +271,9 @@ exports.prem_get_price = async(req, res, next) => {
         	data.locPrice = "40"
         }
         else if(city.indexOf("newyork") == 0 || city.indexOf("ny") == 0){
-          	price += 30
+          	price += 50
         	data.loc = "New York"
-        	data.locPrice = "30"
+        	data.locPrice = "50"
            
         }
         else if(city.indexOf("austin") == 0){
@@ -335,8 +335,15 @@ exports.prem_get_price = async(req, res, next) => {
         let diffDays = Math.floor((diff)/(1000*60*60*24))
 
         data.days = diffDays
+
+        if(diffDays < 10){
+            price += 50
+            data.daysToBegin = "short"
+            data.daysToBeginPrice = "50"
+
+        }
 	    
-        if(diffDays < 15){
+        else if(diffDays < 15){
             price += 30
             data.daysToBegin = "short"
             data.daysToBeginPrice = "30"
