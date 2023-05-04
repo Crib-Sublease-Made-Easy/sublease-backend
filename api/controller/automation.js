@@ -9,6 +9,8 @@ const Subtenant = require("../models/subtenants")
 const { response } = require("express");
 const { json } = require("body-parser");
 const user = require("../models/user");
+const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_AUTH_TOKEN);
+
 
 
 exports.automate_instagram = (req, res, next) => {
@@ -574,5 +576,40 @@ exports.subtenant_arr_automation = async (req, res, next) => {
     })
     .catch( e => {
       console.log("Error in sending message", e)
+    })
+}
+
+exports.crib_connect_daily_reminder_subtenant = (req, res, next) => {
+    let sent = 0;
+    User.find()
+    .then(users => {
+        users.forEach( user => {
+            if(user.cribConnectSubtenants != undefined && user.cribConnectSubtenants.length != 0 && user.cribPremium.paymentDetails.status == false){
+                console.log(user.firstName)
+
+                if(user.postedProperties.length != 0){
+                    Property.findById(user.postedProperties[0])
+                    .then( p => {
+                        let monthlyRent = p.price;
+                        let curTime = new Date().getTime();
+                        let daysUntilStart = Math.floor((new Date(p.availableFrom).getTime() - curTime)/(1000*60*60*24));
+                        // console.log((new Date(p.availableFrom).getTime() - curTime))
+                        let subleaseLengthInMonths = Math.ceil((new Date(p.availableTo).getTime() - new Date(p.availableFrom).getTime())/(1000*60*60*24*31));
+
+                        client.messages
+                        .create({
+                            body: `[Crib] Hello ${user.firstName}, ${'\n'}Your sublease ${daysUntilStart > 1 ? "starts in " + daysUntilStart + " days" : "is starting now"} days! Don't risk paying $${monthlyRent*subleaseLengthInMonths} for an empty room. We found ${user.cribConnectSubtenants.length} tenants who are interested in your room! Use our Crib Connect and connect with them 🎉 If we cannot find a tenant before your sublease start date, money back guaranteed 👍`,
+                            from: '+18775226376',
+                            to: `+1${user.phoneNumber}`
+                        })
+                        sent++;
+                        // console.log(`[Crib] Hello ${user.firstName}, ${'\n'}Your sublease ${daysUntilStart > 1 ? "starts in " + daysUntilStart + " days" : "is starting now"} days! Don't risk paying $${monthlyRent*subleaseLengthInMonths} on an empty room. We found ${user.cribConnectSubtenants.length} subtenants who are interested in your room! Use our Crib Connect serivce and connect with them 🎉 If we cannot find a tenant before your sublease start date, money back guaranteed 👍🏼`)
+                    })
+                }
+                
+            }
+        })
+        console.log(sent)
+        res.status(200).json({data:"Success"})
     })
 }

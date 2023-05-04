@@ -18,5 +18,7 @@ router.get("/subtenantarrayautomation", AutomationController.subtenant_arr_autom
 
 router.post("/generatesubtenantarrayforuser", AutomationController.automate_subtenant_array_for_user)
 
+router.get("/cribconnectDailySubtenantReminder", AutomationController.crib_connect_daily_reminder_subtenant)
+
 
 module.exports = router;
