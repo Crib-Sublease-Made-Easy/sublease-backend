@@ -233,7 +233,7 @@ exports.prem_status = async(req, res, next) => {
         console.log(data)
         console.log(data.order.state)
         //The payment is paid
-        if(data.order.state == "OPEN"){
+        if(data.order.state == "OPEN" && data.order.net_amount_due_money.amount == 0){
             User.findByIdAndUpdate(req.body.userId, {$set: {'cribPremium.paymentDetails.status': true}})
             .catch((err) =>
                 res.status(400).json({ error: "Unable to update the Database" })
