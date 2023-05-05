@@ -218,23 +218,23 @@ exports.otp_step3 = (req, resp, next) => {
                         });
                     });
                     
-                    if(req.body.type == "Looking for a sublease" || req.body.type == "Both"){
-                        fetch('https://crib-llc.herokuapp.com/web/lookingforsublease', {
-                        method: 'POST',
-                        headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            number: req.body.phoneNumber,
-                            name: req.body.firstName
-                        })
-                        }).then(async e => {
-                        })
-                        .catch( e => {
-                        console.log("Error in sending message")
-                        })
-                    }
+                    // if(req.body.type == "Looking for a sublease" || req.body.type == "Both"){
+                    //     fetch('https://crib-llc.herokuapp.com/web/lookingforsublease', {
+                    //     method: 'POST',
+                    //     headers: {
+                    //     Accept: 'application/json',
+                    //     'Content-Type': 'application/json',
+                    //     },
+                    //     body: JSON.stringify({
+                    //         number: req.body.phoneNumber,
+                    //         name: req.body.firstName
+                    //     })
+                    //     }).then(async e => {
+                    //     })
+                    //     .catch( e => {
+                    //     console.log("Error in sending message")
+                    //     })
+                    // }
                 } else {
                     resp.status(400).json({
                         error: err,

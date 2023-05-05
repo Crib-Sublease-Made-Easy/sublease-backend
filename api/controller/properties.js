@@ -885,7 +885,21 @@ exports.property_create = (req, res, next) => {
         }
       }
     )
-    
+
+    await fetch('https://crib-llc.herokuapp.com/automation/generatesubtenantarrayforuser', {
+      method: 'POST',
+      headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          propId: property._id
+      })
+      }).then(async e => {
+      })
+      .catch( e => {
+      console.log("Error in sending message")
+      })
   })
   .catch(err => res.status(400).json({ error: 'Unable to add this property', errRaw: err }));
 

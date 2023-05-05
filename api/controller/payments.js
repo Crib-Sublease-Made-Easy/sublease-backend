@@ -233,7 +233,7 @@ exports.prem_status = async(req, res, next) => {
         console.log(data)
         console.log(data.order.state)
         //The payment is paid
-        if(data.order.state == "OPEN"){
+        if(data.order.state == "OPEN" && data.order.net_amount_due_money.amount == 0){
             User.findByIdAndUpdate(req.body.userId, {$set: {'cribPremium.paymentDetails.status': true}})
             .catch((err) =>
                 res.status(400).json({ error: "Unable to update the Database" })
@@ -316,6 +316,11 @@ exports.prem_get_price = async(req, res, next) => {
         data.loc = "CA"
         data.locPrice = "50"
     }
+    else if(city.indexOf("boston") == 0 || city.indexOf("ma") == 0 ){
+        price += 50
+        data.loc = "Boston"
+        data.locPrice = "50"
+    }
 	else if(city.indexOf("mn") == 0){
         price += 20
         data.loc = "Minnesota"
@@ -335,17 +340,18 @@ exports.prem_get_price = async(req, res, next) => {
         let diffDays = Math.floor((diff)/(1000*60*60*24))
 
         data.days = diffDays
-	    
-	if(diffDays < 10){
-            price += 60
+
+        if(diffDays < 10){
+            price += 50
             data.daysToBegin = "short"
-            data.daysToBeginPrice = "60"
+            data.daysToBeginPrice = "50"
 
         }
+	    
         else if(diffDays < 15){
-            price += 40
+            price += 30
             data.daysToBegin = "short"
-            data.daysToBeginPrice = "40"
+            data.daysToBeginPrice = "30"
 
         }
         else if(diffDays < 30){
@@ -379,6 +385,43 @@ exports.prem_get_crib_connect_user_number = (req, res, next) => {
     .catch( e=> {
         res.status(400).json({data: "Error"})
     })
+}
+
+exports.prem_crib_connect_total_saving = (req, res, next) => {
+    let number = 100;
+    User.find()
+    .then( users => {
+        users.forEach(user => {
+            if(user.cribConnectEnrolled == true ){
+                number++;
+            }
+        })
+        res.status(200).json({saving: 1257*3*number})
+    })
+    .catch( e=> {
+        res.status(400).json({data: "Error"})
+    })
+}
+
+//************************* PAYMENT CONTROLLER ***************************//
+// @route GET /premium/FAQ
+// @description get Crib Connect FAQ dynamically
+// @access public
+exports.prem_FAQ = (req, res, next) => {
+    let faqArr = [];
+
+    let FAQ1 = {"🤷🏻‍♂️ What is Crib Connect?" : "Crib Connect is a service that finds interested and reliable tenants to take over your sublease for you! We only recommend the best tenants who fits your sublease deatils and description."}
+    faqArr.push(FAQ1)
+    let FAQ2 = {"🔎 How does Crib Connect work?" : `Crib Connect does all the work for you! Simply pay a one-time-fee which is determined by your sublease location and duration. Once payment is successful, you will be able to access information about potential tenants such as gender, name and phone number, as well as the sublease duration they need and their budget. \n \nThe list of potential tenants updates everyday as we receive more sublease requests. Therefore, you are able to access all future potential tenants once you used Crib Connect.`}
+    faqArr.push(FAQ2)
+    let FAQ3 = {"🎉 I got Crib Connect!": `Congratulations! You’re one step away from subleasing you room. On average, Crib Connect users find an interested and reliable tenant in around 3 days! Be sure to check the list of potential tenants and see who fits your sublease the best. Our list also updates everyday so you got options!`}
+    faqArr.push(FAQ3)
+    let FAQ4 = {"💸 How does refund work?": "If we can’t find a tenant that fits your sublease, don’t worry! Go to our settings page and request a refund. It is just that easy!"}
+    faqArr.push(FAQ4)
+    let FAQ5 = {"😃 About us": "We are a student startup. Both founders experienced how difficult it is to find an affordable, short-term sublease so we want to make it easier for everyone. For Crib, we prioritize 2 things, security and how quick we can help users sublease their apartment. So far, we've connected over 1000+ users and made subleasing easier for everyone! For Crib, this is just the start!"}
+    faqArr.push(FAQ5)
+
+    res.status(200).json(faqArr);
 }
 
 

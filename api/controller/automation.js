@@ -5,10 +5,12 @@ const fetch = require('node-fetch');
 // Load Properties and Users Models
 const User = require("../models/user");
 const Property = require('../models/property');
+const Subtenant = require("../models/subtenants")
 const { response } = require("express");
 const { json } = require("body-parser");
 const user = require("../models/user");
-const Subtenant = require("../models/subtenants");
+const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_AUTH_TOKEN);
+
 
 
 exports.automate_instagram = (req, res, next) => {
@@ -205,30 +207,6 @@ exports.automate_crib_connect_reminder = (req, res, next) => {
         return res.status(200).json({data: "success"})
         
     })
-
-//   User.findById(decoded.userId).then(user => {
-
-//     fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
-//     method: 'POST',
-//     headers: {
-//       Accept: 'application/json',
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({
-//       number: user.phoneNumber,
-//       days: days,
-//       estimatedSavings:  subleaseDays*Number(req.body.price)
-//     })
-//     }).then(async e => {
-//       return res.status(200).json({data:e})
-//     })
-//     .catch( e => {
-//       console.log("Error in sending message")
-//     })
-//   });
-
-
-
 }
 
 
@@ -249,6 +227,38 @@ exports.automate_didnt_pay_crib_connect = (req, res, next) => {
     })
 }
 
+exports.automate_subtenant_array_for_user = (req, res, next) => {
+    if(req.body.propId == undefined){
+        res.status(404).json({data: "Error"})
+    }
+    else{
+        Property.findById(req.body.propId).then(p => {
+            let subtenantArr = [];
+            Subtenant.find().then(subtenants =>{
+                subtenants.forEach(subtenant =>{
+                    if(getDistInMiles(p.loc.coordinates[1],p.loc.coordinates[0], subtenant.coords[1], subtenant.coords[0]) < 20){
+                        if(new Date(p.availableFrom) < new Date(subtenant.subleaseStart) && new Date(p.availableTo) > new Date(subtenant.subleaseEnd)){
+                            subtenantArr.push(subtenant._id)
+                        }
+                    }
+                })
+
+            }).then(r => {
+                User.findByIdAndUpdate(p.postedBy, {cribConnectSubtenants: subtenantArr})
+                .then(rr => {
+                    res.status(200).json({ msg: 'success' })
+                }).catch(err => res.status(400).json({ error: 'Unable to store code', errRaw: err }));
+               
+            })
+            .catch(e=> {
+                res.status(400).json({data:"Error"})
+                console.log("Error")
+            })
+        })
+       
+    }
+
+}
 
 
 /*---------IMPORTANT DO NOT TOUCH--------*/
@@ -578,3 +588,38 @@ function deg2rad(deg) {
 //       console.log("Error in sending message", e)
 //     })
 // }
+
+exports.crib_connect_daily_reminder_subtenant = (req, res, next) => {
+    let sent = 0;
+    User.find()
+    .then(users => {
+        users.forEach( user => {
+            if(user.cribConnectSubtenants != undefined && user.cribConnectSubtenants.length != 0 && user.cribPremium.paymentDetails.status == false){
+                console.log(user.firstName)
+
+                if(user.postedProperties.length != 0){
+                    Property.findById(user.postedProperties[0])
+                    .then( p => {
+                        let monthlyRent = p.price;
+                        let curTime = new Date().getTime();
+                        let daysUntilStart = Math.floor((new Date(p.availableFrom).getTime() - curTime)/(1000*60*60*24));
+                        // console.log((new Date(p.availableFrom).getTime() - curTime))
+                        let subleaseLengthInMonths = Math.ceil((new Date(p.availableTo).getTime() - new Date(p.availableFrom).getTime())/(1000*60*60*24*31));
+
+                        client.messages
+                        .create({
+                            body: `[Crib] Hello ${user.firstName}, ${'\n'}Your sublease ${daysUntilStart > 1 ? "starts in " + daysUntilStart + " days" : "is starting now"} days! Don't risk paying $${monthlyRent*subleaseLengthInMonths} for an empty room. We found ${user.cribConnectSubtenants.length} tenants who are interested in your room! Use our Crib Connect and connect with them 🎉 If we cannot find a tenant before your sublease start date, money back guaranteed 👍`,
+                            from: '+18775226376',
+                            to: `+1${user.phoneNumber}`
+                        })
+                        sent++;
+                        // console.log(`[Crib] Hello ${user.firstName}, ${'\n'}Your sublease ${daysUntilStart > 1 ? "starts in " + daysUntilStart + " days" : "is starting now"} days! Don't risk paying $${monthlyRent*subleaseLengthInMonths} on an empty room. We found ${user.cribConnectSubtenants.length} subtenants who are interested in your room! Use our Crib Connect serivce and connect with them 🎉 If we cannot find a tenant before your sublease start date, money back guaranteed 👍🏼`)
+                    })
+                }
+                
+            }
+        })
+        console.log(sent)
+        res.status(200).json({data:"Success"})
+    })
+}
