@@ -62,4 +62,4 @@ const SubtenantSchema = new mongoose.Schema (
     }
 )
 
-module.exports = Subtenant = mongoose.model('subtenants', SubtenantSchema)
+module.exports = Subtenant = mongoose.model('subtenants_test', SubtenantSchema)
