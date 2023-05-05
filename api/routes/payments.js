@@ -9,6 +9,8 @@ router.post("/premium/status", checkAuth, PaymentsController.prem_status);
 router.post("/premium/getprice", PaymentsController.prem_get_price)
 router.get("/premium/getCribConnectUserNumber", PaymentsController.prem_get_crib_connect_user_number)
 router.get("/premium/cribConnectToalSaving", PaymentsController.prem_crib_connect_total_saving)
+router.get("/premium/FAQ", PaymentsController.prem_FAQ)
+
 
 
 module.exports = router;
