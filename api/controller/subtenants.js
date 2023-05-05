@@ -103,7 +103,12 @@ exports.add_subtenant_to_tenant = (req, res, next) => {
     //     })
     //     .catch(e =>{ return res.status(400).json({data:"Error in retrieving"})})
     // }
+Subtenant.remove({}, function(err,removed) {
+
+});
     User.update({}, {cribConnectSubtenants:[]})
-    .then((data) => res.status(200).json(data))
-    .catch(e => { res.status(400).json({data: "Error"})})
+    .then((data) => {
+        res.status(200).json(data)
+    })
+    .catch(e => { res.status(400).json({data: "Error", e})})
 }
