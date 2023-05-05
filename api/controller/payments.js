@@ -410,15 +410,15 @@ exports.prem_crib_connect_total_saving = (req, res, next) => {
 exports.prem_FAQ = (req, res, next) => {
     let faqArr = [];
 
-    let FAQ1 = {"What is Crib Connect?" : "Crib Connect is a service that finds interested and reliable tenants to take over your sublease for you! We find and filter people who fit your sublease details and recommend them to you. "}
+    let FAQ1 = {"🤷🏻‍♂️What is Crib Connect?" : "Crib Connect is a service that finds interested and reliable tenants to take over your sublease for you! We find and filter people who fit your sublease details and recommend them to you. "}
     faqArr.push(FAQ1)
-    let FAQ2 = {"How does Crib Connect work?" : `If you wish to see tenants we found for your sublease. Simply pay a one-time-fee which is determined by the location and duration of your sublease. Once a Crib Connect member, you will be able to access information about potential tenants such as gender, name and phone number, as well as the duration they need a sublease and their budget. \n \nThe list of potential tenants updates everyday as we receive more sublease requests. Therefore, you are able to access all future potential tenants once you used our Crib Connect service`}
+    let FAQ2 = {"🔎How does Crib Connect work?" : `If you wish to see tenants we found for your sublease. Simply pay a one-time-fee which is determined by the location and duration of your sublease. Once a Crib Connect member, you will be able to access information about potential tenants such as gender, name and phone number, as well as the duration they need a sublease and their budget. \n \nThe list of potential tenants updates everyday as we receive more sublease requests. Therefore, you are able to access all future potential tenants once you used our Crib Connect service`}
     faqArr.push(FAQ2)
-    let FAQ3 = {"What to do after getting Crib Connect": `Congratulations! You’er one step away from subleasing you room. On average, our Crib Connect users  find an interested and reliable tenants in around 3 days! Be sure to check the list of potential tenants and see who fits your sublease the best. Our list also updates everyday so you got options!`}
+    let FAQ3 = {"🎉What to do after getting Crib Connect": `Congratulations! You’er one step away from subleasing you room. On average, our Crib Connect users  find an interested and reliable tenants in around 3 days! Be sure to check the list of potential tenants and see who fits your sublease the best. Our list also updates everyday so you got options!`}
     faqArr.push(FAQ3)
-    let FAQ4 = {"How does refund work?": "If we can’t find a tenant that fits your sublease, don’t worry! Go to our settings page and request a refund. It is just that easy!"}
+    let FAQ4 = {"💸How does refund work?": "If we can’t find a tenant that fits your sublease, don’t worry! Go to our settings page and request a refund. It is just that easy!"}
     faqArr.push(FAQ4)
-    let FAQ5 = {"About us": "We are a student startup called Crib. Both founders experienced how difficult it is to find an affordable, short-term sublease so we want to make it easier for other students. For Crib, we prioritize 2 things, security and how quick can we help users sublease their apartment. So far, we connected over 800+ students and made subleasing easier for everyone! For Crib, this is just the start!"}
+    let FAQ5 = {"😃About us": "We are a student startup called Crib. Both founders experienced how difficult it is to find an affordable, short-term sublease so we want to make it easier for other students. For Crib, we prioritize 2 things, security and how quick can we help users sublease their apartment. So far, we connected over 800+ students and made subleasing easier for everyone! For Crib, this is just the start!"}
     faqArr.push(FAQ5)
 
     res.status(200).json(faqArr);
