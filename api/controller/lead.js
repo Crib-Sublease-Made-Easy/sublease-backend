@@ -8,12 +8,13 @@ const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_
 
 
 
+
 //************************* LEADS CONTROLLER ***************************//
 
 
 // @route POST /web/leads
 // @description post leads
-// @access Public
+// @access Publics
 exports.collect_leads = (req, res, next) => {
   if(req.body.email == undefined){
     res.status(400).json({ error: 'Unable to send contact', errRaw: err });

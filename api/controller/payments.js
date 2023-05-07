@@ -271,9 +271,17 @@ exports.prem_get_price = async(req, res, next) => {
         	data.locPrice = "40"
         }
         else if(city.indexOf("newyork") == 0 || city.indexOf("ny") == 0){
-          	price += 40
-        	data.loc = "New York"
-        	data.locPrice = "40"
+            if(p.price > 3800){
+                price += 90
+        	    data.loc = "New York"
+        	    data.locPrice = "90"
+            }
+            else{
+                price += 40
+        	    data.loc = "New York"
+        	    data.locPrice = "40"
+            }
+          	
            
         }
         else if(city.indexOf("austin") == 0){
