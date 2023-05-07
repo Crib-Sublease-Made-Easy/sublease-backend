@@ -630,7 +630,6 @@ exports.crib_connect_daily_reminder_subtenant = (req, res, next) => {
         res.status(200).json({data:"Success"})
     })
 }
-<<<<<<< HEAD
 
 const optionsBuilder = (method, path, body) => {
     return {
@@ -683,5 +682,3 @@ exports.oneSingal_CribConnect_Reminder = (req, res, next) => {
         res.json({"Counter" : counter});
     })
 }
-=======
->>>>>>> 83d2b79d19a041e8ac977ad5aecad051ba3b520e
