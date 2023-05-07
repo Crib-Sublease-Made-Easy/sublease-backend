@@ -261,14 +261,14 @@ exports.prem_get_price = async(req, res, next) => {
 
         //Madison and cit
         if(city.indexOf("madison") == 0 ){
-            price += 40
+            price += 200
             data.loc = "Madison"
-            data.locPrice = "40"
+            data.locPrice = "200"
         }
         else if(city.indexOf("losangeles") == 0 || city.indexOf("la") == 0 ){
-            	price += 40
+            	price += 200
         	data.loc = "Los Angeles"
-        	data.locPrice = "40"
+        	data.locPrice = "200"
         }
         else if(city.indexOf("newyork") == 0 || city.indexOf("ny") == 0){
             if(p.price > 3800){
@@ -285,59 +285,61 @@ exports.prem_get_price = async(req, res, next) => {
            
         }
         else if(city.indexOf("austin") == 0){
-          
+          price += 200
+        	data.loc = "Austin"
+        	data.locPrice = "200"
            
         }
         else if(city.indexOf("sanmarcos") == 0){
-          	price += 40
+          	price += 200
         	data.loc = "San Marocs"
-        	data.locPrice = "40"
+        	data.locPrice = "200"
         
         }
         else if(city.indexOf("berkeley") == 0 || city.indexOf("california") == 0){
-          	price += 40
+          	price += 200
         	data.loc = "Berkeley"
-        	data.locPrice = "40"
+        	data.locPrice = "200"
           
         }
         else if(city.indexOf("sanfrancisco") == 0 || city.indexOf("sf") == 0 ){
-            	price += 40
+            	price += 200
         	data.loc = "San Francisco"
-        	data.locPrice = "40"
+        	data.locPrice = "200"
             
         }
 	else if(city.indexOf("seattle") == 0 || city.indexOf("wa") == 0 ){
-            	price += 40
+            	price += 200
         	data.loc = "Seattle"
-        	data.locPrice = "40"
+        	data.locPrice = "200"
             
         }
 	else if(city.indexOf("chicago") == 0 || city.indexOf("il") == 0 ){
-            	price += 40
+            	price += 200
         	data.loc = "Chicago"
-        	data.locPrice = "40"
+        	data.locPrice = "200"
             
    	 }
 	    
     else if(city.indexOf("sanjose") == 0 || city.indexOf("ca") == 0 ){
-        price += 50
+        price += 200
         data.loc = "CA"
-        data.locPrice = "50"
+        data.locPrice = "200"
     }
     else if(city.indexOf("boston") == 0 || city.indexOf("ma") == 0 ){
-        price += 50
+        price += 200
         data.loc = "Boston"
-        data.locPrice = "50"
+        data.locPrice = "200"
     }
 	else if(city.indexOf("mn") == 0){
-        price += 20
+        price += 200
         data.loc = "Minnesota"
-        data.locPrice = "20"
+        data.locPrice = "200"
     }
     else{
         data.loc = p.loc.secondaryTxt
-        data.locPrice = "30"
-        price += 30
+        data.locPrice = "180"
+        price += 180
     }
 
         let curTime = new Date().getTime()

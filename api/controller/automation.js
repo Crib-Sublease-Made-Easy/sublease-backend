@@ -480,111 +480,121 @@ function deg2rad(deg) {
 }
 
 
-exports.subtenant_arr_automation = async (req, res, next) => {
-    const response = await fetch("https://sheets.googleapis.com/v4/spreadsheets/1q7rRalCNEyJfe4greWFwLgL_QWFegPnE2BBrJOYJ4FI/values/Subtenants?key=AIzaSyBPp7WNpknXxGBxW9dne7C4kKym9UEptTY");
-    const respo = await response.json();
-    let subtenants = respo.values
-    User.find({"postedProperties.0": {$exists:true}})
-    .then(async tenants => {
-        tenants.forEach(async function(tenant) {
+// exports.subtenant_arr_automation = async (req, res, next) => {
+//     const response = await fetch("https://sheets.googleapis.com/v4/spreadsheets/1q7rRalCNEyJfe4greWFwLgL_QWFegPnE2BBrJOYJ4FI/values/Subtenants?key=AIzaSyBPp7WNpknXxGBxW9dne7C4kKym9UEptTY");
+//     const respo = await response.json();
+//     let subtenants = respo.values
+//     User.find({"postedProperties.0": {$exists:true}})
+//     .then(async tenants => {
+//         tenants.forEach(async function(tenant) {
 
-            let countSubtenants = 0;
-            subtenants.slice(1).forEach(async function(row) {
-                //extract subtenant info
-                const subName = row[0]
-                const subAvailableFrom = row[1]
-                let subAvailableTo = row[2]
-                let subLocation = row[3]
-                let subLat = row[4]
-                let subLong = row[5]
-                let subAge = row[6]
-                let subRoommate = row[7]
-                let subBudget = row[8]
-                let subAbout = row[9]
-                let subPhoneNumber = row[10]
-                let subSharedRoom = row[11]
-                let subCreatedAt = row[12]
-                let subGender = row[13]
-
-
-
-                Property.find({_id:tenant.postedProperties[0]}).then( async propertyInfo =>{
-                //extract tenant info
-                const firstNameT = tenant.firstName
-                const phoneNumberT = tenant.lastName
-                let availableFromT = propertyInfo[0].availableFrom
-                let availableToT = propertyInfo[0].availableTo
-                let latT = propertyInfo[0].loc.coordinates[1]
-                let longT = propertyInfo[0].loc.coordinates[0]
-
-                // var twilioUrl = 'https://api.twilio.com/2010-04-01/Accounts/' + TWILIO_ACC_SID + '/Messages.json';
-                // var authenticationString = TWILIO_ACC_SID + ':' + TWILIO_AUTH_TOKEN;
-
-                // console.log("subF: ", subAvailableFrom)
-                // console.log("tenF: ", availableFromT)
-                // console.log("subT: ", subAvailableTo)
-                // console.log("tenT: ", availableToT)
-                // console.log("cond: ", new Date(subAvailableFrom) >= new Date(availableFromT) )
-                // console.log("cond: ", new Date(subAvailableTo) <= new Date(availableToT))
-                // console.log("cond: ", getDistInMiles(latT, longT, subLat, subLong))
-
-                // console.log("-----------")
-                const subCreateResp = await fetch('https://crib-llc.herokuapp.com/subtenants/create', {
-                    method: 'POST',
-                    headers: {
-                      Accept: 'application/json',
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        'name': subName,
-                        'subleaseStart': subAvailableFrom,
-                        'subleaseEnd': subAvailableTo,
-                        'budget': Number(subBudget),
-                        'bio': subAbout,
-                        'phoneNumber': subPhoneNumber,
-                        'age': Number(subAge),
-                        'gender': subGender,
-                        'sharedRoomFlexibility': subSharedRoom == "TRUE",
-                        'roommatesFlexibility': subRoommate == "TRUE",
-                        'location': subLocation ,
-                        'coords':[subLong,subLat]
-                    })
-                  })
-
-                  const subCreateRespJSON = subCreateResp.json()
+//             let countSubtenants = 0;
+//             subtenants.slice(1).forEach(async function(row) {
+//                 //extract subtenant info
+//                 const subName = row[0]
+//                 const subAvailableFrom = row[1]
+//                 let subAvailableTo = row[2]
+//                 let subLocation = row[3]
+//                 let subLat = row[4]
+//                 let subLong = row[5]
+//                 let subAge = row[6]
+//                 let subRoommate = row[7]
+//                 let subBudget = row[8]
+//                 let subAbout = row[9]
+//                 let subPhoneNumber = row[10]
+//                 let subSharedRoom = row[11]
+//                 let subCreatedAt = row[12]
+//                 let subGender = row[13]
 
 
 
-                if (new Date(subAvailableFrom) >= new Date(availableFromT) && new Date(subAvailableTo) <= new Date(availableToT) && getDistInMiles(latT, longT, subLat, subLong) <= 20) {
+//                 Property.find({_id:tenant.postedProperties[0]}).then( async propertyInfo =>{
+//                 //extract tenant info
+//                 const firstNameT = tenant.firstName
+//                 const phoneNumberT = tenant.lastName
+//                 let availableFromT = propertyInfo[0].availableFrom
+//                 let availableToT = propertyInfo[0].availableTo
+//                 let latT = propertyInfo[0].loc.coordinates[1]
+//                 let longT = propertyInfo[0].loc.coordinates[0]
+
+//                 // var twilioUrl = 'https://api.twilio.com/2010-04-01/Accounts/' + TWILIO_ACC_SID + '/Messages.json';
+//                 // var authenticationString = TWILIO_ACC_SID + ':' + TWILIO_AUTH_TOKEN;
+
+//                 // console.log("subF: ", subAvailableFrom)
+//                 // console.log("tenF: ", availableFromT)
+//                 // console.log("subT: ", subAvailableTo)
+//                 // console.log("tenT: ", availableToT)
+//                 // console.log("cond: ", new Date(subAvailableFrom) >= new Date(availableFromT) )
+//                 // console.log("cond: ", new Date(subAvailableTo) <= new Date(availableToT))
+//                 // console.log("cond: ", getDistInMiles(latT, longT, subLat, subLong))
+
+//                 // console.log("-----------")
+//                 try{
+//                 Subtenant.find({phoneNumber: subPhoneNumber}).then(async subsWNumber => { 
+//                 if(subsWNumber.length == 0){
+//                 const subCreateResp = await fetch('https://crib-llc.herokuapp.com/subtenants/create', {
+//                     method: 'POST',
+//                     headers: {
+//                       Accept: 'application/json',
+//                       'Content-Type': 'application/json',
+//                     },
+//                     body: JSON.stringify({
+//                         'name': subName,
+//                         'subleaseStart': subAvailableFrom,
+//                         'subleaseEnd': subAvailableTo,
+//                         'budget': Number(subBudget),
+//                         'bio': subAbout,
+//                         'phoneNumber': subPhoneNumber,
+//                         'age': Number(subAge),
+//                         'gender': subGender,
+//                         'sharedRoomFlexibility': subSharedRoom == "TRUE",
+//                         'roommatesFlexibility': subRoommate == "TRUE",
+//                         'location': subLocation ,
+//                         'coords':[subLong,subLat]
+//                     })
+//                   })
+                
+
+//                   const subCreateRespJSON = subCreateResp.json()
 
 
 
-                    await fetch('https://crib-llc.herokuapp.com/subtenants/addsubtoten', {
-                        method: 'POST',
-                        headers: {
-                          Accept: 'application/json',
-                          'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            subtenant_id: subCreateRespJSON._id,
-                            tenant_id: tenant._id,
+//                 if (new Date(subAvailableFrom) >= new Date(availableFromT) && new Date(subAvailableTo) <= new Date(availableToT) && getDistInMiles(latT, longT, subLat, subLong) <= 20) {
 
-                        })
-                      })
+
+
+//                     await fetch('https://crib-llc.herokuapp.com/subtenants/addsubtoten', {
+//                         method: 'POST',
+//                         headers: {
+//                           Accept: 'application/json',
+//                           'Content-Type': 'application/json',
+//                         },
+//                         body: JSON.stringify({
+//                             subtenant_id: subCreateRespJSON._id,
+//                             tenant_id: tenant._id,
+
+//                         })
+//                       })
         
-                }
-            });
+//                 }
+//                 } 
+                
+//                 })
+//                 }catch {
+//                 }
+//             });
 
-            console.log("SUBTENANTS", countSubtenants)
-        })
-        })
+//             console.log("SUBTENANTS", countSubtenants)
+            
+//         })
+//         })
 
-      return res.status(200).json({status:"success"})
-    })
-    .catch( e => {
-      console.log("Error in sending message", e)
-    })
-}
+//       return res.status(200).json({status:"success"})
+//     })
+//     .catch( e => {
+//       console.log("Error in sending message", e)
+//     })
+// }
 
 exports.crib_connect_daily_reminder_subtenant = (req, res, next) => {
     let sent = 0;
@@ -620,6 +630,7 @@ exports.crib_connect_daily_reminder_subtenant = (req, res, next) => {
         res.status(200).json({data:"Success"})
     })
 }
+<<<<<<< HEAD
 
 const optionsBuilder = (method, path, body) => {
     return {
@@ -672,3 +683,5 @@ exports.oneSingal_CribConnect_Reminder = (req, res, next) => {
         res.json({"Counter" : counter});
     })
 }
+=======
+>>>>>>> 83d2b79d19a041e8ac977ad5aecad051ba3b520e
