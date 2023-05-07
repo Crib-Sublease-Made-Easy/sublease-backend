@@ -284,6 +284,20 @@ exports.prem_get_price = async(req, res, next) => {
           	
            
         }
+        else if(city.indexOf("newjersey") == 0 || city.indexOf("nj") == 0){
+            if(p.price > 3800){
+                price += 90
+        	    data.loc = "New Jersey"
+        	    data.locPrice = "90"
+            }
+            else{
+                price += 40
+        	    data.loc = "NJ"
+        	    data.locPrice = "40"
+            }
+          	
+           
+        }
         else if(city.indexOf("austin") == 0){
           price += 200
         	data.loc = "Austin"
