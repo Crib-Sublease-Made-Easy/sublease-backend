@@ -272,28 +272,28 @@ exports.prem_get_price = async(req, res, next) => {
         }
         else if(city.indexOf("newyork") == 0 || city.indexOf("ny") == 0){
             if(p.price > 3800){
-                price += 300
+                price += 250
         	    data.loc = "New York"
-        	    data.locPrice = "300"
+        	    data.locPrice = "250"
             }
             else{
-                price += 70
+                price += 180
         	    data.loc = "New York"
-        	    data.locPrice = "70"
+        	    data.locPrice = "180"
             }
           	
            
         }
         else if(city.indexOf("newjersey") == 0 || city.indexOf("nj") == 0){
             if(p.price > 3800){
-                price += 130
+                price += 200
         	    data.loc = "New Jersey"
-        	    data.locPrice = "130"
+        	    data.locPrice = "200"
             }
             else{
-                price += 70
+                price += 150
         	    data.loc = "NJ"
-        	    data.locPrice = "70"
+        	    data.locPrice = "150"
             }
           	
            
