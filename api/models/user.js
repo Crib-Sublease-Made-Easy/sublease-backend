@@ -85,6 +85,11 @@ const UserSchema = new mongoose.Schema ({
         required: false,
         default: []
     },
+    cribConnectSubtenantsContacted:{
+        type: [Number],
+        required: false,
+        default: []
+    },
     messagingEnabled: {
         type: Boolean,
         required: false,

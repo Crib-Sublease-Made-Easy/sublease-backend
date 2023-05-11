@@ -673,3 +673,38 @@ exports.enroll_crib_connect = (req, res, next) => {
     );
     
 }
+
+// @route POST /contactSubtenants
+// @description add phone number to the cribConnectSubtenantsContacted array
+// @access public 
+
+exports.contact_subtenant = (req, res, next) => {
+    // console.log("Insideeeeeeeeeeeeeee")
+    // const token = req.headers.authorization.split(" ")[1];
+    // const decoded = jwt.verify(token, process.env.JWT_KEY);
+    // console.log("Token", token)
+    // const userId = decoded.userId;
+    // if(req.body.userId == undefined || req.body.subtenantPhoneNumber == undefined){
+    //     res.status(400).json({
+    //         message: "userId or phone number undefined",
+    //     });
+    // }
+    // console.log(userId)
+  
+    // if (userId == req.body.userId) {
+    //     User.findOneAndUpdate(userId, 
+    //     {"$push": {"cribConnectSubtenantsContacted" : req.body.subtenantPhoneNumber}},
+    //     function (err, raw) {
+    //         if (err) return handleError(err);
+    //         console.log('The raw response from Mongo was ', raw);
+    //     })
+    //     .then(prop => res.status(200).json({ msg: 'Updated successfully' }))
+    //     .catch(err =>
+    //         res.status(400).json({ error: 'Unable to update the Database' })
+    //     );
+    // } else {
+    //     return res.status(401).json({
+    //         message: "Auth failed",
+    //     });
+    // }
+}
