@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 // Load Properies Model
 const Subtenant = require("../models/subtenants");
 const User = require("../models/user");
+const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_AUTH_TOKEN);
 
 
 exports.create = (req, res, next) => {
@@ -112,3 +113,36 @@ Subtenant.remove({}, function(err,removed) {
     })
     .catch(e => { res.status(400).json({data: "Error", e})})
 }
+
+
+
+// GET /messageSubtenantAvail
+// Description check if subtenants are still available 
+
+exports.message_subtenant_avail = (req, res, next) => {
+//    let counter = 0;
+//     Subtenant.find()
+//     .then(subtenants => {
+//         subtenants.forEach(subtenant => {
+//             if(subtenant.phoneNumber.toString().length == 10){
+//                 client.messages
+//                 .create({
+//                     body: `[Crib] Thank you for filling out the subleasing Google Form. Are you still looking for a sublease? Please reply Yes or No.`,
+//                     from: '+18775226376',
+//                     to: `+1${subtenant.phoneNumber}`
+//                 })
+//                 .then(message => {
+//                     counter++;
+//                 })
+//                 .catch(err => res.status(400).json({ error: `Unable to send number to ${subtenant.name} @ ${subtenant.phoneNumber}`}));
+//             }
+//             console.log(subtenant.name + "   " + subtenant.phoneNumber)
+//         })
+//         res.json({"Message sent to": counter})
+//     })
+//     .catch(err => res.status(400).json({ data: "Error"}));
+}
+
+
+
+

@@ -660,22 +660,21 @@ exports.oneSingal_CribConnect_Reminder = (req, res, next) => {
     .then( users => {
         users.forEach((user) => {
             if(user.cribConnectSubtenants != undefined && user.cribConnectSubtenants.length != 0 && user.cribPremium.paymentDetails.status == false && user.lastActive != undefined){
-                // console.log(user.firstName + "  " + user.cribConnectSubtenants.length)
+                console.log(user.firstName + "  " + user.cribConnectSubtenants.length)
                 const body = {
                     app_id: ONESIGNAL_APP_ID,
                     include_player_ids: [user.oneSignalUserId],
                     contents: {
-                        en: `${user.cribConnectSubtenants.length} tenants matched with your sublease. Connect with them now for better results!`,
+                        en: `${user.cribConnectSubtenants.length} tenants matched with your sublease🔥 Connect with them now for better results!`,
                     },
                     ios_badgeType: "Increase",
                     ios_badgeCount: 1,
                     data:{
                         type: "cribconnect"
                     }
-                
                 };
                     
-                // createNotication(body)
+                createNotication(body)
                 counter++;
             }
         })
