@@ -22,5 +22,7 @@ router.get("/cribconnectDailySubtenantReminder", AutomationController.crib_conne
 
 router.get("/oneSignalCribConnectReminder", AutomationController.oneSingal_CribConnect_Reminder)
 
+router.get("/cribConnectUserInfo", AutomationController.automate_crib_connect_users)
+
 
 module.exports = router;

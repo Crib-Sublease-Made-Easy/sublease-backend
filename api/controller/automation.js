@@ -681,3 +681,24 @@ exports.oneSingal_CribConnect_Reminder = (req, res, next) => {
         res.json({"Counter" : counter});
     })
 }
+
+// @ GET /cribConnectUserInfo
+// @ Description: This is to get a list of crib connect users and dates 
+
+exports.automate_crib_connect_users = (req, res, next) => {
+    //Get the Crib Connect users 
+    let ret = [];
+    User.find()
+    .then( async users => {
+      
+        //Check if the user is a Crib Connect user
+        users.forEach(async user => {
+            if(user.postedProperties.length != 0 && user.cribPremium != undefined && user.cribPremium.paymentDetails.status == true){
+               ret.push(user.postedProperties[0])
+            }
+        }) 
+    })
+    .then(r => {
+        res.json(ret)
+    })
+}
