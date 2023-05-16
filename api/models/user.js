@@ -86,7 +86,7 @@ const UserSchema = new mongoose.Schema ({
         default: []
     },
     cribConnectSubtenantsContacted:{
-        type: [Number],
+        type: [mongoose.Types.ObjectId],
         required: false,
         default: []
     },
