@@ -684,7 +684,7 @@ exports.contact_subtenant = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_KEY);
     console.log("Token", token)
     const userId = decoded.userId;
-    if(req.body.userId == undefined || req.body.subtenantPhoneNumber == undefined){
+    if(req.body.userId == undefined || req.body.subtenantID){
         res.status(400).json({
             message: "userId or phone number undefined",
         });
@@ -694,12 +694,14 @@ exports.contact_subtenant = (req, res, next) => {
     if (userId == req.body.userId) {
         User.updateOne({ _id :req.body.userId}, 
         {$push: 
-            {cribConnectSubtenantsContacted : req.body.subtenantPhoneNumber}},
+            {cribConnectSubtenantsContacted : req.body.subtenantID}},
         )
         .then(prop => res.status(200).json({ msg: 'Updated successfully' }))
         .catch(err =>
             res.status(400).json({ error: 'Unable to update the Database' })
         );
+
+        //Add the id to the cribConnectSubtenantsContacted
       
         
     } else {
@@ -707,4 +709,6 @@ exports.contact_subtenant = (req, res, next) => {
             message: "Auth failed",
         });
     }
+
+
 }
