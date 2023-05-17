@@ -46,6 +46,10 @@ const SubtenantSchema = new mongoose.Schema (
             type: String,
             required: true
         },
+        type: {
+            type: String,
+            required: true
+        },
         coords: {
             type: Array,
             required: true
@@ -58,7 +62,8 @@ const SubtenantSchema = new mongoose.Schema (
             type: Boolean,
             required: true,
             default: false 
-        }
+        },
+        
     }
 )
 

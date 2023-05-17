@@ -673,3 +673,45 @@ exports.enroll_crib_connect = (req, res, next) => {
     );
     
 }
+
+// @route POST /contactSubtenants
+// @description add phone number to the cribConnectSubtenantsContacted array
+// @access public 
+
+exports.contact_subtenant = (req, res, next) => {
+   
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    console.log("Token", token)
+    const userId = decoded.userId;
+    if(req.body.userId == undefined || req.body.subtenantID == undefined){
+        res.status(400).json({
+            message: "userId or phone number undefined",
+        });
+    }
+   
+    else{
+
+    
+        if (userId == req.body.userId) {
+            User.updateOne({ _id :req.body.userId}, 
+            {$push: 
+                {cribConnectSubtenantsContacted : req.body.subtenantID}},
+            )
+            .then(prop => res.status(200).json({ msg: 'Updated successfully' }))
+            .catch(err =>
+                res.status(400).json({ error: err })
+            );
+
+            //Add the id to the cribConnectSubtenantsContacted
+        
+            
+        } else {
+            return res.status(401).json({
+                message: "Auth failed",
+            });
+        }
+    }
+
+
+}

@@ -10,6 +10,13 @@ const { response } = require("express");
 const { json } = require("body-parser");
 const user = require("../models/user");
 const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_AUTH_TOKEN);
+const ONESIGNAL_APP_ID = process.env.ONESIGNAL_APP_ID;
+const BASE_URL = "https://onesignal.com/api/v1";
+const API_KEY = process.env.ONESIGNAL_API_KEY;
+const request = require('request');
+var cron = require('node-cron');
+
+
 
 
 
@@ -635,5 +642,76 @@ exports.delete_subtenant = async (req, res, next) => {
         console.log("Removed")
         res.status(200).json({data:"Success"})
     })
+}
 
+const optionsBuilder = (method, path, body) => {
+    return {
+        method,
+        'url': `${BASE_URL}/${path}`,
+        'headers': {
+            'Content-Type': 'application/json',   
+            'Authorization': `Basic ${API_KEY}`,
+        },
+        body: body ? JSON.stringify(body) : null,
+    };
+}
+
+const createNotication = (body) => {
+    const options = optionsBuilder("POST","notifications", body);
+    console.log(options);
+    request(options, (error, response) => {
+        if (error) throw new Error(error);
+        console.log(response.body);
+        // viewNotifcation(JSON.parse(response.body).id);
+    });
+}
+
+// Remind people to get Crib Connect if they haven't and they have subtenants
+exports.oneSingal_CribConnect_Reminder = (req, res, next) => {
+    let counter = 0;
+    User.find()
+    .then( users => {
+        users.forEach((user) => {
+            if(user.cribConnectSubtenants != undefined && user.cribConnectSubtenants.length != 0 && user.cribPremium.paymentDetails.status == false && user.lastActive != undefined){
+                console.log(user.firstName + "  " + user.cribConnectSubtenants.length)
+                const body = {
+                    app_id: ONESIGNAL_APP_ID,
+                    include_player_ids: [user.oneSignalUserId],
+                    contents: {
+                        en: `${user.cribConnectSubtenants.length} tenants matched with your sublease🔥 Connect with them now for better results!`,
+                    },
+                    ios_badgeType: "Increase",
+                    ios_badgeCount: 1,
+                    data:{
+                        type: "cribconnect"
+                    }
+                };
+                    
+                createNotication(body)
+                counter++;
+            }
+        })
+        res.json({"Counter" : counter});
+    })
+}
+
+// @ GET /cribConnectUserInfo
+// @ Description: This is to get a list of crib connect users and dates 
+
+exports.automate_crib_connect_users = (req, res, next) => {
+    //Get the Crib Connect users 
+    let ret = [];
+    User.find()
+    .then( async users => {
+      
+        //Check if the user is a Crib Connect user
+        users.forEach(async user => {
+            if(user.postedProperties.length != 0 && user.cribPremium != undefined && user.cribPremium.paymentDetails.status == true){
+               ret.push(user.postedProperties[0])
+            }
+        }) 
+    })
+    .then(r => {
+        res.json(ret)
+    })
 }

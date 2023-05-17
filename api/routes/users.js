@@ -54,6 +54,7 @@ router.get("/:id", checkAuth, UserController.user_get_one);
 router.get("/profileImages/:filename", UserController.get_image);
 router.get("/favorites/all", checkAuth, UserController.user_get_favorites);
 router.post("/enrollCribConnect", UserController.enroll_crib_connect)
+router.post("/cribconnect/contactSubtenants", checkAuth, UserController.contact_subtenant)
 
 
 //OTP Code

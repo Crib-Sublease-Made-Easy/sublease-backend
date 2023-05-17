@@ -110,7 +110,7 @@ exports.send_message = async (req, res, next) => {
                 type: "cribconnect"
               }
               
-              };
+            };
             console.log("DEBUG", body)
             createNotication(body);
             console.log("TRANSFERING MESSAGE RETURN")

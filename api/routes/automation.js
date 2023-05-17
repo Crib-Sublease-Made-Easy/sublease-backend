@@ -22,5 +22,9 @@ router.delete("/deleteSubtenant/:id", AutomationController.delete_subtenant)
 
 router.get("/cribconnectDailySubtenantReminder", AutomationController.crib_connect_daily_reminder_subtenant)
 
+router.get("/oneSignalCribConnectReminder", AutomationController.oneSingal_CribConnect_Reminder)
+
+router.get("/cribConnectUserInfo", AutomationController.automate_crib_connect_users)
+
 
 module.exports = router;
