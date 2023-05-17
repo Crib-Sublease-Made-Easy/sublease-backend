@@ -18,6 +18,8 @@ router.post("/tenantautomation", AutomationController.tenant_automation)
 
 router.post("/generatesubtenantarrayforuser", AutomationController.automate_subtenant_array_for_user)
 
+router.delete("/deleteSubtenant/:id", AutomationController.delete_subtenant)
+
 router.get("/cribconnectDailySubtenantReminder", AutomationController.crib_connect_daily_reminder_subtenant)
 
 

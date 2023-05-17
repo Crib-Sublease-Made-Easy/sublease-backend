@@ -623,3 +623,17 @@ exports.crib_connect_daily_reminder_subtenant = (req, res, next) => {
         res.status(200).json({data:"Success"})
     })
 }
+
+
+exports.delete_subtenant = async (req, res, next) => {
+    let sent = 0;
+
+    await Subtenant.deleteOne({ _id: req.params.id });
+    
+    User.updateMany({}, { $pull: {cribConnectSubtenants: req.params.id}})
+    .then(users => {
+        console.log("Removed")
+        res.status(200).json({data:"Success"})
+    })
+
+}
