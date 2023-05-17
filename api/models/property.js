@@ -115,6 +115,28 @@ const PropertySchema = new mongoose.Schema (
                 required: false,
             }
         },
+        detailedPreferences: {
+            preferenceGender: {
+                type: String,
+                default: "Both",
+                required: false
+            },
+            preferenceAgeRange: {
+                type: [Number],
+                default: [0,50],
+                required: false
+            },
+            preferenceStudent: {
+                type: Boolean,
+                default: false,
+                required: false
+            },
+            preferencePartialSublease: {
+                type: Boolean,
+                default: false,
+                required: false
+            }
+        },
         imgList: {
             type: Array,
             required: false
