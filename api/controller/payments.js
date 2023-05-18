@@ -241,7 +241,7 @@ exports.prem_status = async(req, res, next) => {
             console.log("POSTING TO FACEBOOK")
 
             //Post Crib Connect property to Facebook
-            var at = "EAAHuzJqHCDcBAJigKp5aBUWcckb5pG3tjtfZBZCnueXSuZAa2KQOrHiYytWXHxgcDFP79ZCjkaIhohLyYbPuRSVMKgQfGFMzGeWVRimgoyWO2C3ZBvZCiGarWYS2YzpUwahyFS6Wp8N0ygeXEpFKe8CZAF7tmHV1sNEYB1eaxmsTZCtYpZCp3yOzq"
+            var at = "EAAHuzJqHCDcBAAeOhZAEVMJxNj5jQQZBpihLfGGqC0AlytaFZCj9tkZAetZBOZBdYjhTxQhTqabco0BObHDp4QqIaYEMNtsV5uH12UVlQ0a0Vz7SQoHq7O6gJZAMugZBhsbdD0oUkXutVEVmtohnWA62BefNz5Rvmwg6fPaZC51lRO7vBM2mkeiZCiV30UFEO2NoIIHNEFIzHnJFO8ofnZBIjM2"
             let fb_img_ids = []
             User.findById(req.body.userId).then(async  u=> {
                     console.log("FOUND USER")
@@ -427,7 +427,7 @@ exports.prem_get_price = async(req, res, next) => {
         
 
         data.price = price
-       if(req.body.propId == "6466ac092155c42578274341"){
+       if(req.body.propId == "6466b6d7180da8c26bf59d3d"){
            data.price="0.01"
        }
         return res.status(200).json(data);
