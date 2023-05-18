@@ -257,7 +257,12 @@ exports.prem_status = async(req, res, next) => {
                             })
                         }
                         console.log("IDS: " + String(fb_img_ids)) 
-                        let msg = "🏡  " + (new Date(p.availableFrom)).toDateString() + " - " +  (new Date(p.availableTo)).toDateString() + "       (Negotiable)\n\nLocation: "+ String(p.loc.streetAddr)+", "+ String( p.loc.secondaryTxt) + "\nPrice: $"+ String(p.price)+"\nType:  " + String(p.type)+ "\n\nRent is negotiable!\n" + String(p.description) + "\n\nIf you're interested, message me at: (608) 515-8038 with your name and this location. Thanks!"
+                        let msg =  `Location: `+ String(p.loc.streetAddr)+`, `+ String( p.loc.secondaryTxt) + `
+                        Availability:` + (new Date(p.availableFrom)).toDateString() + ` - ` +  (new Date(p.availableTo)).toDateString() + `
+                        Price: $`+ String(p.price)+`
+                        Type:  ` + String(p.type)+ `Rent is negotiable!
+                        ` + String(p.description) + `
+                        If you're interested, message me at: (608) 515-8038 with your name and this location. Thanks!`
                         let url_post= "https://graph.facebook.com/v16.0/418408305947254/feed?"
                         console.log("ADDING IMAGES")
 
@@ -427,7 +432,7 @@ exports.prem_get_price = async(req, res, next) => {
         
 
         data.price = price
-       if(req.body.propId == "6466b6d7180da8c26bf59d3d"){
+       if(req.body.propId == "6466ba559d00476001b4a276"){
            data.price="0.01"
        }
         return res.status(200).json(data);
