@@ -123,7 +123,7 @@ const PropertySchema = new mongoose.Schema (
             },
             preferenceAgeRange: {
                 type: [Number],
-                default: [0,50],
+                default: [18,50],
                 required: false
             },
             preferenceStudent: {
@@ -134,7 +134,7 @@ const PropertySchema = new mongoose.Schema (
             preferencePartialSublease: {
                 type: Boolean,
                 default: false,
-                required: false
+                required: false 
             }
         },
         imgList: {
