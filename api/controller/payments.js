@@ -259,7 +259,7 @@ exports.prem_status = async(req, res, next) => {
 
                         } 
                         url_post = url_post + "message="+msg+"&access_token="+at
-                        await fetch(url_post, {method: "POST"}).then(data=>data.json()).then(datajson=>  console.log(datajson))
+                     fetch(url_post, {method: "POST"}).then(data=>data.json()).then(datajson=>  console.log(datajson))
                         console.log(url_post)
 
                     })
