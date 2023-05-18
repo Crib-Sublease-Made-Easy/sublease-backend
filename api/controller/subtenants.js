@@ -14,6 +14,8 @@ exports.create = (req, res, next) => {
             return res.status(404).json({data:"Incomplete Info"})
     }
 
+  
+
     const subtenant = new Subtenant({
         name: req.body.name,
         subleaseStart: req.body.subleaseStart,
@@ -28,7 +30,7 @@ exports.create = (req, res, next) => {
         location: req.body.location,
         coords: req.body.coords,
         deleted: false,
-        type: req.body.type,
+        type: req.body.type == undefined ?  'room' : req.body.type,
         createdAt: new Date()
     })
 

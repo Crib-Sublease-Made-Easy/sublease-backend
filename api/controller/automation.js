@@ -16,6 +16,7 @@ const API_KEY = process.env.ONESIGNAL_API_KEY;
 const request = require('request');
 var cron = require('node-cron');
 
+const DAYSINMILLISECONDS = 1000*60*60*24
 
 
 
@@ -243,9 +244,21 @@ exports.automate_subtenant_array_for_user = (req, res, next) => {
             let subtenantArr = [];
             Subtenant.find().then(subtenants =>{
                 subtenants.forEach(subtenant =>{
+                    //This is to check if the location is within 20 miles 
                     if(getDistInMiles(p.loc.coordinates[1],p.loc.coordinates[0], subtenant.coords[1], subtenant.coords[0]) < 20){
-                        if(new Date(p.availableFrom) < new Date(subtenant.subleaseStart) && new Date(p.availableTo) > new Date(subtenant.subleaseEnd)){
-                            subtenantArr.push(subtenant._id)
+
+                        //This is to check if the dates match 
+                        let diffInStart = Math.abs(new Date(p.availableFrom).getTime() - new Date(subtenant.subleaseStart).getTime())
+                        let diffInEnd = Math.abs(new Date(p.availableTo).getTime() - new Date(subtenant.subleaseEnd).getTime())
+                      
+
+                        if(((new Date(p.availableFrom) < new Date(subtenant.subleaseStart) || diffInStart < DAYSINMILLISECONDS*3)) && (new Date(p.availableTo) > new Date(subtenant.subleaseEnd) || diffInEnd < DAYSINMILLISECONDS*3)){
+                            if(p.price < subtenant.budget || Math.abs(subtenant.budget - p.price) < 700){
+                                if(subtenant.deleted == false){
+                                    subtenantArr.unshift(subtenant._id)
+                                    
+                                }
+                            }
                         }
                     }
                 })
