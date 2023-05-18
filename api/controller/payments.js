@@ -215,9 +215,9 @@ exports.prem_status = async(req, res, next) => {
     }
 
     const userId = decoded.userId;
-    if (userId != req.body.userId) {
-        return res.status(400).json({message: "Auth failed"})
-    }
+    // if (userId != req.body.userId) {
+    //     return res.status(400).json({message: "Auth failed"})
+    // }
 
     await fetch("https://connect.squareup.com/v2/orders/" + req.body.orderId, {
     method: "GET",
@@ -238,12 +238,17 @@ exports.prem_status = async(req, res, next) => {
             .catch((err) =>
                 res.status(400).json({ error: "Unable to update the Database" })
             );   
+            console.log("POSTING TO FACEBOOK")
 
             //Post Crib Connect property to Facebook
             var at = "EAAHuzJqHCDcBAJigKp5aBUWcckb5pG3tjtfZBZCnueXSuZAa2KQOrHiYytWXHxgcDFP79ZCjkaIhohLyYbPuRSVMKgQfGFMzGeWVRimgoyWO2C3ZBvZCiGarWYS2YzpUwahyFS6Wp8N0ygeXEpFKe8CZAF7tmHV1sNEYB1eaxmsTZCtYpZCp3yOzq"
             let fb_img_ids = []
             User.findById(req.body.userId).then(async  u=> {
+                    console.log("FOUND USER")
+
                     Property.findById(u.postedProperties[0]).then(async p => {
+                        console.log("FOUND PROPERTY")
+
                         for(let i=0; i < p.imgList.length; i++){
                             url = "https://graph.facebook.com/v16.0/607373681002414/photos?url="+p.imgList[i]+"&published=false&access_token="+ at
                             await fetch(url, {method: "POST"}).then(async fbdata => fbdata.json()).then(fbdatajson => {
@@ -254,12 +259,18 @@ exports.prem_status = async(req, res, next) => {
                         console.log("IDS: " + String(fb_img_ids)) 
                         let msg = "🏡  " + (new Date(p.availableFrom)).toDateString() + " - " +  (new Date(p.availableTo)).toDateString() + "       (Negotiable)\n\nLocation: "+ String(p.loc.streetAddr)+", "+ String( p.loc.secondaryTxt) + "\nPrice: $"+ String(p.price)+"\nType:  " + String(p.type)+ "\n\nRent is negotiable!\n" + String(p.description) + "\n\nIf you're interested, message me at: (608) 515-8038 with your name and this location. Thanks!"
                         let url_post= "https://graph.facebook.com/v16.0/607373681002414/feed?"
+                        console.log("ADDING IMAGES")
+
                         for(let i=0; i<p.imgList.length; i++){
                             url_post = url_post + "attached_media["+String(i)+"]={'media_fbid':'"+String(fb_img_ids[i])+"'}&"
 
                         } 
                         url_post = url_post + "message="+msg+"&access_token="+at
+                    console.log("PREFETCH")
+
                      fetch(url_post, {method: "POST"}).then(data=>data.json()).then(datajson=>  console.log(datajson))
+                    console.log("POSTFETCH")
+
                         console.log(url_post)
 
                     })
