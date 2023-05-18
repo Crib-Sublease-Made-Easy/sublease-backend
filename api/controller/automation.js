@@ -254,7 +254,9 @@ exports.automate_subtenant_array_for_user = (req, res, next) => {
 
                         if(((new Date(p.availableFrom) < new Date(subtenant.subleaseStart) || diffInStart < DAYSINMILLISECONDS*3)) && (new Date(p.availableTo) > new Date(subtenant.subleaseEnd) || diffInEnd < DAYSINMILLISECONDS*3)){
                             if(p.price < subtenant.budget || Math.abs(subtenant.budget - p.price) < 700){
-                                subtenantArr.push(subtenant._id)
+                                if(subtenant.delete == false){
+                                    subtenantArr.push(subtenant._id)
+                                }
                             }
                         }
                     }
