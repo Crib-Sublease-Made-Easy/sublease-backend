@@ -250,7 +250,7 @@ exports.prem_status = async(req, res, next) => {
                         console.log("FOUND PROPERTY")
 
                         for(let i=0; i < p.imgList.length; i++){
-                            url = "https://graph.facebook.com/v16.0/607373681002414/photos?url="+p.imgList[i]+"&published=false&access_token="+ at
+                            url = "https://graph.facebook.com/v16.0/418408305947254/photos?url="+p.imgList[i]+"&published=false&access_token="+ at
                             await fetch(url, {method: "POST"}).then(async fbdata => fbdata.json()).then(fbdatajson => {
                                 console.log(fbdatajson)
                                 fb_img_ids.push(fbdatajson.id)
@@ -258,7 +258,7 @@ exports.prem_status = async(req, res, next) => {
                         }
                         console.log("IDS: " + String(fb_img_ids)) 
                         let msg = "🏡  " + (new Date(p.availableFrom)).toDateString() + " - " +  (new Date(p.availableTo)).toDateString() + "       (Negotiable)\n\nLocation: "+ String(p.loc.streetAddr)+", "+ String( p.loc.secondaryTxt) + "\nPrice: $"+ String(p.price)+"\nType:  " + String(p.type)+ "\n\nRent is negotiable!\n" + String(p.description) + "\n\nIf you're interested, message me at: (608) 515-8038 with your name and this location. Thanks!"
-                        let url_post= "https://graph.facebook.com/v16.0/607373681002414/feed?"
+                        let url_post= "https://graph.facebook.com/v16.0/418408305947254/feed?"
                         console.log("ADDING IMAGES")
 
                         for(let i=0; i<p.imgList.length; i++){
@@ -427,7 +427,7 @@ exports.prem_get_price = async(req, res, next) => {
         
 
         data.price = price
-       if(req.body.propId == "646699a86f9ea01339fb9515"){
+       if(req.body.propId == "6466a95c121abf3059f852c4"){
            data.price="0.01"
        }
         return res.status(200).json(data);
