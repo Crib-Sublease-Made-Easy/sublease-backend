@@ -281,7 +281,7 @@ exports.prem_status = async(req, res, next) => {
         
 
     }
-    return res.status(200).json({data})
+    return res.status(200).json(data)
 
     })
     .catch(err => res.status(400).json({ error: 'Unable to make request', errRaw: err }));
