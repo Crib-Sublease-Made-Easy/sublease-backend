@@ -427,7 +427,7 @@ exports.prem_get_price = async(req, res, next) => {
         
 
         data.price = price
-       if(req.body.propId == "6466a95c121abf3059f852c4"){
+       if(req.body.propId == "6466ac092155c42578274341"){
            data.price="0.01"
        }
         return res.status(200).json(data);
