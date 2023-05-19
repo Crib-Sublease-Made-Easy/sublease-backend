@@ -241,7 +241,7 @@ exports.prem_status = async(req, res, next) => {
             console.log("POSTING TO FACEBOOK")
 
             //Post Crib Connect property to Facebook
-            var at = "EAAHuzJqHCDcBAAeOhZAEVMJxNj5jQQZBpihLfGGqC0AlytaFZCj9tkZAetZBOZBdYjhTxQhTqabco0BObHDp4QqIaYEMNtsV5uH12UVlQ0a0Vz7SQoHq7O6gJZAMugZBhsbdD0oUkXutVEVmtohnWA62BefNz5Rvmwg6fPaZC51lRO7vBM2mkeiZCiV30UFEO2NoIIHNEFIzHnJFO8ofnZBIjM2"
+            var at = "EAAHuzJqHCDcBAIdLv3215a22rg8eDfHif2N4jhyFXIW15UV4VJJUX3SfHgjZAAhKsjoPKeX4dY4gg8rcowifWwqg5rknIhiMMtbwXId26fZCSc8JsZBB2y6Vv5AoAC55KvpEoHBW0ZBjxB7GeV8JsOkAGPDR50eMo4K1zI4thThGdjq9yONk"
             let fb_img_ids = []
             User.findById(req.body.userId).then(async  u=> {
                     console.log("FOUND USER")
