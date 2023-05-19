@@ -440,7 +440,7 @@ exports.prem_FAQ = (req, res, next) => {
     faqArr.push(FAQ2)
     let FAQ3 = {"🎉 I got Crib Connect!": `Congratulations! You’re one step away from subleasing you room. On average, Crib Connect users find an interested and reliable tenant in around 3 days! Be sure to check the list of potential tenants and see who fits your sublease the best. Our list also updates everyday so you got options!`}
     faqArr.push(FAQ3)
-    let FAQ4 = {"💸 How does refund work?": "If we can’t find a tenant that fits your sublease, don’t worry! Go to our settings page and request a refund. It is just that easy!"}
+    let FAQ4 = {"💸 How does refund work?": "If we can’t find a suitable tenant that fits your sublease before the start of your sublease, don’t worry! Go to our settings page and request a refund. It is just that easy! Crib Connect users can only request for refund if we can't find a suitable sublease after the start of the sublease."}
     faqArr.push(FAQ4)
     let FAQ5 = {"😃 About us": "We are a student startup. Both founders experienced how difficult it is to find an affordable, short-term sublease so we want to make it easier for everyone. For Crib, we prioritize 2 things, security and how quick we can help users sublease their apartment. So far, we've connected over 1000+ users and made subleasing easier for everyone! For Crib, this is just the start!"}
     faqArr.push(FAQ5)
