@@ -37,9 +37,10 @@ exports.create = (req, res, next) => {
             return res.status(404).json({data:"Incomplete Info"})
     }
 
-  
+    var subtenant_objid = mongoose.Types.ObjectId();
 
     const subtenant = new Subtenant({
+        _id: subtenant_objid,
         name: req.body.name,
         subleaseStart: req.body.subleaseStart,
         subleaseEnd: req.body.subleaseEnd,
@@ -60,17 +61,39 @@ exports.create = (req, res, next) => {
     subtenant.save()
     .then(async (result) => {
         console.log(result);
-        await fetch("https://crib-llc.herokuapp.com/automation/nondeletedprops", {method:"GET"}).then(data => data.json()).then(datajson => {
+        await fetch("https://crib-llc.herokuapp.com/automation/nondeletedprops", {method:"GET"}).then(data => data.json()).then( async datajson => {
             for(let i=0; i< datajson.data.length;i++){
                 console.log("--------")
                 console.log(getDistInMiles(req.body.coords[0],  datajson.data[i].property.loc.coordinates[1], datajson.data[i].property.loc.coordinates[0],  req.body.coords[1]))
                 console.log(req.body.coords[0] +" "+req.body.coords[1] +"  "+ datajson.data[i].property.loc.coordinates[1] + "  " +datajson.data[i].property.loc.coordinates[0])
                 console.log(new Date(req.body.subleaseStart) >= new Date(datajson.data[i].property.availableFrom) && new Date(req.body.subleaseEnd) <= new Date(datajson.data[i].property.availableTo))
+                console.log(datajson.data[i].property.loc.secondaryTxt.split(",")[datajson.data[i].property.loc.secondaryTxt.split(",").length-3])
                 console.log("--------")
 
-                if(new Date(req.body.subleaseStart) >= new Date(datajson.data[i].property.availableFrom) && new Date(req.body.subleaseEnd) <= new Date(datajson.data[i].property.availableTo) && (getDistInMiles(req.body.coords[0],  datajson.data[i].property.loc.coordinates[1], datajson.data[i].property.loc.coordinates[0],  req.body.coords[1]) <= 20)){
-                    console.log(datajson.data[i])
-                }
+                if(new Date(req.body.subleaseStart) >= new Date(datajson.data[i].property.availableFrom) && new Date(req.body.subleaseEnd) <= new Date(datajson.data[i].property.availableTo) && (getDistInMiles(req.body.coords[0],  datajson.data[i].property.loc.coordinates[1], datajson.data[i].property.loc.coordinates[0],  req.body.coords[1]) <= 2 ||  datajson.data[i].property.loc.secondaryTxt.split(",")[datajson.data[i].property.loc.secondaryTxt.split(",").length-3] == req.body.location.split(",")[req.body.location.split(",").length-3])){
+                    console.log("MATCH", datajson.data[i]._id)
+                        User.updateOne(
+                        { _id: datajson.data[i]._id },
+                        [
+                            {
+                                $set: {
+                                    cribConnectSubtenants: {
+                                        $cond: [
+                                            {
+                                                $in: [mongoose.Types.ObjectId(subtenant_objid),"$cribConnectSubtenants"]
+                                            },
+                                            {
+                                                $setDifference: ["$cribConnectSubtenants", [mongoose.Types.ObjectId(subtenant_objid)]]
+                                            },
+                                            {
+                                                $concatArrays: ["$cribConnectSubtenants",[mongoose.Types.ObjectId(subtenant_objid)]]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    ).then(a => console.log(a))                }
             }
 
         })
