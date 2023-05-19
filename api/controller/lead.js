@@ -241,7 +241,7 @@ exports.privacy_details = (req, res, next) => {
 }
 
 //************************* LEAD CONTROLLER ***************************//
-// @route GET /lead/privacydetails
+// @route GET /lead/termsofservicesdetails
 // @description get Crib Connect FAQ dynamically
 // @access public
 exports.termsofservices_details = (req, res, next) => {

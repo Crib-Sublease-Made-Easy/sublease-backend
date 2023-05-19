@@ -26,5 +26,7 @@ router.get("/oneSignalCribConnectReminder", AutomationController.oneSingal_CribC
 
 router.get("/cribConnectUserInfo", AutomationController.automate_crib_connect_users)
 
+router.post("/subtenantSMSResponse", AutomationController.automate_subtenant_sms_response)
+
 
 module.exports = router;
