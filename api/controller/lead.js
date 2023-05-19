@@ -205,8 +205,6 @@ exports.get_leads = (req, res, next) => {
 // }
 
 exports.phoneNumber_promo = (req, res, next) => {
-  
-
   let arr = [3326991131,8149969211,6467092048,3472971279,9299778961,9299778961,6144043920,9174289423,6462869638,4849359168,6468525143,9176919195,6467533643,9177690577,2013591619,6464044585,9296182394,6265549516, 6089991395]
   // let arr = [6089991395]
   
@@ -225,6 +223,38 @@ exports.phoneNumber_promo = (req, res, next) => {
       })
 
       return res.status(200).json({data:"message sent!"})
+}
+
+//************************* LEAD CONTROLLER ***************************//
+// @route GET /lead/privacydetails
+// @description get Crib Connect FAQ dynamically
+// @access public
+exports.privacy_details = (req, res, next) => {
+  let faqArr = [];
+
+  let FAQ1 = {"User Data" : `We collect personally identifiable information, such as your name, email address, phone number, gender, school and occupation, and other information you directly give us on our App. Any of the information that you provide us may be publicly displayed on our platform. \n \nWe automatically log usage data and client information, such as time visited, tokens used, pages you viewed, how long you spent on a page, access times, internet protocol address, actions your perform, and other information about your use of and actions on our platform.`}
+  faqArr.push(FAQ1)
+  let FAQ2 = {"In App Awareness" : `You can contribute to Crib in several different ways, including uploading photos, engaging in chats, posting properties, creating a public profile, and viewing other posted properties. We may store these contributions on our server and display them to other users. Note that if you include Personal Information in your profile, it can be used and viewed by other users of Crib. We are not responsible for the information you choose to include in your public profile. \n \nYou may not disclose to us the personal information of another person by directly creating an account for them or indirectly disclosing their information in some other way.`}
+  faqArr.push(FAQ2)
+
+  res.status(200).json(faqArr);
+}
+
+//************************* LEAD CONTROLLER ***************************//
+// @route GET /lead/privacydetails
+// @description get Crib Connect FAQ dynamically
+// @access public
+exports.termsofservices_details = (req, res, next) => {
+  let faqArr = [];
+
+  let FAQ1 = {"Our Values" : `Crib is a mobile application that is developed to assist in the process of subleases. We bridge the gap between people who are looking for subleases and people who are subleasing their apartment. Our vision is to provide an easy-to-use, centralized and friendly platform to achieve that goal.`}
+  faqArr.push(FAQ1)
+  let FAQ2 = {"Guidelines" : `Users are expected to interact mannerly and politely while using the application, violators will be subjected to further investigation and may result to account deletion if their behavior does not improve. \n \nAll contents posted by users will be subject to inspection by Crib developers. Any content that violates our vision guidelines will be terminated and users will be warned. If situation does not improve, the user’s account will be permanently deleted.`}
+  faqArr.push(FAQ2)
+  let FAQ3 = {"Liability" : `We are not liable for any loses or damages inflected to you while using the application. Please be aware of your actions and do not give out sensitive informations to other users. Our company maintain the right to change or amend  our terms and services as needed. \n \nCrib may make changes to their service or discontinue any part of the service at any time without notice. Crib makes no commitment to maintaining or updating any service.`}
+  faqArr.push(FAQ3)
+
+  res.status(200).json(faqArr);
 }
 
 
