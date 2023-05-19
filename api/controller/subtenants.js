@@ -3,6 +3,29 @@ const mongoose = require("mongoose");
 const Subtenant = require("../models/subtenants");
 const User = require("../models/user");
 const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_AUTH_TOKEN);
+const fetch = require('node-fetch');
+
+
+function getDistInMiles(lat1, lon1, lat2, lon2) {
+    return _getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) * 0.621371;
+}
+
+function _getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    var R = 6371; // Radius of the earth in kilometers
+    var dLat = deg2rad(lat2 - lat1); // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c; // Distance in KM
+    return d;
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI / 180)
+}
 
 
 exports.create = (req, res, next) => {
@@ -35,8 +58,22 @@ exports.create = (req, res, next) => {
     })
 
     subtenant.save()
-    .then((result) => {
+    .then(async (result) => {
         console.log(result);
+        await fetch("https://crib-llc.herokuapp.com/automation/nondeletedprops", {method:"GET"}).then(data => data.json()).then(datajson => {
+            for(let i=0; i< datajson.data.length;i++){
+                console.log("--------")
+                console.log(getDistInMiles(req.body.coords[0],  datajson.data[i].property.loc.coordinates[1], datajson.data[i].property.loc.coordinates[0],  req.body.coords[1]))
+                console.log(req.body.coords[0] +" "+req.body.coords[1] +"  "+ datajson.data[i].property.loc.coordinates[1] + "  " +datajson.data[i].property.loc.coordinates[0])
+                console.log(new Date(req.body.subleaseStart) >= new Date(datajson.data[i].property.availableFrom) && new Date(req.body.subleaseEnd) <= new Date(datajson.data[i].property.availableTo))
+                console.log("--------")
+
+                if(new Date(req.body.subleaseStart) >= new Date(datajson.data[i].property.availableFrom) && new Date(req.body.subleaseEnd) <= new Date(datajson.data[i].property.availableTo) && (getDistInMiles(req.body.coords[0],  datajson.data[i].property.loc.coordinates[1], datajson.data[i].property.loc.coordinates[0],  req.body.coords[1]) <= 20)){
+                    console.log(datajson.data[i])
+                }
+            }
+
+        })
         res.status(200).json({data: "Subtenant created", _id: result._id.toString()})
     })
     .catch((err) => {
@@ -94,6 +131,7 @@ exports.add_subtenant_to_tenant = (req, res, next) => {
     );
   
   };
+
 
   exports.clear_array = (req, res, next) => {
     // console.log("getting")
