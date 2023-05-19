@@ -733,5 +733,6 @@ exports.automate_crib_connect_users = (req, res, next) => {
 // @ Description: This is to get a list of crib connect users and dates 
 
 exports.automate_subtenant_sms_response = (req, res, next) => {
+    console.log("REQ", req)
     res.json({data: "gotit"})
 }
