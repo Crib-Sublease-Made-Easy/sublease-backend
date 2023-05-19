@@ -257,12 +257,18 @@ exports.prem_status = async(req, res, next) => {
                             })
                         }
                         console.log("IDS: " + String(fb_img_ids)) 
-                        let msg =  `Location: `+ String(p.loc.streetAddr)+`, `+ String( p.loc.secondaryTxt) + `
-                        Availability:` + (new Date(p.availableFrom)).toDateString() + ` - ` +  (new Date(p.availableTo)).toDateString() + `
-                        Price: $`+ String(p.price)+`
-                        Type:  ` + String(p.type)+ `Rent is negotiable!
-                        ` + String(p.description) + `
-                        If you're interested, message me at: (608) 515-8038 with your name and this location. Thanks!`
+                        let msg =  `Location: `+ String(p.loc.streetAddr)+`, `+ String( p.loc.secondaryTxt) + 
+`
+Availability:` + (new Date(p.availableFrom)).toDateString() + ` - ` +  (new Date(p.availableTo)).toDateString() + 
+`
+Price: $`+ String(p.price)+
+`
+Type:  ` + String(p.type)+ 
+`
+Rent is negotiable!
+` + String(p.description) + 
+`
+If you're interested, message me at: (608) 515-8038 with your name and this location. Thanks!`
                         let url_post= "https://graph.facebook.com/v16.0/418408305947254/feed?"
                         console.log("ADDING IMAGES")
 
