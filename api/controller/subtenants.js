@@ -70,7 +70,7 @@ exports.create = (req, res, next) => {
                 console.log(datajson.data[i].property.loc.secondaryTxt.split(",")[datajson.data[i].property.loc.secondaryTxt.split(",").length-3])
                 console.log("--------")
 
-                if(new Date(req.body.subleaseStart) >= new Date(datajson.data[i].property.availableFrom) && new Date(req.body.subleaseEnd) <= new Date(datajson.data[i].property.availableTo) && (getDistInMiles(req.body.coords[0],  datajson.data[i].property.loc.coordinates[1], datajson.data[i].property.loc.coordinates[0],  req.body.coords[1]) <= 2 ||  datajson.data[i].property.loc.secondaryTxt.split(",")[datajson.data[i].property.loc.secondaryTxt.split(",").length-3] == req.body.location.split(",")[req.body.location.split(",").length-3])){
+                if(new Date(req.body.subleaseStart) >= new Date(datajson.data[i].property.availableFrom) && new Date(req.body.subleaseEnd) <= new Date(datajson.data[i].property.availableTo) && (getDistInMiles(req.body.coords[0],  datajson.data[i].property.loc.coordinates[1], datajson.data[i].property.loc.coordinates[0],  req.body.coords[1]) <= 2 ||  datajson.data[i].property.loc.secondaryTxt.split(",")[datajson.data[i].property.loc.secondaryTxt.split(",").length-3] == req.body.location.split(",")[req.body.location.split(",").length-3]) && (Number(datajson.data[i].property.price) <= (Number(req.body.budget)+500))){
                     console.log("MATCH", datajson.data[i]._id)
                         User.updateOne(
                         { _id: datajson.data[i]._id },
