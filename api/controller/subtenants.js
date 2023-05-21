@@ -4,6 +4,7 @@ const Subtenant = require("../models/subtenants");
 const User = require("../models/user");
 const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_AUTH_TOKEN);
 const fetch = require('node-fetch');
+const jwt = require('jsonwebtoken');
 
 
 function getDistInMiles(lat1, lon1, lat2, lon2) {
@@ -179,6 +180,38 @@ Subtenant.remove({}, function(err,removed) {
 }
 
 
+
+
+exports.all_subtenants = (req, res, next) => {
+    Subtenant.find()
+    .then((data) => {
+        console.log(data)
+        res.status(200).json(data)
+    })
+    .catch(e => { res.status(400).json({data: "Error", e})})
+}
+
+exports.delete_by_phonenumber = (req, res, next) => {
+      const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwt.verify(token, process.env.JWT_KEY);
+  const userId = decoded.userId
+  if(userId != "6438e6cba9589c25c577b49e"){
+      res.status(400).json({ error: 'unable to make request', errRaw: err })
+  }else {
+    var num = Number(req.body.phoneNumber.substr(String(req.body.phoneNumber).length - 10));
+    Subtenant.findOne({phoneNumber: num})
+    .then(async (data) => {
+        console.log(data)
+        await Subtenant.deleteOne({ _id: data._id });
+        User.updateMany({}, { $pull: {cribConnectSubtenants: data._id}})
+        .then(users => {
+            console.log("Removed")
+        })
+        res.status(200).json(data)
+    })
+    .catch(e => { res.status(400).json({data: "Error", e})})
+  }
+}
 
 // GET /messageSubtenantAvail
 // Description check if subtenants are still available 
