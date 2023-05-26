@@ -712,6 +712,15 @@ exports.contact_subtenant = (req, res, next) => {
             });
         }
     }
+}
 
+// @route GET /cribconnectuser
+// @description get the list of paid crib connect users
+// @access public 
 
+exports.cribconnect_user = (req, res, next) => {
+    User.find({"cribPremium.paymentDetails.status" : true})
+    .then( data => res.json(data))
+    .catch( e => res.json({"Error" : e}))
+   
 }
