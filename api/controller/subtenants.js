@@ -40,7 +40,7 @@ exports.create = (req, res, next) => {
 
     
 
-  
+    let subtenant_objid = new mongoose.Types.ObjectId();
 
     const subtenant = new Subtenant({
         _id: subtenant_objid,
