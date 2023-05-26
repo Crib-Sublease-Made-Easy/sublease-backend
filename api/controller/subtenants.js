@@ -58,6 +58,7 @@ exports.create = (req, res, next) => {
         coords: req.body.coords,
         deleted: false,
         type: req.body.type == undefined ?  'room' : req.body.type,
+        desiredArea: req.body.desiredArea,
         createdAt: new Date()
     })
 
