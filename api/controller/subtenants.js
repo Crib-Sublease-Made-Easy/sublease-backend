@@ -4,6 +4,7 @@ const Subtenant = require("../models/subtenants");
 const User = require("../models/user");
 const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_AUTH_TOKEN);
 const fetch = require('node-fetch');
+const jwt = require('jsonwebtoken');
 
 
 function getDistInMiles(lat1, lon1, lat2, lon2) {
@@ -37,11 +38,16 @@ exports.create = (req, res, next) => {
             return res.status(404).json({data:"Incomplete Info"})
     }
 
+<<<<<<< HEAD
     
 
   
+=======
+    var subtenant_objid = mongoose.Types.ObjectId();
+>>>>>>> 9c652bf08b4db409ee27be04475bfc954a72f3de
 
     const subtenant = new Subtenant({
+        _id: subtenant_objid,
         name: req.body.name,
         subleaseStart: req.body.subleaseStart,
         subleaseEnd: req.body.subleaseEnd,
@@ -62,17 +68,39 @@ exports.create = (req, res, next) => {
     subtenant.save()
     .then(async (result) => {
         console.log(result);
-        await fetch("https://crib-llc.herokuapp.com/automation/nondeletedprops", {method:"GET"}).then(data => data.json()).then(datajson => {
+        await fetch("https://crib-llc.herokuapp.com/automation/nondeletedprops", {method:"GET"}).then(data => data.json()).then( async datajson => {
             for(let i=0; i< datajson.data.length;i++){
                 console.log("--------")
                 console.log(getDistInMiles(req.body.coords[0],  datajson.data[i].property.loc.coordinates[1], datajson.data[i].property.loc.coordinates[0],  req.body.coords[1]))
                 console.log(req.body.coords[0] +" "+req.body.coords[1] +"  "+ datajson.data[i].property.loc.coordinates[1] + "  " +datajson.data[i].property.loc.coordinates[0])
                 console.log(new Date(req.body.subleaseStart) >= new Date(datajson.data[i].property.availableFrom) && new Date(req.body.subleaseEnd) <= new Date(datajson.data[i].property.availableTo))
+                console.log(datajson.data[i].property.loc.secondaryTxt.split(",")[datajson.data[i].property.loc.secondaryTxt.split(",").length-3])
                 console.log("--------")
 
-                if(new Date(req.body.subleaseStart) >= new Date(datajson.data[i].property.availableFrom) && new Date(req.body.subleaseEnd) <= new Date(datajson.data[i].property.availableTo) && (getDistInMiles(req.body.coords[0],  datajson.data[i].property.loc.coordinates[1], datajson.data[i].property.loc.coordinates[0],  req.body.coords[1]) <= 20)){
-                    console.log(datajson.data[i])
-                }
+                if(new Date(req.body.subleaseStart) >= new Date(datajson.data[i].property.availableFrom) && new Date(req.body.subleaseEnd) <= new Date(datajson.data[i].property.availableTo) && (getDistInMiles(req.body.coords[0],  datajson.data[i].property.loc.coordinates[1], datajson.data[i].property.loc.coordinates[0],  req.body.coords[1]) <= 2 ||  datajson.data[i].property.loc.secondaryTxt.split(",")[datajson.data[i].property.loc.secondaryTxt.split(",").length-3] == req.body.location.split(",")[req.body.location.split(",").length-3]) && (Number(datajson.data[i].property.price) <= (Number(req.body.budget)+500))){
+                    console.log("MATCH", datajson.data[i]._id)
+                        User.updateOne(
+                        { _id: datajson.data[i]._id },
+                        [
+                            {
+                                $set: {
+                                    cribConnectSubtenants: {
+                                        $cond: [
+                                            {
+                                                $in: [mongoose.Types.ObjectId(subtenant_objid),"$cribConnectSubtenants"]
+                                            },
+                                            {
+                                                $setDifference: ["$cribConnectSubtenants", [mongoose.Types.ObjectId(subtenant_objid)]]
+                                            },
+                                            {
+                                                $concatArrays: ["$cribConnectSubtenants",[mongoose.Types.ObjectId(subtenant_objid)]]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    ).then(a => console.log(a))                }
             }
 
         })
@@ -158,6 +186,38 @@ Subtenant.remove({}, function(err,removed) {
 }
 
 
+
+
+exports.all_subtenants = (req, res, next) => {
+    Subtenant.find()
+    .then((data) => {
+        console.log(data)
+        res.status(200).json(data)
+    })
+    .catch(e => { res.status(400).json({data: "Error", e})})
+}
+
+exports.delete_by_phonenumber = (req, res, next) => {
+      const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwt.verify(token, process.env.JWT_KEY);
+  const userId = decoded.userId
+  if(userId != "6438e6cba9589c25c577b49e"){
+      res.status(400).json({ error: 'unable to make request', errRaw: err })
+  }else {
+    var num = Number(req.body.phoneNumber.substr(String(req.body.phoneNumber).length - 10));
+    Subtenant.findOne({phoneNumber: num})
+    .then(async (data) => {
+        console.log(data)
+        await Subtenant.deleteOne({ _id: data._id });
+        User.updateMany({}, { $pull: {cribConnectSubtenants: data._id}})
+        .then(users => {
+            console.log("Removed")
+        })
+        res.status(200).json(data)
+    })
+    .catch(e => { res.status(400).json({data: "Error", e})})
+  }
+}
 
 // GET /messageSubtenantAvail
 // Description check if subtenants are still available 
