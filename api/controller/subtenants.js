@@ -37,6 +37,8 @@ exports.create = (req, res, next) => {
             return res.status(404).json({data:"Incomplete Info"})
     }
 
+    
+
   
 
     const subtenant = new Subtenant({
