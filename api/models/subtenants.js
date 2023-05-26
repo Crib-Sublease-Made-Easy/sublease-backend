@@ -64,9 +64,9 @@ const SubtenantSchema = new mongoose.Schema (
             default: false 
         },
         desiredArea: {
-            type: String,
+            type: [String],
             required: false,
-            default: "Manhattan"
+            default: []
         }
         
     }
