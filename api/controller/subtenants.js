@@ -38,13 +38,9 @@ exports.create = (req, res, next) => {
             return res.status(404).json({data:"Incomplete Info"})
     }
 
-<<<<<<< HEAD
     
 
   
-=======
-    var subtenant_objid = mongoose.Types.ObjectId();
->>>>>>> 9c652bf08b4db409ee27be04475bfc954a72f3de
 
     const subtenant = new Subtenant({
         _id: subtenant_objid,
