@@ -260,6 +260,7 @@ exports.property_query = (req, res, next) => {
               postedUser.lastName = user.lastName;
               postedUser.profilePic = user.profilePic;
               postedUser.occupation = user.occupation;
+              postedUser.occupation = user.dob;
               postedUser.school = user.school;
               q.pos = postedUser
               console.log("P", q)
