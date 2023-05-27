@@ -780,6 +780,7 @@ exports.property_get_one = async (req, res, next) => {
           postedUserInfo.profilePic = user.profilePic
           postedUserInfo.occupation = user.occupation;
           postedUserInfo.dob = user.dob;
+          postedUserInfo.gender = user.gender;
           postedUserInfo.school = user.school;
           
           changeNumberOfViews = {}
