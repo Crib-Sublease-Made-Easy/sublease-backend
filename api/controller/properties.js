@@ -261,6 +261,7 @@ exports.property_query = (req, res, next) => {
               postedUser.profilePic = user.profilePic;
               postedUser.occupation = user.occupation;
               postedUser.dob = user.dob;
+              postedUser.gender = user.gender;
               postedUser.school = user.school;
               q.pos = postedUser
               console.log("P", q)
