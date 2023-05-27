@@ -260,7 +260,7 @@ exports.property_query = (req, res, next) => {
               postedUser.lastName = user.lastName;
               postedUser.profilePic = user.profilePic;
               postedUser.occupation = user.occupation;
-              postedUser.occupation = user.dob;
+              postedUser.dob = user.dob;
               postedUser.school = user.school;
               q.pos = postedUser
               console.log("P", q)
@@ -778,6 +778,7 @@ exports.property_get_one = async (req, res, next) => {
           postedUserInfo.lastName = user.lastName
           postedUserInfo.profilePic = user.profilePic
           postedUserInfo.occupation = user.occupation;
+          postedUserInfo.dob = user.dob;
           postedUserInfo.school = user.school;
           
           changeNumberOfViews = {}
