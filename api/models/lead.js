@@ -4,6 +4,10 @@ const LeadSchema = new mongoose.Schema ({
     email: {
         type: String,
         required: true,
+    },
+    createdAt: {
+        type: Number,
+        retuired: false
     }
 })
 

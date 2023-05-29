@@ -11,7 +11,6 @@ router.post("/androidleads", WebsiteController.android_leads)
 router.post("/leads", WebsiteController.collect_leads);
 router.get("/leads", WebsiteController.get_leads);
 router.post("/cribconnectreminder", WebsiteController.crib_connect_reminder)
-router.post("/phoneNumber_promo", WebsiteController.phoneNumber_promo);
 router.get("/privacydetails", WebsiteController.privacy_details)
 router.get("/termsofservicesdetails", WebsiteController.termsofservices_details)
 
