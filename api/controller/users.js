@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const authy = require("authy")(process.env.AUTHY_ID);
 // Load Properies Model
 const User = require("../models/user");
+const Subtenant = require("../models/subtenants");
+
 
 const sendBirdAppId = process.env.SENDBIRD_APP_ID;
 const oneSignalAppId = process.env.ONESIGNAL_APP_ID;
@@ -722,5 +724,45 @@ exports.cribconnect_user = (req, res, next) => {
     User.find({"cribPremium.paymentDetails.status" : true})
     .then( data => res.json(data))
     .catch( e => res.json({"Error" : e}))
-   
+}
+// @route POST /lastTwoSubtenants
+// @description get last two subtenants
+// @access public
+
+exports.getLastTwo_subtenants = (req,res,next) => {
+    if(req.body.userId == null || req.body.userId == null == undefined){
+        res.status(404).json({"Error": "Insufficient info"})
+    }
+    User.findOne({"_id": req.body.userId})
+    .then( user => {
+        let subArr = user.cribConnectSubtenants;
+
+        if(subArr.length == 0 || subArr.length == 1){
+            if(subArr.length == 0){
+                res.json({data: []})
+            }
+            else{
+                Subtenant.findOne({_id:user.cribConnectSubtenants[0]})
+                .then( sub => res.status(200).json([sub]));
+            }
+        }
+        else{
+            let subArr = user.cribConnectSubtenants
+           
+
+            Subtenant.findOne({_id: subArr[subArr.length - 1]})
+            .then( sub1 => {
+                Subtenant.findOne({_id: subArr[subArr.length -2]})
+                .then( sub2 => {
+                    res.status(200).json({data: [sub1, sub2]})
+                })
+                .catch( e => {
+                    res.status(400).json({data: []})
+                })
+            })
+            .catch( e => {
+                res.status(400).json({data: []})
+            })
+        }
+    })
 }
