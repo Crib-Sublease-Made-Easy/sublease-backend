@@ -21,7 +21,7 @@ exports.collect_leads = (req, res, next) => {
   } else{
     const lead = new Lead({
       email: req.body.email,
-      createdAt: new Date()
+      createdAt: new Date().toLocaleString()
     });
     lead
       .save()
