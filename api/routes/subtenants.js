@@ -12,5 +12,7 @@ router.put("/clearsubarray", SubtenantController.clear_array)
 router.get("/messageSubtenantAvail", SubtenantController.message_subtenant_avail)
 router.get("/allsubtenants", checkAuth, SubtenantController.all_subtenants)
 router.post("/deletebyphonenumber", checkAuth, SubtenantController.delete_by_phonenumber)
+router.post("/getallmatches", checkAuth, SubtenantController.get_all_matches)
+
 
 module.exports = router;

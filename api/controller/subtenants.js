@@ -195,12 +195,12 @@ exports.all_subtenants = (req, res, next) => {
 }
 
 exports.delete_by_phonenumber = (req, res, next) => {
-      const token = req.headers.authorization.split(" ")[1];
-  const decoded = jwt.verify(token, process.env.JWT_KEY);
-  const userId = decoded.userId
-  if(userId != "6438e6cba9589c25c577b49e"){
-      res.status(400).json({ error: 'unable to make request', errRaw: err })
-  }else {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    const userId = decoded.userId
+    if(userId != "6438e6cba9589c25c577b49e"){
+        res.status(400).json({ error: 'unable to make request', errRaw: err })
+    }else {
     var num = Number(req.body.phoneNumber.substr(String(req.body.phoneNumber).length - 10));
     Subtenant.findOne({phoneNumber: num})
     .then(async (data) => {
@@ -241,6 +241,34 @@ exports.message_subtenant_avail = (req, res, next) => {
 //         res.json({"Message sent to": counter})
 //     })
 //     .catch(err => res.status(400).json({ data: "Error"}));
+}
+
+
+// @route: /getallmatches
+// @description: Given the subtenant arr, retrieve all related subtenant information
+// @access: private
+
+exports.get_all_matches = (req,res,next) => {
+    if(req.body.subArr == undefined || req.body.userId == undefined){
+        res.status(404).json({data:"Incomplete data"})
+    }
+    else{
+        const token = req.headers.authorization.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_KEY);
+        const userId = decoded.userId
+        if(userId != req.body.userId){
+            res.status(400).json({ Error: 'Failed auth'})
+        }else {
+           
+            Subtenant.find({'_id': {$in: req.body.subArr}})
+            .then(data => {
+                res.status(200).json(data)
+            })
+            .catch( e => res.status(400).json({"Error": e}))
+            
+        }
+    }
+
 }
 
 
