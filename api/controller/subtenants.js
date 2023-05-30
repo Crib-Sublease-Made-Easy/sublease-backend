@@ -262,7 +262,7 @@ exports.get_all_matches = (req,res,next) => {
            
             Subtenant.find({'_id': {$in: req.body.subArr}})
             .then(data => {
-                res.status(200).json(data)
+                res.status(200).json(data.reverse())
             })
             .catch( e => res.status(400).json({"Error": e}))
             
