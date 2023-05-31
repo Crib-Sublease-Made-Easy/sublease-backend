@@ -1209,6 +1209,33 @@ exports.sublease_successful = async(req, res, next) => {
   })
   .catch(err => res.status(400).json({ error: 'Unable to sublease property ', errRaw: err }));
 };
+// @route POST /properties/interenal/subleasedwithcomments
+// @description Update property
+// @access Public
+exports.sublease_successful_withcomments = (req, res, next) => {
+  if(req.body.success == undefined || req.body.comments == undefined || req.body.propId == undefined){
+    res.status(404).json({data: "Error"})
+  }
+  else{
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    const userId = decoded.userId
+    const propId = req.body.propId
+    const completed_obj = new Completed(
+      { propId: propId,  
+        time: Date(),
+        userId: userId,
+        success: req.body.success,
+        comments: req.body.comments
+      });
+    completed_obj
+    .save()
+    .then(async (property) => {
+      res.status(200).json({ msg: 'Property was successfully subleased' })
+    })
+    .catch(err => res.status(400).json({ error: 'Unable to sublease property ', errRaw: err }));
+  }
+};
 
 // @route POST /properties/interenal/fb
 // @description Update property

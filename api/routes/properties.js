@@ -72,6 +72,7 @@ router.get("/pins", PropertyController.property_pins);
 router.get("/query", PropertyController.property_query);
 router.get("/featured", PropertyController.featured_property_by_city);
 router.post("/internal/subleased", checkAuth, PropertyController.sublease_successful);
+router.post("/internal/subleasedwithcomments", checkAuth, PropertyController.sublease_successful_withcomments);
 router.post("/internal/contact/fb", checkAuth, PropertyController.fb_contacts);
 router.post("/favorite", checkAuth, PropertyController.property_favorite);
 router.post("/:id", PropertyController.property_get_one);

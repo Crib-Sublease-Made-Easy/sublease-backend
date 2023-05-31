@@ -12,6 +12,14 @@ const CompletedSchema = new mongoose.Schema ({
     userId: {
         type: String,
         required: true
+    },
+    success: {
+        type: Boolean,
+        required: false,
+    },
+    comments:{
+        type: String,
+        required: false,
     }
 })
 

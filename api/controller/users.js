@@ -781,6 +781,6 @@ exports.add_contacted_by = (req,res,next) => {
             }
         })
         .then( r => res.status(200).json({data: "success"}))
-        .catch( err => res.status(400).json({data: "Error pushing"}))
+        .catch( err => res.status(400).json({data: err}))
     }
 }
