@@ -736,3 +736,15 @@ exports.automate_subtenant_sms_response = (req, res, next) => {
     console.log("REQ", req)
     res.json({data: "gotit"})
 }
+
+
+exports.check_contact = (req, res, next) => {
+    User.find()
+    .then(users => {
+        users.forEach( user => {
+            if(user.cribConnectSubtenantsContacted.includes("646baa44ea5e5513272355a2")){
+                console.log(user.firstName)
+            }
+        })
+    })
+}

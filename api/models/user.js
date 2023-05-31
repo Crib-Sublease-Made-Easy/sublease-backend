@@ -95,6 +95,11 @@ const UserSchema = new mongoose.Schema ({
         required: false,
         default: true
     },
+    contactedBy:{
+        type: [{name: String, phoneNumber: Number}],
+        required: false,
+        defualt: []
+    },
     cribPremium:{
         referralCode: {
             type: String,

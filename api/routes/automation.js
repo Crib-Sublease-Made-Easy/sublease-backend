@@ -28,5 +28,6 @@ router.get("/cribConnectUserInfo", AutomationController.automate_crib_connect_us
 
 router.post("/subtenantSMSResponse", AutomationController.automate_subtenant_sms_response)
 
+router.get("/checkcontact", AutomationController.check_contact)
 
 module.exports = router;

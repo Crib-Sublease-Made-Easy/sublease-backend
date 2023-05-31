@@ -8,5 +8,4 @@ router.get("/reversegeocoding", AutocompleteController.reverse_geocoding);
 router.get("/geocoding", AutocompleteController.geocoding);
 router.get("/geocoding_all", AutocompleteController.geocoding_all);
 
-
 module.exports = router;

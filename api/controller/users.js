@@ -766,3 +766,21 @@ exports.getLastTwo_subtenants = (req,res,next) => {
         }
     })
 }
+
+exports.add_contacted_by = (req,res,next) => {
+    if(req.body.postedById == undefined || req.body.phoneNumber == undefined || req.body.name == undefined){
+        res.status(404).json({data: "Incomplete info"})
+    }
+    else{
+        User.findOneAndUpdate({"_id" :req.body.postedById}, {
+            $push:{
+                "contactedBy": {
+                    name: req.body.name,
+                    phoneNumber: req.body.phoneNumber
+                }
+            }
+        })
+        .then( r => res.status(200).json({data: "success"}))
+        .catch( err => res.status(400).json({data: "Error pushing"}))
+    }
+}
