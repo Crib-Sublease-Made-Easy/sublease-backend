@@ -1209,7 +1209,7 @@ exports.sublease_successful = async(req, res, next) => {
   })
   .catch(err => res.status(400).json({ error: 'Unable to sublease property ', errRaw: err }));
 };
-// @route POST /properties/interenal/subleasedwithcomments
+// @route POST /properties/internal/subleasedwithcomments
 // @description Update property
 // @access Public
 exports.sublease_successful_withcomments = async (req, res, next) => {

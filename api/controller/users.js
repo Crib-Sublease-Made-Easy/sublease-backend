@@ -767,6 +767,9 @@ exports.getLastTwo_subtenants = (req,res,next) => {
     })
 }
 
+//@route /users/addContactedBy
+//@description when people click show number on website, it gets documetned to the the user's contactedBy field
+
 exports.add_contacted_by = (req,res,next) => {
     if(req.body.postedById == undefined || req.body.phoneNumber == undefined || req.body.name == undefined){
         res.status(404).json({data: "Incomplete info"})
