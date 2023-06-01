@@ -13,6 +13,7 @@ router.get("/leads", WebsiteController.get_leads);
 router.post("/cribconnectreminder", WebsiteController.crib_connect_reminder)
 router.get("/privacydetails", WebsiteController.privacy_details)
 router.get("/termsofservicesdetails", WebsiteController.termsofservices_details)
+router.post("/sendSubtenantInterest", WebsiteController.send_subtenat_interest)
 
 // router.post("/postingasublease", WebsiteController.posting_a_sublease)
 // router.post("/generateFacebookPost",checkAuth, WebsiteController.gen_fb_post);

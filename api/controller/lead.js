@@ -2,6 +2,7 @@ const Lead = require('../models/lead');
 const Property = require('../models/property');
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
+const User = require("../models/user");
 const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_AUTH_TOKEN);
 
 
@@ -236,6 +237,42 @@ exports.termsofservices_details = (req, res, next) => {
 
   res.status(200).json(faqArr);
 }
+
+//@route POST /sendSubtenantInterest
+//@Description from the tenant list website, if a tenant is interested in a sublease, we send the tenant a message
+
+exports.send_subtenat_interest = (req,res,next) => {
+  console.log("calling ")
+  if(req.body.subtenantName == undefined || req.body.subtenantPhoneNumber == undefined || 
+    req.body.subtenantGender == undefined || req.body.subtenantSubleaseStart == undefined || 
+    req.body.subtenantSubleaseEnd == undefined || req.body.tenantID == undefined || req.body.subtenantBudget == undefined){
+    // console.log(req.body.subtenantName == undefined)
+    // console.log(req.body.subtenantPhoneNumber== undefined)
+    // console.log(req.body.subtenantGender== undefined)
+    // console.log(req.body.subtenantSubleaseStart== undefined)
+    // console.log(req.body.subtenantSubleaseEnd== undefined)
+    // console.log(req.body.tenantID== undefined)
+    res.status(404).json({data: "Incomplete datass"});
+  }
+  else{
+    User.findOne({"_id": req.body.tenantID})
+    .then( user => {
+      let startDate = new Date(req.body.subtenantSubleaseStart).toLocaleString().split(",")[0]
+      let endDate = new Date(req.body.subtenantSubleaseEnd).toLocaleString().split(",")[0]
+      let draft = `Hey ${user.firstName}, this is Crib! ${req.body.subtenantName} just showed interested in your property. ${req.body.subtenantGender == 'Male' ? "He" : req.body.subtenantGender == 'Female' ? "She" : req.body.subtenantName} wants to sublease your place from ${startDate} to ${endDate}. ${req.body.subtenantGender == 'Male' ? "His" : req.body.subtenantGender == 'Female' ? "Her" : req.body.subtenantName+ "'s"} budget is around $${req.body.subtenantBudget} /month. If you're interested, try getting Crib Connect to connect with ${req.body.subtenantGender == 'Male' ? "him" : req.body.subtenantGender == 'Female' ? "her" : req.body.subtenantName} and other tenants who are interested in your sublease. \n \nIf you have any questions, please contact us on the app at "Contact Us" under settings!`
+      client.messages
+      .create({
+          body: draft,
+          from: '+13477516184',
+          to: `+1${user.phoneNumber}`
+      })
+      .then(message => res.status(200).json({data:'success'}))
+    })
+    .catch( e => res.status(400).json({data:"Error"}))
+    
+  }
+}
+
 
 
 
