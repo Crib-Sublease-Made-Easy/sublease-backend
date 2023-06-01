@@ -783,6 +783,7 @@ exports.property_get_one = async (req, res, next) => {
           postedUserInfo.dob = user.dob;
           postedUserInfo.gender = user.gender;
           postedUserInfo.school = user.school;
+          postedUserInfo.cribConnectUser = user.cribPremium.paymentDetails.status;
           
           changeNumberOfViews = {}
           console.log(req.body.viewCount)
