@@ -1445,7 +1445,7 @@ exports.get_all_ny_properties = (req, res, next) => {
                 let q = p
   
                 postedUser = {}
-                postedUser.firstName = user._id;
+                postedUser._id = user._id;
                 postedUser.firstName = user.firstName;
                 postedUser.lastName = user.lastName;
                 postedUser.profilePic = user.profilePic;
@@ -1453,6 +1453,7 @@ exports.get_all_ny_properties = (req, res, next) => {
                 postedUser.dob = user.dob;
                 postedUser.gender = user.gender;
                 postedUser.school = user.school;
+                postedUser.phoneNumber = user.phoneNumber;
                 postedUser.cribConnectUser = user.cribPremium.paymentDetails.status
                 q.pos = postedUser
                 console.log("P", q)
