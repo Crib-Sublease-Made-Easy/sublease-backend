@@ -317,6 +317,11 @@ exports.prem_get_price = async(req, res, next) => {
         	    data.loc = "New York"
         	    data.locPrice = "400"
             }
+            else if(p.price > 2000){
+                price += 200
+        	    data.loc = "New York"
+        	    data.locPrice = "200"
+            }
             else{
                 price += 130
         	    data.loc = "New York"
