@@ -1455,6 +1455,7 @@ exports.get_all_ny_properties = (req, res, next) => {
                 postedUser.school = user.school;
                 postedUser.phoneNumber = user.phoneNumber;
                 postedUser.cribConnectUser = user.cribPremium.paymentDetails.status
+                postedUser.email = user.email
                 q.pos = postedUser
                 console.log("P", q)
                 return postedUser
