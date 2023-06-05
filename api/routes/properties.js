@@ -78,6 +78,7 @@ router.post("/favorite", checkAuth, PropertyController.property_favorite);
 router.post("/:id", PropertyController.property_get_one);
 router.put("/:id", checkAuth, PropertyController.property_modify);
 router.get("/getAllNewYorkPosting", PropertyController.get_all_ny_properties)
+router.get("/getAllNewYorkPostingLimit8", PropertyController.get_all_ny_properties_limit8)
 
 router.get("/getDetails/:id", PropertyController.property_get_one);
 
