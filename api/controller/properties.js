@@ -829,6 +829,8 @@ exports.property_create = (req, res, next) => {
   let roommatesGender;
   let sharedGender;
 
+  let preferenceGender = "Both"
+
   if(req.body.roommatesGender == undefined || req.body.roommatesGender == null){
     roommatesGender = "";
   }
@@ -841,6 +843,9 @@ exports.property_create = (req, res, next) => {
   }
   else{
     sharedGender = req.body.sharedGender;
+  }
+  if(req.body.preferenceGender != undefined){
+    preferenceGender = req.body.preferenceGender
   }
 
   const property = new Property({
@@ -870,7 +875,14 @@ exports.property_create = (req, res, next) => {
       secondaryTxt: req.body.secondaryTxt,
     },
     deleted: false,
-    numberOfViews: 0
+    numberOfViews: 0,
+    detailedPreferences:{
+      preferenceAgeRange:[18,50],
+      preferenceGender: preferenceGender,
+      preferencePartialSublease: true,
+      preferenceStudent: false
+    }
+
   });
 
   console.log("create")
