@@ -53,6 +53,7 @@ exports.otp_step1 = (req, resp, next) => {
         authy.register_user(
             req.body.email,
             req.body.phoneNumber,
+            req.body.countryCode,
             function (err, res) {
                 console.log(err);
                 console.log(res);
@@ -189,6 +190,7 @@ exports.otp_step3 = (req, resp, next) => {
                         type: req.body.type == undefined
                             ? null
                             : req.body.type,
+                        countryCode: req.body.countryCode
                     });
 
                     user.save()
