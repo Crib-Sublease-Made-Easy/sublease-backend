@@ -7,6 +7,7 @@ const fetch = require('node-fetch');
 const jwt = require('jsonwebtoken');
 
 
+
 function getDistInMiles(lat1, lon1, lat2, lon2) {
     return _getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) * 0.621371;
 }
@@ -268,6 +269,29 @@ exports.get_all_matches = (req,res,next) => {
             
         }
     }
+}
+
+exports.send_subtenant_email_verif = (req, res, next) => {
+    
+    client.verify.v2.services('VA84a6cd99f0dc5509f13bb52ffa9cc86c')
+    .verifications
+    .create({to: 'isaaclhy13@hotmail.com.hk', channel: 'email'})
+    .then(verification => {
+        console.log(verification)
+        res.status(200).json({data:"Verification sent"})
+    })
+    .catch( e => {res.status(404).json({data:e})})
+}
+
+exports.verify_subtenant_email_verif = (req, res, next) => {
+    client.verify.v2.services('VA84a6cd99f0dc5509f13bb52ffa9cc86c')
+    .verificationChecks
+    .create({to: req.body.email, code: req.body.code})
+    .then(verification_check => {
+        console.log(verification_check.sid)
+        res.status(200).json({data:'Email verified'})
+    })
+    .catch( e => {res.status(404).json({data:e})})
 }
 
 

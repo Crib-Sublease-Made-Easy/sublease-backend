@@ -63,7 +63,13 @@ router.post("/addContactedBy", UserController.add_contacted_by)
 
 //OTP Code
 router.post("/OTP/step1", UserController.otp_step1);
+// router.post("/OTP/step1/test", UserController.otp_step1_test);
+
 router.post("/OTP/step2", UserController.otp_step2);
+// router.post("/OTP/step2/test", UserController.otp_step2_test);
+
 router.post("/OTP/step3", upload.single("userImage"), UserController.otp_step3);
+// router.post("/OTP/step3/test", upload.single("userImage"), UserController.otp_step3_test);
+
 
 module.exports = router;

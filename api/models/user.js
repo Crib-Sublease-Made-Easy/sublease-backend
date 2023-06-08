@@ -100,6 +100,11 @@ const UserSchema = new mongoose.Schema ({
         required: false,
         defualt: []
     },
+    countryCode:{
+        type: Number,
+        default: 1,
+        required: true
+    },
     cribPremium:{
         referralCode: {
             type: String,

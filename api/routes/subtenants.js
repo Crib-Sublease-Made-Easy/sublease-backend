@@ -13,6 +13,8 @@ router.get("/messageSubtenantAvail", SubtenantController.message_subtenant_avail
 router.get("/allsubtenants", checkAuth, SubtenantController.all_subtenants)
 router.post("/deletebyphonenumber", checkAuth, SubtenantController.delete_by_phonenumber)
 router.post("/getallmatches", checkAuth, SubtenantController.get_all_matches)
+router.post("/sendSubtenantEmailVerif", SubtenantController.send_subtenant_email_verif)
+router.post("/verifySubtenantEmailVerif", SubtenantController.verify_subtenant_email_verif)
 
 
 module.exports = router;
