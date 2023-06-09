@@ -323,26 +323,29 @@ exports.prem_get_price = async(req, res, next) => {
         	    data.locPrice = "200"
             }
             else{
-                price += 130
+                price += 150
         	    data.loc = "New York"
-        	    data.locPrice = "130"
+        	    data.locPrice = "150"
             }
           	
            
         }
         else if(city.indexOf("newjersey") == 0 || city.indexOf("nj") == 0){
             if(p.price > 3800){
-                price += 200
+                price += 400
         	    data.loc = "New Jersey"
-        	    data.locPrice = "200"
+        	    data.locPrice = "400"
+            }
+	    else if(p.price > 2000){
+		price += 200
+		data.loc = "New Jersey"
+		data.locPrice = "200"
             }
             else{
-                price += 130
+                price += 150
         	    data.loc = "NJ"
-        	    data.locPrice = "130"
-            }
-          	
-           
+        	    data.locPrice = "150"
+	    } 
         }
         else if(city.indexOf("austin") == 0){
           price += 200
@@ -412,9 +415,9 @@ exports.prem_get_price = async(req, res, next) => {
         data.days = diffDays
 
         if(diffDays < 10){
-            price += 100
+            price += 150
             data.daysToBegin = "short"
-            data.daysToBeginPrice = "100"
+            data.daysToBeginPrice = "150"
 
         }
 	    
