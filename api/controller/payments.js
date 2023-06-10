@@ -313,9 +313,9 @@ exports.prem_get_price = async(req, res, next) => {
         }
         else if(city.indexOf("newyork") == 0 || city.indexOf("ny") == 0){
             if(p.price > 3800){
-                price += 400
+                price += 550
         	    data.loc = "New York"
-        	    data.locPrice = "400"
+        	    data.locPrice = "550"
             }
             else if(p.price > 2000){
                 price += 170
@@ -332,9 +332,9 @@ exports.prem_get_price = async(req, res, next) => {
         }
         else if(city.indexOf("newjersey") == 0 || city.indexOf("nj") == 0){
             if(p.price > 3800){
-                price += 400
+                price += 550
         	    data.loc = "New Jersey"
-        	    data.locPrice = "400"
+        	    data.locPrice = "550"
             }
             else if(p.price > 2000){
                 price += 150
