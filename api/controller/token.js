@@ -39,7 +39,7 @@ exports.regenerate_access_token = (req, res, next) => {
         return res.status(200).json({
           message: "Access Token Sent",
           accessToken: token,
-          userId: user._id
+          userId: decoded.userId
         });
       }
       })
