@@ -790,19 +790,20 @@ exports.add_contacted_by = (req,res,next) => {
     }
 }
 
+//@route POST /addSubleaseRequestSent
+//@description when subtenant fill out a form, mark it in the document, along with the prop Id that was sent to
 
 exports.add_sublease_request_sent = (req,res,next) => {
     if(req.body.propId == undefined || req.body.userId == undefined){
         res.status(404).json({data: "Incomplete info"})
     }
     else{
-        User.findOneAndUpdate({"_id": req.body.userId}, {
-            $push: {
-                "requestsSent" : req.body.propId,
-                "createdAt": new Date()
-            } 
-        })
-        .then( r => res.status(200).json({data: "success"}))
+        let toAdd = {
+            "propId": req.body.propId,
+            "createdAt": new Date()
+        }
+        User.findOneAndUpdate({"_id": req.body.userId}, {$push: { "requestsSent" : toAdd}})
+        .then( r => res.status(200).json({data: "succecced"}))
         .catch( err => res.status(400).json({data: err}))
     }
 }

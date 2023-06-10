@@ -105,6 +105,14 @@ const UserSchema = new mongoose.Schema ({
         default: 1,
         required: true
     },
+    requestsSent:{
+        type: [{
+            propId: mongoose.Types.ObjectId,
+            createdAt: Date
+        }],
+        required: false,
+        default: []
+    },
     cribPremium:{
         referralCode: {
             type: String,
@@ -137,16 +145,9 @@ const UserSchema = new mongoose.Schema ({
                 type: String,
                 required: false
             },
-            requestsSent:{
-                type: [{
-                    propId: mongoose.Types.ObjectId,
-                    createdAt: Date
-                }],
-                required: false,
-                default: []
-            },
             default: {}
         },
+        
         default: {}
        
     }
