@@ -828,9 +828,9 @@ exports.get_requests_sent = (req,res, next) => {
             
             Property.find({
                 '_id': { $in: data[0].propIds}
-            }, function(err, docs){
-                 console.log(docs);
-                 res.status(200).json({docs})
+            })
+            .then(r => {
+                res.status(200).json(r)
             })
             .catch( err => res.status(400).json({data: err}))
         })
