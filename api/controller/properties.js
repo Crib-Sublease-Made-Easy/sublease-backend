@@ -1745,3 +1745,38 @@ exports.add_subtenant_request = (req, res, next) => {
       )})
   }
 }
+
+
+//@routes /getRequestsReceived
+//@description for tenants to check if they have received any requests
+
+exports.get_subtenant_requests = (req,res,next) => {
+  console.log("inside")
+  if(req.body.propId == undefined){
+    res.status(404).json({error: "Incomplete information."})
+  }
+  else{
+    //Get the list of subleaseRequests
+    //add the subtenant info into it too
+    Property.find({"_id" : mongoose.Types.ObjectId(req.body.propId)})
+    .then( async prop => {   
+      let ret = await Promise.all(prop[0].subleaseRequests.map(async subleaseInfo => {
+       
+        let d = await User.findById(subleaseInfo.subtenantId).then(async sub => {
+          return sub
+        })
+        .catch(e => res.status(400).json({data:e}))
+        let q = {}
+        q.subleaseInfo = subleaseInfo
+        q.subtenantInfo = d
+        console.log(q)
+        return q      
+      }))
+      .catch(e => res.status(400).json({data:e}))
+
+        // console.log("END", props)
+      res.json(ret)
+    })
+    .catch(e => res.status(400).json({data:e}))
+  }
+}

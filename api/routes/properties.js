@@ -80,6 +80,7 @@ router.put("/:id", checkAuth, PropertyController.property_modify);
 router.get("/getAllNewYorkPosting", PropertyController.get_all_ny_properties)
 router.get("/getAllNewYorkPostingLimit8", PropertyController.get_all_ny_properties_limit8)
 router.post("/automate/addSubtenantRequests", PropertyController.add_subtenant_request)
+router.post("/automate/getSubtenantRequests", PropertyController.get_subtenant_requests)
 
 router.get("/getDetails/:id", PropertyController.property_get_one);
 
