@@ -157,8 +157,23 @@ const PropertySchema = new mongoose.Schema (
             type: Boolean,
             required: false
         },
+        subleaseRequests: {
+            type: [
+                {
+                    subtenantId: mongoose.Types.ObjectId,
+                    requestStart: Date,
+                    requestEnd: Date,
+                    requestMessage: String,
+                    numOfOccupants: Number
+                }
+            ],
+            required: false,
+            default: []
+        }
     })
     PropertySchema.index({ "loc": "2dsphere" });
+
+    // type: [{name: String, phoneNumber: Number}],
 
 
 module.exports = Property = mongoose.model('propertytests', PropertySchema)

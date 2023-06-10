@@ -137,6 +137,11 @@ const UserSchema = new mongoose.Schema ({
                 type: String,
                 required: false
             },
+            requestsSent:{
+                type: [mongoose.Types.ObjectId],
+                required: false,
+                default: []
+            },
             default: {}
         },
         default: {}
