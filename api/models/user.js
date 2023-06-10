@@ -138,7 +138,10 @@ const UserSchema = new mongoose.Schema ({
                 required: false
             },
             requestsSent:{
-                type: [mongoose.Types.ObjectId],
+                type: [{
+                    propId: mongoose.Types.ObjectId,
+                    createdAt: Date
+                }],
                 required: false,
                 default: []
             },

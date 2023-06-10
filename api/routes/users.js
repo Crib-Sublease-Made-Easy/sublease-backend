@@ -58,6 +58,7 @@ router.post("/cribconnect/contactSubtenants", checkAuth, UserController.contact_
 router.get("/cribconnect/getall", UserController.cribconnect_user)
 router.post("/lastTwoSubtenants", UserController.getLastTwo_subtenants)
 router.post("/addContactedBy", UserController.add_contacted_by)
+router.post("/addSubleaseRequestSent", UserController.add_sublease_request_sent)
 
 
 

@@ -164,7 +164,8 @@ const PropertySchema = new mongoose.Schema (
                     requestStart: Date,
                     requestEnd: Date,
                     requestMessage: String,
-                    numOfOccupants: Number
+                    numOfOccupants: Number,
+                    createdAt: Date
                 }
             ],
             required: false,

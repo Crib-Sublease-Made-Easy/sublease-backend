@@ -1719,3 +1719,29 @@ exports.get_all_ny_properties_limit8 = (req, res, next) => {
     })
     .catch(err => res.status(404).json({ propertiesFound: 'none', error: err }));
 };
+
+exports.add_subtenant_request = (req, res, next) => {
+  console.log("INside")
+  //Check data completeness
+  if(req.body.subtenantId == undefined || req.body.requestStart == undefined || req.body.requestEnd == undefined ||
+    req.body.requestMessage == undefined || req.body.numOfOccupants == undefined || req.body.propId == undefined){
+    res.status(404).json({error: "Incomplete information."})
+  }
+  else{
+
+    let toAdd = {
+      subtenantId: req.body.subtenantId,
+      requestStart: req.body.requestStart,
+      requestEnd: req.body.requestEnd,
+      requestMessage: req.body.requestMessage,
+      numOfOccupants: req.body.numOfOccupants,
+      createdAt: new Date()
+    }
+    Property.findOneAndUpdate({"_id" : req.body.propId}, {$push: {"subleaseRequests" : toAdd}})
+    .then( r => res.status(200).json({"data":"Subtenant successfully addded"}))
+    .catch( e => {
+      console.log(e)
+      res.status(404).json({"error": e }
+      )})
+  }
+}
