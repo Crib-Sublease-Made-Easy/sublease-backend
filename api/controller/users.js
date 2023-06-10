@@ -813,28 +813,27 @@ exports.add_sublease_request_sent = (req,res,next) => {
 //@router GET /getRequestsSent
 //@description Get all the requests sent
 
-// exports.get_requests_sent = (req,res, next) => {
-//     console.log(req.body.userId)
-//     console.log("inside")
-//     if(req.body.userId == undefined){
-//         res.status(404).json({data: "Incomplete info"})
-//     }
-//     else{
+exports.get_requests_sent = (req,res, next) => {
+ 
+    if(req.body.userId == undefined){
+        res.status(404).json({data: "Incomplete info"})
+    }
+    else{
 
-//         User.aggregate([
-//             { $match: { _id: mongoose.Types.ObjectId(req.body.userId)} }, // any condition
-//             { "$unwind": "$requestsSent" },
-//             { "$group": { "_id": req.body.userId, "propIds": { $push: "$requestsSent.propId" } } }
-//         ]).then((data)=>{
+        User.aggregate([
+            { $match: { _id: mongoose.Types.ObjectId(req.body.userId)} }, // any condition
+            { "$unwind": "$requestsSent" },
+            { "$group": { "_id": req.body.userId, "propIds": { $push: "$requestsSent.propId" } } }
+        ]).then((data)=>{
             
-//             Property.find({
-//                 '_id': { $in: data[0].propIds}
-//             }, function(err, docs){
-//                  console.log(docs);
-//                  res.status(200).json({docs})
-//             })
-//             .catch( err => res.status(400).json({data: err}))
-//         })
-//         .catch( err => res.status(400).json({data: err}))
-//     }
-// }
+            Property.find({
+                '_id': { $in: data[0].propIds}
+            }, function(err, docs){
+                 console.log(docs);
+                 res.status(200).json({docs})
+            })
+            .catch( err => res.status(400).json({data: err}))
+        })
+        .catch( err => res.status(400).json({data: err}))
+    }
+}
