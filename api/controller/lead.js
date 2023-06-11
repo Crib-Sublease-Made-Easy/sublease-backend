@@ -305,7 +305,7 @@ exports.sms_subtenant_interest_to_user = (req,res,next) => {
           .create({
               body: draft,
               from: '+13477516184',
-              to: `+${tenant.countryCode == "" || tenant.countryCode == undefined ? "1" : tenant.countryCode}${tenant.phoneNumber}`
+              to: `+${tenant.countryCode}${tenant.phoneNumber}`
           })
           .then(message => res.status(200).json({data:'success'}))
           .catch( e => res.status(400).json({data: e}))  
