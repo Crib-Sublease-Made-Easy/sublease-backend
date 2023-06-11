@@ -296,10 +296,10 @@ exports.sms_subtenant_interest_to_user = (req,res,next) => {
           let draft;
           console.log("Message")
           if(tenant.cribPremium.paymentDetails.status){
-            draft = `Hey ${tenant.firstName}, this is Crib! ${subtenant.firstName} just showed interest in your sublease from ${requestStart} - ${requestEnd}. ${subtenant.gender == 'Male' ? "He" : subtenant.gender == 'Female' ? "She" : `${subtenant.firstName}'s`} number and email are +${subtenant.countryCode}${subtenant.phoneNumber} and ${subtenant.email}. If your sublease is not available, please delete the sublease on the app. Thank you!  ` 
+            draft = `Hey ${tenant.firstName}, this is Crib! ${subtenant.firstName} just showed interest in your sublease from ${requestStart} - ${requestEnd}. ${subtenant.gender == 'Male' ? "His" : subtenant.gender == 'Female' ? "Her" : `${subtenant.firstName}'s`} number and email are +${subtenant.countryCode}${subtenant.phoneNumber} and ${subtenant.email}. If your sublease is not available, please delete the sublease on the app. Thank you!  ` 
           }
           else{
-            draft = `Hey ${tenant.firstName}, this is Crib! ${subtenant.firstName} just showed interest in your sublease. ${subtenant.gender == 'Male' ? "He" : subtenant.gender == 'Female' ? "She" : subtenant.firstName} wants to sublease your place from ${requestStart} to ${requestEnd}. If you're interested, try getting Crib Connect to connect with ${subtenant.gender == 'Male' ? "him" : subtenant.gender == 'Female' ? "her" : subtenant.gender} and other tenants who are interested in your sublease. \n \nIf you have any questions, please contact us on the app at "Contact Us" under settings!`
+            draft = `Hey ${tenant.firstName}, this is Crib! ${subtenant.firstName} just showed interest in your sublease. ${subtenant.gender == 'Male' ? "His" : subtenant.gender == 'Female' ? "Her" : subtenant.firstName} wants to sublease your place from ${requestStart} to ${requestEnd}. If you're interested, try getting Crib Connect to connect with ${subtenant.gender == 'Male' ? "him" : subtenant.gender == 'Female' ? "her" : subtenant.gender} and other tenants who are interested in your sublease. \n \nIf you have any questions, please contact us on the app at "Contact Us" under settings!`
           }
           client.messages
           .create({

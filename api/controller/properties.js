@@ -966,24 +966,7 @@ exports.property_create = (req, res, next) => {
     .then( prop => {
     console.log("Num Subtenants", prop)
 
-        fetch('https://crib-llc.herokuapp.com/web/cribconnectleads', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          number: user.phoneNumber,
-          days: days,
-          estimatedSavings:  subleaseDays*Number(req.body.price),
-          subtenants: prop.count
-        })
-        }).then(async e => {
-          return res.status(200).json({data:e})
-        })
-        .catch( e => {
-          console.log("Error in sending message")
-        })
+        
       })
 });
   
