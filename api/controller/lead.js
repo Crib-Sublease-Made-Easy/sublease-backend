@@ -274,5 +274,50 @@ exports.send_subtenat_interest = (req,res,next) => {
 }
 
 
+exports.sms_subtenant_interest_to_user = (req,res,next) => {
+  console.log("calling ")
+  if(req.body.subtenantID == undefined || req.body.tenantID == undefined || req.body.requestStart == undefined ||
+    req.body.requestEnd == undefined){
+    // console.log(req.body.subtenantName == undefined)
+    // console.log(req.body.subtenantPhoneNumber== undefined)
+    // console.log(req.body.subtenantGender== undefined)
+    // console.log(req.body.subtenantSubleaseStart== undefined)
+    // console.log(req.body.subtenantSubleaseEnd== undefined)
+    // console.log(req.body.tenantID== undefined)
+    res.status(404).json({data: "Incomplete data"});
+  }
+  else{
+      User.findById({"_id": req.body.tenantID})
+      .then( tenant => {
+        User.findById({"_id": req.body.subtenantID})
+        .then( subtenant => {
+          let requestStart = new Date(req.body.requestStart).toLocaleString().split(",")[0]
+          let requestEnd = new Date(req.body.requestEnd).toLocaleString().split(",")[0]
+          let draft;
+          console.log("Message")
+          if(tenant.cribPremium.paymentDetails.status){
+            draft = `Hey ${tenant.firstName}, this is Crib! ${subtenant.firstName} just showed interest in your sublease from ${requestStart} - ${requestEnd}. ${subtenant.gender == 'Male' ? "He" : subtenant.gender == 'Female' ? "She" : `${subtenant.firstName}'s`} number and email are +${subtenant.countryCode}${subtenant.phoneNumber} and ${subtenant.email}. If your sublease is not available, please delete the sublease on the app. Thank you!  ` 
+          }
+          else{
+            draft = `Hey ${tenant.firstName}, this is Crib! ${subtenant.firstName} just showed interest in your sublease. ${subtenant.gender == 'Male' ? "He" : subtenant.gender == 'Female' ? "She" : subtenant.firstName} wants to sublease your place from ${requestStart} to ${requestEnd}. If you're interested, try getting Crib Connect to connect with ${subtenant.gender == 'Male' ? "him" : subtenant.gender == 'Female' ? "her" : subtenant.gender} and other tenants who are interested in your sublease. \n \nIf you have any questions, please contact us on the app at "Contact Us" under settings!`
+          }
+          client.messages
+          .create({
+              body: draft,
+              from: '+13477516184',
+              to: `+${tenant.countryCode == "" || tenant.countryCode == undefined ? "1" : tenant.countryCode}${tenant.phoneNumber}`
+          })
+          .then(message => res.status(200).json({data:'success'}))
+          .catch( e => res.status(400).json({data: e}))  
+        })
+        .catch( e => res.status(400).json({data: e }))  
+
+      })
+      .catch( e => res.status(400).json({data: e })) 
+    
+  }
+}
+
+
 
 
