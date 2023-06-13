@@ -921,17 +921,8 @@ exports.property_create = (req, res, next) => {
   })
   .catch(err => res.status(400).json({ error: 'Unable to add this property', errRaw: err }));
 
-  let curTime = Number(new Date().getTime());
-  let startTime = Number(req.body.availableFrom);
-  let endTime = Number(req.body.availableTo);
-  const subleaseDays =  Math.floor((endTime - startTime)/(1000*60*60*24*30))
 
-
-
-  const days = Number(Math.floor(((startTime - curTime)/(1000*60*60*24))))
-
-
-  User.findById(decoded.userId).then(async user => {
+  // User.findById(decoded.userId).then(async user => {
     // await Subtenant.find({}).then(async subtenants=>{
     //   subtenants.forEach( dude =>{
     //     console.log(dude)
@@ -948,27 +939,8 @@ exports.property_create = (req, res, next) => {
     //   })
     // })
 
-    let numSubtenants = await fetch('https://crib-llc.herokuapp.com/automation/tenantautomation', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        firstName: user.firstName,
-        phoneNumber: user.phoneNumber,
-        availableFrom: req.body.availableFrom,
-        availableTo: req.body.availableTo,
-        lat: coor[1] ,
-        long: coor[0]
-      })
-    }).then(numSubtenants => numSubtenants.json())
-    .then( prop => {
-    console.log("Num Subtenants", prop)
-
-        
-      })
-});
+    
+// });
   
 };
 
