@@ -914,6 +914,7 @@ exports.property_create = (req, res, next) => {
           propId: property._id
       })
       }).then(async e => {
+        res.status(200).json({data:"success"})
       })
       .catch( e => {
       console.log("Error in sending message")
