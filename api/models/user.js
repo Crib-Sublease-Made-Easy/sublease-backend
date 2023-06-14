@@ -108,6 +108,7 @@ const UserSchema = new mongoose.Schema ({
     requestsSent:{
         type: [{
             propId: mongoose.Types.ObjectId,
+            requestId: {type: mongoose.Schema.Types.ObjectId, ref: 'Request'},
             createdAt: Date
         }],
         required: false,

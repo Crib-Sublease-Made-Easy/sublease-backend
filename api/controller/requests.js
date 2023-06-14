@@ -2,12 +2,14 @@ const Request = require('../models/request');
 const Property = require('../models/property');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken')
+const mongoose = require('mongoose');
 
 //************************* REQUESTS CONTROLLER ***************************//
 // @route POST /request
 // @description creates anew request object
 // @access private
 exports.requests_create = (req, res, next) => {
+    //create a new request object
   const request = new Request({
         tenantId: req.body.tenantId,
         subtenantId: req.body.subtenantId,
@@ -23,8 +25,21 @@ exports.requests_create = (req, res, next) => {
         tenantSignedContract: req.body.tenantSignedContract,
         subtenantSignedContract: req.body.subtenantSignedContract
   })
+  //save the request object to the database
   request.save()
-    .then(r =>  res.status(200).json({data: "Request created", _id: r._id.toString()})
+    .then(r =>  
+        {
+            //add the request object to the 
+            let toAdd = {
+                "requestId": r._id,
+                "createdAt": new Date()
+            }
+            User.findOneAndUpdate({"_id": req.body.subtenantId}, {$push: { "requestsSent" : toAdd}})
+                .catch(err => res.status(404).json({ error: err }));
+
+            res.status(200).json({data: "Request created", _id: r._id.toString()})
+        }    
+    
 )
     .catch(err => res.status(404).json({ error: err }));
 
@@ -48,8 +63,34 @@ exports.requests_accepted = (req, res, next) => {
 exports.request_delete = (req, res, next) => {
   Request.findOneAndDelete(req.params.id)
     .then(r => {
+         User.updateMany({}, { $pull: {requestsSent:{requestId: r._id}}})
+        .then(users => {
+            console.log("Removed")
+        })
         res.status(200).json({data: "Request deleted", _id: r._id.toString()})
     })
     .catch(err => res.status(404).json({ error: err }));
+};
 
+// @route get /request/myrequests
+// @description Gets all of the user's requests
+// @access private
+exports.request_retrievemyrequests = (req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    const userId = decoded.userId
+        Request.find({subtenantId: userId}). then(data => {
+            var propids = data.map(function(x) { return x.propId } );
+            console.log(propids)
+            Property.find({
+                '_id': { $in: propids}
+            })
+            .then(r => {
+                
+                res.status(200).json(r)
+            })
+            .catch( err => res.status(400).json({data: err}))
+        })
+        .catch( err => res.status(400).json({data: err}))
+    
 };
