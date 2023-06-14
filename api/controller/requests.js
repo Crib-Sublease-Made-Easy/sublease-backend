@@ -30,13 +30,25 @@ exports.requests_create = (req, res, next) => {
 
 };
 
-// @route PUT /request
+// @route PUT /request/accepted
 // @description updates the requested accepted field to true once the tenant accepts the booking
-// @access public
+// @access private
 exports.requests_accepted = (req, res, next) => {
   Request.findByIdAndUpdate(req.body.requestId, {accepted: true})
     .then(r => {
         res.status(200).json({data: "Request marked as accepted", _id: r._id.toString()})
+    })
+    .catch(err => res.status(404).json({ error: err }));
+
+};
+
+// @route delete /request/:id
+// @description Delete request - used when tenant declines the request for booking
+// @access private
+exports.request_delete = (req, res, next) => {
+  Request.findOneAndDelete(req.params.id)
+    .then(r => {
+        res.status(200).json({data: "Request deleted", _id: r._id.toString()})
     })
     .catch(err => res.status(404).json({ error: err }));
 
