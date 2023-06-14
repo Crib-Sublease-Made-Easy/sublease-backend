@@ -11,6 +11,10 @@ router.get("/premium/getCribConnectUserNumber", PaymentsController.prem_get_crib
 router.get("/premium/cribConnectToalSaving", PaymentsController.prem_crib_connect_total_saving)
 router.get("/premium/FAQ", PaymentsController.prem_FAQ)
 
+//NEW ITERATION
+router.post("/generate", checkAuth, PaymentsController.gen_link)
+
+
 
 
 module.exports = router;

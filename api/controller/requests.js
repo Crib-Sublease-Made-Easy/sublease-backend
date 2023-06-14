@@ -94,8 +94,8 @@ exports.request_retrievemyrequests = (req, res, next) => {
         .catch( err => res.status(400).json({data: err}))
 };
 
-// @route get /request/myrequests
-// @description Gets all of the user's requests
+// @route get /request/myreceivedrequests
+// @description Gets all of the user's received requests for the property they posted
 // @access private
 exports.request_retrievemyreceivedrequests = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
