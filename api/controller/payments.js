@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const { query } = require('express');
 const Property = require('../models/property');
 const User = require("../models/user");
+const Payment = require('../models/payment');
+var differenceInDays = require('date-fns/differenceInDays')
 
 
 
@@ -537,3 +539,106 @@ exports.prem_FAQ = (req, res, next) => {
 //                 message: "Auth failed",
 //             });
 //         }
+
+
+
+//************************* PAYMENT CONTROLLER ***************************//
+// @route POST /payment/generate
+// @description Creates a payment link. Price will be Security deposity + Fee
+// @access private
+
+exports.gen_link = async(req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    const userId = decoded.userId
+    
+    //Calculating Price: Security Deposit + ((Monthly Rent * Number of Months) * 0.05)
+    //TO DO: Implement the rest
+
+    let price = 0
+    let fee = 0
+    let securityDeposit = 0
+    Property.findById(req.body.propId).then(async data=>{
+        if(userId != data.postedBy){
+            res.status(400).json({ error: "Unable to get payment link" })
+        }
+        price += data.securityDeposit;
+        price += ((data.price) * (differenceInDays( data.availableTo, data.availableFrom)/30.437)) * 0.05
+        console.log(price)
+
+        securityDeposit = data.securityDeposit;
+        fee = ((data.price) * (differenceInDays( data.availableTo, data.availableFrom)/30.437)) * 0.05
+
+
+         await fetch("https://connect.squareup.com/v2/online-checkout/payment-links", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Square-Version': '2023-03-15',
+            'Authorization': 'Bearer ' + sq_access_token
+        }, 
+        body: JSON.stringify({
+                                     "description": "Sublease with real people, let's save rent together! \n Sublease booking for " + (new Date(data.availableFrom).toDateString()) + " to " + (new Date(data.availableTo).toDateString()) + " at " + data.loc.streetAddr + + " " + data.loc.secondaryTxt,
+             "order": {
+
+      "line_items": [
+        {
+          "base_price_money": {
+            "amount": Number(Math.floor(securityDeposit)) * 100,
+            "currency": "USD"
+          },
+          "name": "Security Deposit",
+          "quantity": "1"
+        },
+        {
+          "quantity": "1",
+          "base_price_money": {
+            "amount": Number(Math.floor(fee)) * 100,
+            "currency": "USD"
+          },
+          "name": "Fee (5% of Total Rent)"
+        }
+      ],
+                      "location_id": "LGZXV3FXE9F2J"
+
+    }
+        })
+      }).then(resp => resp.json())
+      .then(square_res => {
+          console.log("THE SQUARE RESPONSE", square_res)
+        const userId = decoded.userId;
+            if(square_res.payment_link != undefined){
+                const pay = new Payment({
+                    paymentLink: square_res.payment_link,
+                    userId: userId,
+                    propId: data._id,
+                    amount:{
+                        total: Math.floor(fee + securityDeposit),
+                        fee: Math.floor(fee),
+                        securityDeposit: Math.floor(securityDeposit)
+                    }
+                })
+                pay.save().then(r =>{
+                    res.status(200).json({data: "Payment link successfully generated"})
+                })
+            }
+
+            })
+
+      .catch(err => res.status(400).json({ error: 'unable to make request', errRaw: err }));
+
+
+
+    }) .catch(err => res.status(400).json({ error: 'unable to make request', errRaw: err }));
+
+
+
+   };
+
+function monthDiff(d1, d2) {
+    var months;
+    months = (d2.getFullYear() - d1.getFullYear()) * 12;
+    months -= d1.getMonth() + 1;
+    months += d2.getMonth();
+    return months <= 0 ? 0 : months;
+}
