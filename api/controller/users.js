@@ -555,6 +555,10 @@ exports.user_modify = (req, res, next) => {
         if (req.body.email != undefined) {
             query.email = req.body.email;
         }
+        if (req.body.firstName != undefined && req.body.lastName != undefined) {
+            query.firstName = req.body.firstName;
+            query.lastName = req.body.lastName;
+        }
         User.findByIdAndUpdate(req.params.id, query)
             .then((user) => res.json(user))
             .catch((err) =>
