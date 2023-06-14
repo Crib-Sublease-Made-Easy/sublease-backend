@@ -92,5 +92,33 @@ exports.request_retrievemyrequests = (req, res, next) => {
             .catch( err => res.status(400).json({data: err}))
         })
         .catch( err => res.status(400).json({data: err}))
-    
+};
+
+// @route get /request/myrequests
+// @description Gets all of the user's requests
+// @access private
+exports.request_retrievemyreceivedrequests = (req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    const userId = decoded.userId
+        Request.aggregate(
+            [
+            {
+                '$lookup': {
+                'from': 'users', 
+                'localField': 'tenantId', 
+                'foreignField': '_id', 
+                'as': 'subtenantInfo'
+                }
+            }, {
+                '$match': {
+                'tenantId': mongoose.Types.ObjectId(userId)
+                }
+            }
+            ])
+            .then(r => {
+                
+                res.status(200).json(r)
+            })
+            .catch( err => res.status(400).json({data: err}))
 };
