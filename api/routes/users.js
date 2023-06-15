@@ -61,6 +61,9 @@ router.post("/addContactedBy", UserController.add_contacted_by)
 router.post("/addSubleaseRequestSent", UserController.add_sublease_request_sent)
 router.post("/getRequestsSent", UserController.get_requests_sent)
 
+//Email verification 
+router.post("/sendEmailVerification", UserController.send_verification_email)
+router.post("/verifyEmailVerifcationCode", UserController.verify_email_verification_code)
 
 
 //OTP Code

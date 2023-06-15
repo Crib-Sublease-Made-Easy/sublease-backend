@@ -114,6 +114,11 @@ const UserSchema = new mongoose.Schema ({
         required: false,
         default: []
     },
+    emailVerified:{
+        type: Boolean,
+        required: true,
+        default: false
+    },
     cribPremium:{
         referralCode: {
             type: String,

@@ -8,6 +8,9 @@ const Subtenant = require("../models/subtenants");
 
 const Property = require('../models/property');
 
+//Twilio client
+const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_AUTH_TOKEN);
+
 
 const sendBirdAppId = process.env.SENDBIRD_APP_ID;
 const oneSignalAppId = process.env.ONESIGNAL_APP_ID;
@@ -840,4 +843,47 @@ exports.get_requests_sent = (req,res, next) => {
         })
         .catch( err => res.status(400).json({data: err}))
     }
+}
+
+//@route POST /sendEmailVerification
+//@description send a code to the email for verification 
+
+exports.send_verification_email = (req, res, next) => {
+    if(req.body.email == undefined){
+        res.status(404).json({data: "Incomplete info"})
+    }
+    
+    client.verify.v2.services('VA84a6cd99f0dc5509f13bb52ffa9cc86c')
+    .verifications
+    .create({to: req.body.email, channel: 'email'})
+    .then(verification => {
+        console.log(verification)
+        res.status(200).json({data:"Verification sent"})
+    })
+    .catch( e => {res.status(404).json({data:e})})
+}
+
+//@route POST /verifyEmailVerifcationCode
+//@decription verify email verification code
+
+exports.verify_email_verification_code = (req, res, next) => {
+    if(req.body.email == undefined || req.body.code == undefined || req.body.userId == undefined){
+        res.status(404).json({data: "Incomplete info"})
+    }
+    client.verify.v2.services('VA84a6cd99f0dc5509f13bb52ffa9cc86c')
+    .verificationChecks
+    .create({to: req.body.email, code: req.body.code})
+    .then(verification_check => {
+        console.log(verification_check)
+        if(verification_check.valid == true){
+            User.findOneAndUpdate({"_id":req.body.userId},{"emailVerified": true})
+            .then( r => {
+                res.status(200).json({data:"Email successfully verified"})
+            })
+        }
+        else{
+            res.status(404).json({data:"Incorrect code. Please try again!"})
+        }
+    })
+    .catch( e => {res.status(404).json({data:e})})
 }
