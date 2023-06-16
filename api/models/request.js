@@ -41,7 +41,7 @@ const RequestSchema = new mongoose.Schema (
         },
         timeAccepted:{
             type:Date,
-            required: true
+            required: false
         },
         paid: {
             type: Boolean,

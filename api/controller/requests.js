@@ -124,3 +124,30 @@ exports.request_retrievemyreceivedrequests = (req, res, next) => {
 };
 
 
+// @route POST /request/requestesignature
+// @description Called when tenant accepts booking - sends contract to both parties
+// @access private
+exports.request_esignature = (req, res, next) => {
+    fetch(' https://0ksxv2pwd7.execute-api.us-east-2.amazonaws.com/Prod', {
+        method: 'POST',
+        headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        "subleasor_name": req.body.subleasor_name,
+        "subtenant_name": req.body.subtenant_name,
+        "property_address": req.body.property_address,
+        "sublease_start_date": req.body.sublease_start_date,
+        "sublease_end_date": req.body.sublease_end_date,
+        "rent": req.body.rent,
+        "security_deposit": req.body.security_deposit,
+        "fee_percentage": "5"
+    })
+    }).then(async e => {
+        res.status(200).json(r)
+    })
+    .catch( e => {
+    console.log("Error in sending contract")
+    })
+};
