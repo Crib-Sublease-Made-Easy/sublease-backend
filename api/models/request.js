@@ -14,6 +14,10 @@ const RequestSchema = new mongoose.Schema (
             type: mongoose.Types.ObjectId,
             required: true
         },
+        envelopeId: {
+            type: String,
+            required: false
+        },
         startDate: {
             type: Date,
             required: true

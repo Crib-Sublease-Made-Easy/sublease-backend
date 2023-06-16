@@ -73,6 +73,20 @@ exports.request_delete = (req, res, next) => {
     .catch(err => res.status(404).json({ error: err }));
 };
 
+
+
+// @route PUT /request/addEnvelope
+// @description PUT This is called from AWS Lambda function after contract gets generated -> takes in request_id and envelope_id in body
+// @access private
+exports.add_envelope = (req, res, next) => {
+  Request.findOneAndUpdate({_id: req.body.requestId}, {envelopeId: req.body.envelopeId})
+    .then(r => {
+        res.status(200).json({data: "Request updated"})
+    })
+    .catch(err => res.status(404).json({ error: err }));
+};
+
+
 // @route get /request/myrequests
 // @description Gets all of the user's requests
 // @access private
@@ -143,6 +157,7 @@ exports.request_esignature = (req, res, next) => {
         "sublease_end_date": req.body.sublease_end_date,
         "rent": req.body.rent,
         "security_deposit": req.body.security_deposit,
+        "request_id": req.body.request_id,
         "fee_percentage": "5"
     })
     }).then(async e => {

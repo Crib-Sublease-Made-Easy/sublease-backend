@@ -6,6 +6,7 @@ const checkAuth = require('../middleware/check-auth');
 
 router.post("/", checkAuth, RequestController.requests_create);
 router.put("/accepted", checkAuth, RequestController.requests_accepted);
+router.put("/addEnvelope", RequestController.add_envelope);
 router.delete("/:id", checkAuth, RequestController.request_delete);
 router.get("/myrequests", checkAuth, RequestController.request_retrievemyrequests);
 router.get("/myreceivedrequests", checkAuth, RequestController.request_retrievemyreceivedrequests);
