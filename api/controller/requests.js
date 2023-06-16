@@ -129,7 +129,7 @@ exports.request_retrievemyreceivedrequests = (req, res, next) => {
 // @description Called when tenant accepts booking - sends contract to both parties
 // @access private
 exports.request_esignature = (req, res, next) => {
-    fetch(' https://0ksxv2pwd7.execute-api.us-east-2.amazonaws.com/Prod', {
+    fetch('https://0ksxv2pwd7.execute-api.us-east-2.amazonaws.com/Prod', {
         method: 'POST',
         headers: {
         Accept: 'application/json',
@@ -147,6 +147,42 @@ exports.request_esignature = (req, res, next) => {
     })
     }).then(async e => {
         res.status(200).json(e)
+    })
+    .catch( e => {
+    console.log("Error in sending contract", e)
+    })
+};
+
+// @route GET /request/contract/signedStatus
+// @description Called when tenant accepts booking - sends contract to both parties
+// @access private
+const DOCUSIGN_ACCESS_TOKEN="eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAUABwAAZvdsoW7bSAgAAKYae-Ru20gCAE7zpH6mUhpAlmjmH_Zyx-MVAAEAAAAYAAEAAAAFAAAADQAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliIgAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliMACAd8nUDm3bSDcAPcuq3dd7SUuSy9LlC6ZCrQ.zy40Q5Wmi7x-XMCA5X5xajJWbb3jWmydzxJYk0cnUZjNo6emAxYGr06k9fpLTrgk9WXD9MPgXONVKUgvMmzbk_gJLKzhMgwChtjZhOm634ULtXcbsOZBjjbBOVqMWn8Qt_Us3hhakL2DOgIE-4AuXpcQ5ys_y2Ix-ldJObY2yF_XgXYSLNwOI_y9vc2ASf6bj3LXHpRb5R5FbyVcIh6TEN2-st1BD6mviYMYoiP_W4ukXh08Bgup3py3JamiGKYOsbsdg1SD6mqcCGIXDEKXfd085VMKMBRwIvJo8e9xRWq62PGILaODknYKWThyWmpAZI2K3J18m8uqqceOnKx42g"
+const DOCUSIGN_ACCOUNT_ID="1b01896b-b609-4d8c-8d10-1900339b57f6"
+exports.signed_status = (req, res, next) => {
+    console.log("bruh")
+    fetch('https://demo.docusign.net/restapi/v2.1/accounts/'+DOCUSIGN_ACCOUNT_ID+'/envelopes/'+req.params.envelope_id+'/recipients', {
+        method: 'GET',
+        headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+DOCUSIGN_ACCESS_TOKEN
+    }
+    }).then(res => res.json()).then(async e => {
+        res.status(200).json(
+            {
+            recipient1: 
+                {
+                    name: e.signers[0].name,
+                    email:e.signers[0].email,
+                    status:e.signers[0].status
+                },
+            recipient2: 
+                {
+                    name: e.signers[1].name,
+                    email:e.signers[1].email,
+                    status:e.signers[1].status
+                }
+            })
     })
     .catch( e => {
     console.log("Error in sending contract", e)

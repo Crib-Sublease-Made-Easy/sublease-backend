@@ -10,5 +10,7 @@ router.delete("/:id", checkAuth, RequestController.request_delete);
 router.get("/myrequests", checkAuth, RequestController.request_retrievemyrequests);
 router.get("/myreceivedrequests", checkAuth, RequestController.request_retrievemyreceivedrequests);
 router.post("/requestesignature", checkAuth, RequestController.request_esignature);
+router.get("/contract/signedStatus/:envelope_id", checkAuth, RequestController.signed_status);
+
 
 module.exports = router; 
