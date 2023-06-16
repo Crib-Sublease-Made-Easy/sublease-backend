@@ -158,7 +158,7 @@ exports.request_esignature = (req, res, next) => {
         "rent": req.body.rent,
         "security_deposit": req.body.security_deposit,
         "request_id": req.body.request_id,
-        "fee_percentage": "5"
+        "fee_percentage": "5",
     })
     }).then(async e => {
         res.status(200).json(e)
