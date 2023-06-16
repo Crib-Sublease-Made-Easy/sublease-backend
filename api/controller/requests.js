@@ -3,6 +3,7 @@ const Property = require('../models/property');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose');
+const fetch = require('node-fetch');
 
 //************************* REQUESTS CONTROLLER ***************************//
 // @route POST /request
@@ -145,9 +146,9 @@ exports.request_esignature = (req, res, next) => {
         "fee_percentage": "5"
     })
     }).then(async e => {
-        res.status(200).json(r)
+        res.status(200).json(e)
     })
     .catch( e => {
-    console.log("Error in sending contract")
+    console.log("Error in sending contract", e)
     })
 };

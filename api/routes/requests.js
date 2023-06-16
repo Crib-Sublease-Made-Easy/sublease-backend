@@ -9,6 +9,6 @@ router.put("/accepted", checkAuth, RequestController.requests_accepted);
 router.delete("/:id", checkAuth, RequestController.request_delete);
 router.get("/myrequests", checkAuth, RequestController.request_retrievemyrequests);
 router.get("/myreceivedrequests", checkAuth, RequestController.request_retrievemyreceivedrequests);
-
+router.post("/requestesignature", checkAuth, RequestController.request_esignature);
 
 module.exports = router; 
