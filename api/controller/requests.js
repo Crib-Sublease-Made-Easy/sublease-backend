@@ -19,11 +19,11 @@ exports.requests_create = (req, res, next) => {
         numberOfOccupants: req.body.numberOfOccupants,
         about: req.body.about,
         createdAt: new Date(),
-        accepted: req.body.accepted,
-        timeAccepted: req.body.timeAccepted,
-        paid: req.body.paid,
-        tenantSignedContract: req.body.tenantSignedContract,
-        subtenantSignedContract: req.body.subtenantSignedContract
+        accepted: false,
+        timeAccepted: null,
+        paid: false,
+        tenantSignedContract: false,
+        subtenantSignedContract: false
   })
   //save the request object to the database
   request.save()
@@ -122,3 +122,5 @@ exports.request_retrievemyreceivedrequests = (req, res, next) => {
             })
             .catch( err => res.status(400).json({data: err}))
 };
+
+

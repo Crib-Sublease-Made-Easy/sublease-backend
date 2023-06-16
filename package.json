@@ -20,6 +20,7 @@
   "homepage": "https://github.com/VJHack/sublease-backend#readme",
   "dependencies": {
     "api": "^4.5.2",
+    "async": "^3.2.4",
     "authy": "^1.4.0",
     "axios": "^0.27.2",
     "bcrypt": "^5.1.0",
@@ -28,6 +29,7 @@
     "config": "^3.3.7",
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
+    "docusign-esign": "^5.8.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.1",
     "fetch": "^1.1.0",
@@ -38,6 +40,9 @@
     "multer-gridfs-storage": "^5.0.2",
     "node-cron": "^3.0.2",
     "node-fetch": "^2.6.9",
+    "passport-oauth2": "^1.7.0",
+    "request": "^2.88.2",
+    "superagent": "^8.0.9",
     "twilio": "^4.8.0",
     "validation": "^0.0.1"
   },
