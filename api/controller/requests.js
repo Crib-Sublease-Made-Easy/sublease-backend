@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose');
 const fetch = require('node-fetch');
 
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
+
 //************************* REQUESTS CONTROLLER ***************************//
 // @route POST /request
 // @description creates anew request object
@@ -212,3 +214,28 @@ exports.signed_status = (req, res, next) => {
     console.log("Error in sending contract", e)
     })
 };
+
+
+//route POST /requests/sendEmailNotification
+//description use email to send notificaiton 
+exports.send_email_notification = (req,res,next) => {
+    console.log("testing")
+    const sgMail = require('@sendgrid/mail')
+    sgMail.setApiKey(SENDGRID_API_KEY)
+    const msg = {
+    to: 'hlee777@wisc.edu', // Change to your recipient
+    from: 'cribappllc@gmail.com', // Change to your verified sender
+    subject: 'Sending with SendGrid is Fun',
+    text: 'and easy to do anywhere, even with Node.js',
+    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+    }
+    sgMail
+    .send(msg)
+    .then((r) => {
+        console.log('Email sent')
+        res.status(200).json({data:'email sent'})
+    })
+    .catch((error) => {
+        console.error(error)
+    })
+}
