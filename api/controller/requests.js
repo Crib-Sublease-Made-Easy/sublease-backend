@@ -359,9 +359,12 @@ exports.docusign_webhook = (req, res, next) => {
     Request.findOne({envelopeId: req.body.envelopeId}).then(r=>{
         if(r.tenantSignedContract == false){
             Request.updateOne({envelopeId: req.body.envelopeId}, {tenantSignedContract:true})
+
         } else{
             Request.updateOne({envelopeId: req.body.envelopeId}, {subtenantSignedContract:true})
         }
+        res.status(200).json({data:'Recipient Signing Status Updated'})
+
     }).catch((error) => {
         console.error(error)
     })
