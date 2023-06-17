@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { query } = require('express');
 const Property = require('../models/property');
 const User = require("../models/user");
+const Request = require('../models/request');
 const Payment = require('../models/payment');
 var differenceInDays = require('date-fns/differenceInDays')
 
@@ -548,10 +549,11 @@ exports.prem_FAQ = (req, res, next) => {
 // @access private
 
 exports.gen_link = async(req, res, next) => {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_KEY);
-    const userId = decoded.userId
-    
+    // const token = req.headers.authorization.split(" ")[1];
+    // const decoded = jwt.verify(token, process.env.JWT_KEY);
+    // const userId = decoded.userId
+    const userId = req.body.userId
+    console.log("GENERATING PAYMENT LINK")
     //Calculating Price: Security Deposit + ((Monthly Rent * Number of Months) * 0.05)
     //TO DO: Implement the rest
 
@@ -619,7 +621,10 @@ exports.gen_link = async(req, res, next) => {
                     }
                 })
                 pay.save().then(r =>{
-                    res.status(200).json({data: "Payment link successfully generated"})
+                    console.log(r)
+                    Request.findOneAndUpdate({_id:req.body.requestId}, {paymentId: r._id}).then( result => {
+                        res.status(200).json({data: "Payment link successfully generated"})
+                    })
                 })
             }
 

@@ -12,7 +12,7 @@ router.get("/premium/cribConnectToalSaving", PaymentsController.prem_crib_connec
 router.get("/premium/FAQ", PaymentsController.prem_FAQ)
 
 //NEW ITERATION
-router.post("/generate", checkAuth, PaymentsController.gen_link)
+router.post("/generate", PaymentsController.gen_link)
 
 
 

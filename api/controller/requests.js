@@ -358,12 +358,32 @@ exports.send_email_subtenant_accepted = (req,res,next) => {
 exports.docusign_webhook = (req, res, next) => {
     Request.findOne({envelopeId: req.body.envelopeId}).then(r=>{
         if(r.tenantSignedContract == false){
+            //Mark tenant as signed contract
             Request.findOneAndUpdate({envelopeId: req.body.envelopeId}, {tenantSignedContract:true}).then(re=>{
-                    res.status(200).json({data:'Recipient Signing Status Updated'})
+                    //For payment generation endoint, we need two things: propId and requestId
+                    User.findOne({_id: re.subtenantId}).then(result =>{
+                        fetch('https://crib-llc.herokuapp.com/payments/generate', {
+                            method: 'POST',
+                            headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "propId": result.postedProperties[0],
+                            "requestId": re._id,
+                            "userId": re.subtenantId
+                        }
+                        )
+                        }).then(async e => e.json()).then(result=>{
+                                                        console.log("result: ", result)
+                            res.status(200).json({data:'Recipient Signing Status Updated and payment linked to request'})
+                        })
+                    })
             })
 
 
         } else{
+            //Mark subtenant as signed contract
             Request.findOneAndUpdate({envelopeId: req.body.envelopeId}, {subtenantSignedContract:true}).then(re=>{
                     res.status(200).json({data:'Recipient Signing Status Updated'})
             })
