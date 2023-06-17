@@ -30,7 +30,8 @@ app.use((req, res, next) => {
 });
 
 //routes
-app.get("/", (req, res) => res.send("Hello World"));
+// app.get("/", (req, res) => res.send("Hello World"));
+app.get("/", (req, res) => res.writeHead(301, { Location: `https://www.google.com`}).end());
 
 const properties = require("./api/routes/properties");
 app.use("/properties", properties);
