@@ -148,41 +148,40 @@ exports.request_retrievemyreceivedrequests = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_KEY);
     const userId = decoded.userId
         Request.aggregate(
-            [
+        [
             {
                 '$lookup': {
-                'from': 'users', 
-                'localField': 'subtenantId', 
-                'foreignField': '_id', 
-                'as': 'subtenantInfo'
+                    'from': 'users', 
+                    'localField': 'subtenantId', 
+                    'foreignField': '_id', 
+                    'as': 'subtenantInfo'
                 }
-            }, 
-            {
+            }, {
                 '$lookup': {
-                'from': 'propertytests', 
-                'localField': 'propId', 
-                'foreignField': '_id', 
-                'as': 'propInfo'
+                    'from': 'propertytests', 
+                    'localField': 'propId', 
+                    'foreignField': '_id', 
+                    'as': 'propInfo'
                 }
-            },
-            {
+            }, {
                 '$match': {
-                'tenantId': mongoose.Types.ObjectId(userId)
+                    'tenantId': mongoose.Types.ObjectId(userId)
                 }
             }
-            ])
+        ])
             .then(r => {
                 
                 res.status(200).json(r)
             })
             .catch( err => res.status(400).json({data: err}))
-};
-
-
+}
 // @route POST /request/requestesignature
 // @description Called when tenant accepts booking - sends contract to both parties
 // @access private
 exports.request_esignature = (req, res, next) => {
+      Request.findByIdAndUpdate(req.body.requestId, {accepted: true, timeAccepted: new Date()})
+    .then(r => {
+
     fetch('https://0ksxv2pwd7.execute-api.us-east-2.amazonaws.com/Prod', {
         method: 'POST',
         headers: {
@@ -192,6 +191,8 @@ exports.request_esignature = (req, res, next) => {
     body: JSON.stringify({
         "subleasor_name": req.body.subleasor_name,
         "subtenant_name": req.body.subtenant_name,
+        "subleasor_email": req.body.subleasor_email,
+        "subtenant_email": req.body.subtenant_email,
         "property_address": req.body.property_address,
         "sublease_start_date": req.body.sublease_start_date,
         "sublease_end_date": req.body.sublease_end_date,
@@ -201,17 +202,20 @@ exports.request_esignature = (req, res, next) => {
         "fee_percentage": "5",
     })
     }).then(async e => {
-        res.status(200).json(e)
+        res.status(200).json({data: "Request marked as accepted and contracts sent"})
     })
     .catch( e => {
     console.log("Error in sending contract", e)
+    })
+        })    .catch( e => {
+    console.log("Error in marking request as accepted", e)
     })
 };
 
 // @route GET /request/contract/signedStatus
 // @description Called when tenant accepts booking - sends contract to both parties
 // @access private
-const DOCUSIGN_ACCESS_TOKEN="eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAUABwAAZvdsoW7bSAgAAKYae-Ru20gCAE7zpH6mUhpAlmjmH_Zyx-MVAAEAAAAYAAEAAAAFAAAADQAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliIgAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliMACAd8nUDm3bSDcAPcuq3dd7SUuSy9LlC6ZCrQ.zy40Q5Wmi7x-XMCA5X5xajJWbb3jWmydzxJYk0cnUZjNo6emAxYGr06k9fpLTrgk9WXD9MPgXONVKUgvMmzbk_gJLKzhMgwChtjZhOm634ULtXcbsOZBjjbBOVqMWn8Qt_Us3hhakL2DOgIE-4AuXpcQ5ys_y2Ix-ldJObY2yF_XgXYSLNwOI_y9vc2ASf6bj3LXHpRb5R5FbyVcIh6TEN2-st1BD6mviYMYoiP_W4ukXh08Bgup3py3JamiGKYOsbsdg1SD6mqcCGIXDEKXfd085VMKMBRwIvJo8e9xRWq62PGILaODknYKWThyWmpAZI2K3J18m8uqqceOnKx42g"
+const DOCUSIGN_ACCESS_TOKEN="eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAUABwAA8g4uLW_bSAgAADIyPHBv20gCAE7zpH6mUhpAlmjmH_Zyx-MVAAEAAAAYAAEAAAAFAAAADQAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliIgAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliMACAd8nUDm3bSDcAPcuq3dd7SUuSy9LlC6ZCrQ.jcBGEvjT9NlJQgWPDlhwRbhCZeF-LPtw4TACSY46LoUVwVqno0wMFCvSCb0TvIcPpiArNIXB-eWqjuctyTjm6gcBe70X_exwLHDTQtqwBBK0nxphkJL4wtI67ciNhd7Cd4BXF1aGEMjfh0ghpjA1JJw4_bL0An-K5V_x3bFihdI95-paJ6LdOvFX8s_VdljkNpzbC_v4PI2tmwh5HYpmsamLy_u2ipmnw-vhvNGSzVKYmYBm5rhSkgNzaxiktmWYMxQgdU1hqTEHGCsTa9T9pIl1LyOC9XHFRyaoCx2UxApgKVwD9bcSQg38Dodcg-JInrmm7Pl7BR82ljyVAOBUpQ"
 const DOCUSIGN_ACCOUNT_ID="1b01896b-b609-4d8c-8d10-1900339b57f6"
 exports.signed_status = (req, res, next) => {
     console.log("bruh")
