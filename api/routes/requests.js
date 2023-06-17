@@ -13,6 +13,11 @@ router.get("/myreceivedrequests", checkAuth, RequestController.request_retrievem
 router.post("/requestesignature", checkAuth, RequestController.request_esignature);
 router.get("/contract/signedStatus/:envelope_id", checkAuth, RequestController.signed_status);
 router.post("/sendEmailNotification", RequestController.send_email_notification)
+router.post("/sendEmailSubtenantRequested", RequestController.send_email_subtenant_requested);
+router.post("/sendEmailTenantAccepted", RequestController.send_email_tenant_accepted);
+router.post("/sendEmailSubtenantAccepted", RequestController.send_email_subtenant_accepted);
 router.post("/docusign_webook", RequestController.docusign_webhook)
+
+
 
 module.exports = router; 

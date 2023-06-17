@@ -4,8 +4,11 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose');
 const fetch = require('node-fetch');
+const sgMail = require('@sendgrid/mail')
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
+sgMail.setApiKey(SENDGRID_API_KEY)
+
 
 //************************* REQUESTS CONTROLLER ***************************//
 // @route POST /request
@@ -96,19 +99,45 @@ exports.request_retrievemyrequests = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_KEY);
     const userId = decoded.userId
-        Request.find({subtenantId: userId}). then(data => {
-            var propids = data.map(function(x) { return x.propId } );
-            console.log(propids)
-            Property.find({
-                '_id': { $in: propids}
-            })
-            .then(r => {
+        // Request.find({subtenantId: userId}). then(data => {
+        //     var propids = data.map(function(x) { return x.propId } );
+        //     console.log(propids)
+        //     Property.find({
+        //         '_id': { $in: propids}
+        //     })
+        //     .then(r => {
                 
-                res.status(200).json(r)
-            })
-            .catch( err => res.status(400).json({data: err}))
-        })
-        .catch( err => res.status(400).json({data: err}))
+        //         res.status(200).json(r)
+        //     })
+        //     .catch( err => res.status(400).json({data: err}))
+        // })
+        // .catch( err => res.status(400).json({data: err}))
+        Request.aggregate(
+            [
+            {
+                '$lookup': {
+                'from': 'users', 
+                'localField': 'tenantId', 
+                'foreignField': '_id', 
+                'as': 'tenantInfo'
+                }
+            }, 
+            {
+                '$lookup': {
+                'from': 'propertytests', 
+                'localField': 'propId', 
+                'foreignField': '_id', 
+                'as': 'propInfo'
+                }
+            },
+            {
+                '$match': {
+                'subtenantId': mongoose.Types.ObjectId(userId)
+                }
+            }
+        ])
+        .then( data => res.status(200).json(data))
+        .catch( e => res.status(400).json)
 };
 
 // @route get /request/myreceivedrequests
@@ -220,19 +249,96 @@ exports.signed_status = (req, res, next) => {
 };
 
 
-//route POST /requests/sendEmailNotification
+//route POST /requests/sendEmailSubtenantRequested
 //description use email to send notificaiton 
-exports.send_email_notification = (req,res,next) => {
-    console.log("testing")
-    const sgMail = require('@sendgrid/mail')
-    sgMail.setApiKey(SENDGRID_API_KEY)
-    const msg = {
-    to: 'hlee777@wisc.edu', // Change to your recipient
-    from: 'cribappllc@gmail.com', // Change to your verified sender
-    subject: 'Sending with SendGrid is Fun',
-    text: 'and easy to do anywhere, even with Node.js',
-    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+exports.send_email_subtenant_requested = (req,res,next) => {
+    if(req.body.tenantName == undefined || req.body.subtenantName == undefined || req.body.startDate == undefined || req.body.endDate == undefined || 
+    req.body.numberOfOccupants == undefined || req.body.bio == undefined || req.body.tenantEmail == undefined ){
+        res.status(404).json({data:"Incomplete information."})
     }
+    console.log("testing")
+    const msg = {
+    to: `${req.body.tenantEmail}`, // Change to your recipient
+    from: 'cribappllc@gmail.com', // Change to your verified sender
+    subject: `${req.body.subtenantName} is interested in your sublease`,
+    text: 'and easy to do anywhere, even with Node.js',
+    html: `<p>Hey ${req.body.tenantName},</p>
+    <p>Thank you for posting on Crib!</p>
+    <p>${req.body.subtenantName} just requested to book your sublease, following are the request details:</p> 
+    <p>Start date: <strong>${new Date(req.body.startDate).toLocaleDateString().split(",")[0]}</strong></p>
+    <p>End date: <strong>${new Date(req.body.endDate).toLocaleDateString().split(",")[0]}<</strong></p> 
+    <p>The number of occupants is <strong>${req.body.numberOfOccupants}</strong></p>
+    <p>${req.body.bio}</p>
+    <strong>To view request, visit crib-app.com.</strong>
+    <p><strong>Got a question?</strong> Contact us at (608)-515-8038.
+    <br/>
+    <p>Best,<br/>The Crib team</p>
+
+    `
+
+    }
+    sgMail
+    .send(msg)
+    .then((r) => {
+        console.log('Email sent')
+        res.status(200).json({data:'email sent'})
+    })
+    .catch((error) => {
+        console.error(error)
+    })
+}
+
+//route POST /requests/sendEmailTenantAccepted
+//description use email to send notificaiton 
+exports.send_email_tenant_accepted = (req,res,next) => {
+    if(req.body.tenantName == undefined || req.body.subtenantName == undefined || req.body.startDate == undefined || req.body.endDate == undefined || 
+    req.body.subtenantEmail == undefined ){
+        res.status(404).json({data:"Incomplete information."})
+    }
+    console.log("testing")
+    const msg = {
+    to: `${req.body.subtenantEmail}`, // Change to your recipient
+    from: 'cribappllc@gmail.com', // Change to your verified sender
+    subject: `${req.body.tenantName} accepted your sublease request`,
+    text: 'and easy to do anywhere, even with Node.js',
+    html: `<p>Hey ${req.body.subtenantName},</p>
+    <p>${req.body.tenantName} just accepted your sublease request and have signed the sublease contract. Please preview your sublease contract and pay the required fees and security deposit under "My requests" on crib-app.com.</p> 
+    <p>Once the contract is signed and payments are completed, you will be given tenant's contact information to discuss move-in procedure and rental payments. We look forward to finding you your next Crib!</p>
+    <p><strong>Got a question?</strong> Contact us at (608)-515-8038.
+    <br/>
+    <p>Best,<br/>The Crib team</p>
+    `}
+    sgMail
+    .send(msg)
+    .then((r) => {
+        console.log('Email sent')
+        res.status(200).json({data:'email sent'})
+    })
+    .catch((error) => {
+        console.error(error)
+    })
+}
+
+//route POST /requests/sendEmailSubenantAccepted
+//description use email to send notificaiton 
+exports.send_email_subtenant_accepted = (req,res,next) => {
+    if(req.body.tenantName == undefined || req.body.subtenantName == undefined || req.body.startDate == undefined || req.body.endDate == undefined || 
+    req.body.subtenantEmail == undefined || req.body.subtenantPhoneNumber == undefined || req.body.subtenantEmail == undefined || req.body.subtenantCountryCode == undefined) {
+        res.status(404).json({data:"Incomplete information."})
+    }
+    console.log("testing")
+    const msg = {
+    to: `${req.body.tenantEmail}`, // Change to your recipient
+    from: 'cribappllc@gmail.com', // Change to your verified sender
+    subject: `${req.body.subtenantName} signed the sublease contract`,
+    text: 'and easy to do anywhere, even with Node.js',
+    html: `<p>Hey ${req.body.tenantName},</p>
+    <p>${req.body.subtenantName} just signed the sublease contract and paid security deposit. ${req.body.subtenantName}'s phone number and email are +${req.body.subtenantCountryCode}${req.body.subtenantPhoneNumber} and ${req.body.subtenantEmail}. Please tell ${req.body.subtenantName} more about the move-in procedure and how rent would be paid over the sublease period.</p> 
+    <p>Security deposit will be transferred to you once both parties confirmed a successful move-in on the sublease start date.</p>
+    <p><strong>Got a question?</strong> Contact us at (608)-515-8038.
+    <br/>
+    <p>Best,<br/>The Crib team</p>
+    `}
     sgMail
     .send(msg)
     .then((r) => {
