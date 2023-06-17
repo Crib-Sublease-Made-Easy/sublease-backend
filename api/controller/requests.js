@@ -243,3 +243,20 @@ exports.send_email_notification = (req,res,next) => {
         console.error(error)
     })
 }
+
+
+// @route POST /request/docusign_webhook
+// @description Called when tenant accepts booking - sends contract to both parties
+// @access public
+
+exports.docusign_webhook = (req, res, next) => {
+    Request.findOne({envelopeId: req.body.envelopeId}).then(r=>{
+        if(r.tenantSignedContract == false){
+            Request.updateOne({envelopeId: req.body.envelopeId}, {tenantSignedContract:true})
+        } else{
+            Request.updateOne({envelopeId: req.body.envelopeId}, {subtenantSignedContract:true})
+        }
+    }).catch((error) => {
+        console.error(error)
+    })
+}
