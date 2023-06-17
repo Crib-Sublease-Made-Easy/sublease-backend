@@ -358,12 +358,16 @@ exports.send_email_subtenant_accepted = (req,res,next) => {
 exports.docusign_webhook = (req, res, next) => {
     Request.findOne({envelopeId: req.body.envelopeId}).then(r=>{
         if(r.tenantSignedContract == false){
-            Request.updateOne({envelopeId: req.body.envelopeId}, {tenantSignedContract:true})
+            Request.findOneAndUpdate({envelopeId: req.body.envelopeId}, {tenantSignedContract:true}).then(re=>{
+                    res.status(200).json({data:'Recipient Signing Status Updated'})
+            })
+
 
         } else{
-            Request.updateOne({envelopeId: req.body.envelopeId}, {subtenantSignedContract:true})
+            Request.findOneAndUpdate({envelopeId: req.body.envelopeId}, {subtenantSignedContract:true}).then(re=>{
+                    res.status(200).json({data:'Recipient Signing Status Updated'})
+            })
         }
-        res.status(200).json({data:'Recipient Signing Status Updated'})
 
     }).catch((error) => {
         console.error(error)
