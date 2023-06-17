@@ -110,7 +110,16 @@ exports.request_retrievemyreceivedrequests = (req, res, next) => {
                 'foreignField': '_id', 
                 'as': 'subtenantInfo'
                 }
-            }, {
+            }, 
+            {
+                '$lookup': {
+                'from': 'propertytests', 
+                'localField': 'propId', 
+                'foreignField': '_id', 
+                'as': 'propInfo'
+                }
+            },
+            {
                 '$match': {
                 'tenantId': mongoose.Types.ObjectId(userId)
                 }
@@ -142,7 +151,7 @@ exports.request_esignature = (req, res, next) => {
         "sublease_end_date": req.body.sublease_end_date,
         "rent": req.body.rent,
         "security_deposit": req.body.security_deposit,
-        "fee_percentage": "5"
+        "fee_percentage": "5",
     })
     }).then(async e => {
         res.status(200).json(r)
