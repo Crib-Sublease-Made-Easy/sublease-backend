@@ -2,10 +2,16 @@
 const express = require("express");
 const connectDB = require("./config");
 const app = express();
+var bodyParser = require('body-parser');
+
 
 // connect database
 connectDB();
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(express.json());
+
+
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -62,9 +68,12 @@ app.use('/subtenants', subtenants);
 const requests = require('./api/routes/requests');
 app.use('/requests', requests);
 
-
+const id_image = require('./api/routes/id_image');
+app.use('/id_image', id_image);
 // const chat = require('./api/routes/chat')
 // app.use('/chat', chat);
+
+
 
 const port = process.env.PORT || 8082;
 

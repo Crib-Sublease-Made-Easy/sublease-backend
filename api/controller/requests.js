@@ -119,41 +119,40 @@ exports.request_retrievemyreceivedrequests = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_KEY);
     const userId = decoded.userId
         Request.aggregate(
-            [
+        [
             {
                 '$lookup': {
-                'from': 'users', 
-                'localField': 'subtenantId', 
-                'foreignField': '_id', 
-                'as': 'subtenantInfo'
+                    'from': 'users', 
+                    'localField': 'subtenantId', 
+                    'foreignField': '_id', 
+                    'as': 'subtenantInfo'
                 }
-            }, 
-            {
+            }, {
                 '$lookup': {
-                'from': 'propertytests', 
-                'localField': 'propId', 
-                'foreignField': '_id', 
-                'as': 'propInfo'
+                    'from': 'propertytests', 
+                    'localField': 'propId', 
+                    'foreignField': '_id', 
+                    'as': 'propInfo'
                 }
-            },
-            {
+            }, {
                 '$match': {
-                'tenantId': mongoose.Types.ObjectId(userId)
+                    'tenantId': userId
                 }
             }
-            ])
+        ])
             .then(r => {
                 
                 res.status(200).json(r)
             })
             .catch( err => res.status(400).json({data: err}))
-};
-
-
+}
 // @route POST /request/requestesignature
 // @description Called when tenant accepts booking - sends contract to both parties
 // @access private
 exports.request_esignature = (req, res, next) => {
+      Request.findByIdAndUpdate(req.body.requestId, {accepted: true})
+    .then(r => {
+
     fetch('https://0ksxv2pwd7.execute-api.us-east-2.amazonaws.com/Prod', {
         method: 'POST',
         headers: {
@@ -172,10 +171,13 @@ exports.request_esignature = (req, res, next) => {
         "fee_percentage": "5",
     })
     }).then(async e => {
-        res.status(200).json(e)
+        res.status(200).json({data: "Request marked as accepted and contracts sent"})
     })
     .catch( e => {
     console.log("Error in sending contract", e)
+    })
+        })    .catch( e => {
+    console.log("Error in marking request as accepted", e)
     })
 };
 
