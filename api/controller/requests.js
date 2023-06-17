@@ -162,6 +162,8 @@ exports.request_esignature = (req, res, next) => {
     body: JSON.stringify({
         "subleasor_name": req.body.subleasor_name,
         "subtenant_name": req.body.subtenant_name,
+        "subleasor_email": req.body.subleasor_email,
+        "subtenant_email": req.body.subtenant_email,
         "property_address": req.body.property_address,
         "sublease_start_date": req.body.sublease_start_date,
         "sublease_end_date": req.body.sublease_end_date,
