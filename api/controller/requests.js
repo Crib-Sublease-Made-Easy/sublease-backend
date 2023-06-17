@@ -136,7 +136,7 @@ exports.request_retrievemyreceivedrequests = (req, res, next) => {
                 }
             }, {
                 '$match': {
-                    'tenantId': userId
+                    'tenantId': mongoose.Types.ObjectId(userId)
                 }
             }
         ])
