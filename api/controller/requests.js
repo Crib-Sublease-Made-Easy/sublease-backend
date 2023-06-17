@@ -22,7 +22,7 @@ exports.requests_create = (req, res, next) => {
         numberOfOccupants: req.body.numberOfOccupants,
         about: req.body.about,
         createdAt: new Date(),
-        accepted: true,
+        accepted: false,
         timeAccepted: null,
         paid: false,
         tenantSignedContract: false,
