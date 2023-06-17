@@ -608,7 +608,6 @@ exports.gen_link = async(req, res, next) => {
       }).then(resp => resp.json())
       .then(square_res => {
           console.log("THE SQUARE RESPONSE", square_res)
-        const userId = decoded.userId;
             if(square_res.payment_link != undefined){
                 const pay = new Payment({
                     paymentLink: square_res.payment_link,
@@ -622,6 +621,7 @@ exports.gen_link = async(req, res, next) => {
                 })
                 pay.save().then(r =>{
                     console.log(r)
+                    console.log("bruhhhh")
                     Request.findOneAndUpdate({_id:req.body.requestId}, {paymentId: r._id}).then( result => {
                         res.status(200).json({data: "Payment link successfully generated"})
                     })

@@ -362,6 +362,11 @@ exports.docusign_webhook = (req, res, next) => {
             Request.findOneAndUpdate({envelopeId: req.body.envelopeId}, {tenantSignedContract:true}).then(re=>{
                     //For payment generation endoint, we need two things: propId and requestId
                     User.findOne({_id: re.subtenantId}).then(result =>{
+                        console.log({
+                            "propId": result.postedProperties[0],
+                            "requestId": re._id,
+                            "userId": re.subtenantId
+                        })
                         fetch('https://crib-llc.herokuapp.com/payments/generate', {
                             method: 'POST',
                             headers: {
