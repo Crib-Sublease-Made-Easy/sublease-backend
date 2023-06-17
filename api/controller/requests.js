@@ -166,10 +166,7 @@ exports.request_esignature = (req, res, next) => {
         "sublease_end_date": req.body.sublease_end_date,
         "rent": req.body.rent,
         "security_deposit": req.body.security_deposit,
-<<<<<<< HEAD
-=======
         "request_id": req.body.request_id,
->>>>>>> 8edcc74bb06841e30b53cc22ac61fbad44dcef9f
         "fee_percentage": "5",
     })
     }).then(async e => {
