@@ -565,11 +565,11 @@ exports.gen_link = async(req, res, next) => {
             res.status(400).json({ error: "Unable to get payment link" })
         }
         price += data.securityDeposit;
-        price += ((data.price) * (differenceInDays( req.body.startDate, req.body.endDate)/30.437)) * 0.05
+        price += ((data.price) * (differenceInDays( new Date(req.body.startDate), new Date(req.body.endDate))/30.437)) * 0.05
         console.log(price)
 
         securityDeposit = data.securityDeposit;
-        fee = ((data.price) * (differenceInDays( req.body.startDate, req.body.endDate)/30.437)) * 0.05
+        fee = ((data.price) * (differenceInDays( new Date(req.body.startDate), new Date(req.body.endDate))/30.437)) * 0.05
 
 
          await fetch("https://connect.squareup.com/v2/online-checkout/payment-links", {
