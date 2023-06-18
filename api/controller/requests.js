@@ -422,6 +422,7 @@ exports.get_payment_link = (req, res, next) => {
 // @description gets the payment link attatched to this request
 // @access public
 exports.get_one_request = (req, res, next) => {
+    console.log(req.params)
     // Request.findOne({_id: mongoose.Types.ObjectId(req.params.id)})
     // .then(r=>{
     //     res.status(200).json(r)
