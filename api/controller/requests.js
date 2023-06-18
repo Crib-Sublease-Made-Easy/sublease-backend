@@ -181,7 +181,7 @@ exports.request_retrievemyreceivedrequests = (req, res, next) => {
 // @description Called when tenant accepts booking - sends contract to both parties
 // @access private
 exports.request_esignature = (req, res, next) => {
-      Request.findByIdAndUpdate(req.body.requestId, {accepted: true, timeAccepted: new Date()})
+      Request.findByIdAndUpdate(req.body.request_id, {accepted: true, timeAccepted: new Date()})
     .then(r => {
 
     fetch('https://0ksxv2pwd7.execute-api.us-east-2.amazonaws.com/Prod', {
