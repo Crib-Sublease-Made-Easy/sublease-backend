@@ -570,7 +570,8 @@ exports.gen_link = async(req, res, next) => {
 
         securityDeposit = data.securityDeposit;
         fee = ((data.price) * (differenceInDays( new Date(req.body.startDate), new Date(req.body.endDate))/30.437)) * 0.05
-
+        console.log("SEC DEP", Number(Math.floor(securityDeposit)) * 100)
+        console.log("FEE", Number(Math.floor(fee)) * 100)
 
          await fetch("https://connect.squareup.com/v2/online-checkout/payment-links", {
         method: "POST",
