@@ -425,3 +425,16 @@ exports.get_one_request = (req, res, next) => {
     })
     .catch( e => res.status(404).json({data:'error'}))
 }
+
+
+// @route POST /request/payment_amount/:id
+// @description gets the payment link attatched to this request
+// @access public
+
+exports.get_payment_amount = (req, res, next) => {
+    Request.findOne({_id:req.params.id}).then(r=>{
+        Payment.findOne({_id:r.paymentId}).then(result=>{
+            res.status(200).json({amount:result.amount})
+        })
+    })
+}

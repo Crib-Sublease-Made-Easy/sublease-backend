@@ -18,6 +18,7 @@ router.post("/sendEmailSubtenantAccepted", RequestController.send_email_subtenan
 router.post("/docusign_webook", RequestController.docusign_webhook)
 router.get("/payment_link/:id", checkAuth, RequestController.get_payment_link)
 router.get("/getOne/:id", checkAuth, RequestController.get_one_request)
+router.get("/payment_amount/:id", checkAuth, RequestController.get_payment_amount)
 
 
 module.exports = router; 
