@@ -398,3 +398,16 @@ exports.docusign_webhook = (req, res, next) => {
         console.error(error)
     })
 }
+
+
+// @route POST /request/payment_link/:id
+// @description gets the payment link attatched to this request
+// @access public
+
+exports.get_payment_link = (req, res, next) => {
+    Request.findOne({_id:req.params.id}).then(r=>{
+        Payment.findOne({_id:r.paymentId}).then(result=>{
+            res.status(200).json({link:result.paymentLink.url})
+        })
+    })
+}
