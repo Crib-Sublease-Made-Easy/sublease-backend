@@ -53,7 +53,7 @@ const RequestSchema = new mongoose.Schema (
         },
         paymentId: {
             type: mongoose.Types.ObjectId,
-            required: true
+            required: false
         },
         tenantSignedContract: {
             type: Boolean,
