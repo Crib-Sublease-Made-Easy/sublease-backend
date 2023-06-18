@@ -419,9 +419,44 @@ exports.get_payment_link = (req, res, next) => {
 // @description gets the payment link attatched to this request
 // @access public
 exports.get_one_request = (req, res, next) => {
-    Request.findOne({_id: mongoose.Types.ObjectId(req.params.id)})
-    .then(r=>{
-        res.status(200).json(r)
-    })
-    .catch( e => res.status(404).json({data:'error'}))
+    // Request.findOne({_id: mongoose.Types.ObjectId(req.params.id)})
+    // .then(r=>{
+    //     res.status(200).json(r)
+    // })
+    // .catch( e => res.status(404).json({data:'error'}))
+
+    Request.aggregate(
+        [
+        {
+            '$lookup': {
+            'from': 'users', 
+            'localField': 'tenantId', 
+            'foreignField': '_id', 
+            'as': 'tenantInfo'
+            }
+        }, 
+        {
+            '$lookup': {
+            'from': 'propertytests', 
+            'localField': 'propId', 
+            'foreignField': '_id', 
+            'as': 'propInfo'
+            }
+        },
+        {
+            '$lookup': {
+            'from': 'users', 
+            'localField': 'subtenantId', 
+            'foreignField': '_id', 
+            'as': 'subtenantInfo'
+            }
+        },
+        {
+            '$match': {
+            '_id': mongoose.Types.ObjectId(req.params.id)
+            }
+        }
+    ])
+    .then( data => res.status(200).json(data))
+    .catch( e => res.status(400).json)
 }
