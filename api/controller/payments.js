@@ -565,11 +565,11 @@ exports.gen_link = async(req, res, next) => {
             res.status(400).json({ error: "Unable to get payment link" })
         }
         price += data.securityDeposit;
-        price += ((data.price) * (differenceInDays( new Date(req.body.startDate), new Date(req.body.endDate))/30.437)) * 0.05
+        price += Math.abs(((data.price) * (differenceInDays( new Date(req.body.startDate), new Date(req.body.endDate))/30.437)) * 0.05)
         console.log(price)
 
         securityDeposit = data.securityDeposit;
-        fee = ((data.price) * (differenceInDays( new Date(req.body.startDate), new Date(req.body.endDate))/30.437)) * 0.05
+        fee = Math.abs(((data.price) * (differenceInDays( new Date(req.body.startDate), new Date(req.body.endDate))/30.437)) * 0.05)
         console.log("SEC DEP", Number(Math.floor(securityDeposit)) * 100)
         console.log("FEE", Number(Math.floor(fee)) * 100)
 
