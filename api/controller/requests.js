@@ -69,7 +69,7 @@ exports.requests_accepted = (req, res, next) => {
 // @description Delete request - used when tenant declines the request for booking
 // @access private
 exports.request_delete = (req, res, next) => {
-  Request.findOneAndDelete(req.params.id)
+  Request.findOneAndDelete({"_id" : mongoose.Types.ObjectId(req.params.id)})
     .then(r => {
          User.updateMany({}, { $pull: {requestsSent:{requestId: r._id}}})
         .then(users => {
