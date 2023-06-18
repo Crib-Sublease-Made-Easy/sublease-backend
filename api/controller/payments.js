@@ -561,9 +561,9 @@ exports.gen_link = async(req, res, next) => {
     let fee = 0
     let securityDeposit = 0
     Property.findById(req.body.propId).then(async data=>{
-        if(userId != data.postedBy){
-            res.status(400).json({ error: "Unable to get payment link" })
-        }
+        // if(userId != data.postedBy){
+        //     res.status(400).json({ error: "Unable to get payment link" })
+        // }
         price += data.securityDeposit;
         price += Math.abs(((data.price) * (differenceInDays( new Date(req.body.startDate), new Date(req.body.endDate))/30.437)) * 0.05)
         console.log(price)
