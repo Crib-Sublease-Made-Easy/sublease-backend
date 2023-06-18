@@ -218,7 +218,7 @@ exports.request_esignature = (req, res, next) => {
 // @route GET /request/contract/signedStatus
 // @description Called when tenant accepts booking - sends contract to both parties
 // @access private
-const DOCUSIGN_ACCESS_TOKEN="eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAUABwAAx0uctm_bSAgAAAdvqvlv20gCAE7zpH6mUhpAlmjmH_Zyx-MVAAEAAAAYAAEAAAAFAAAADQAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliIgAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliMACAd8nUDm3bSDcAPcuq3dd7SUuSy9LlC6ZCrQ.lXSBv7koa72QOdmItOtXEwYFOWaev0ybEIZZpCr0lvTamRtdlxo00DVvDQCobio77t5n59qjIaKsiAi2JSs5thh_FfwzndHaoVAc9m2j-QZNL06M69kwsC4HL8RIaGL7CB4CConajKIo3A6w9ajpXIKXFbgWCLeZqSTA2FwFoCtYmTSXgDpgsNQDw-H8uVUX1nlI4LiO0xYsnf6AjazGX9QEGAK3RzlB6TWy5quiNh6b_NYomSZwyKPe7zi1BLdyhMLgBG2yx1OTabA7kE8s_OdVMNftbzWxutzknK19rWVE3p-QlAfblnkwOM0NZrBBEyOLfi-MgqA93Uw3h9A_9w"
+const DOCUSIGN_ACCESS_TOKEN="eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAUABwAAi_QOJ3DbSAgAAMsXHWpw20gCAE7zpH6mUhpAlmjmH_Zyx-MVAAEAAAAYAAEAAAAFAAAADQAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliIgAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliMACAd8nUDm3bSDcAPcuq3dd7SUuSy9LlC6ZCrQ.xxDdaxXIbhDJW6eyLMGk1KTq9sQJWFo6LNB_-kVKm5q4t1yfNFDyhCRlrjPlLBkQCNlKhae1-HsbHKonLX5EcO4eSx-bBwkWiFCR4BeDD-qrOLXfoGwHlhAYjv5lBgGQKfIQucPE1VlZ_2mQZH4CVtyRKJrhJl8rCSTjuWCsrTm_ZFQ0vyyeIiUeGY-nh4uq92hi7rz2doIbx5JX5UTTE_8o4pou2NToRRKXT5YvjHTv7wXMg4uoTmlkiX5tLLIdRFeyG4X1XvNuWLk897iUF4FN14Ahp1oMs9BtPE3GHzSi8S49HqDpqjRn8_uUwGb4_zjBrHs3eHINAEf--WGYeQ"
 const DOCUSIGN_ACCOUNT_ID="1b01896b-b609-4d8c-8d10-1900339b57f6"
 exports.signed_status = (req, res, next) => {
     console.log("bruh")
@@ -272,7 +272,7 @@ exports.send_email_subtenant_requested = (req,res,next) => {
     <p>End date: <strong>${new Date(req.body.endDate).toLocaleDateString().split(",")[0]}<</strong></p> 
     <p>The number of occupants is <strong>${req.body.numberOfOccupants}</strong></p>
     <p>${req.body.bio}</p>
-    <strong>To view request, visit crib-app.com.</strong>
+    <strong>To view request, visit www.crib-app.com.</strong>
     <p><strong>Got a question?</strong> Contact us at (608)-515-8038.
     <br/>
     <p>Best,<br/>The Crib team</p>
@@ -305,7 +305,7 @@ exports.send_email_tenant_accepted = (req,res,next) => {
     subject: `${req.body.tenantName} accepted your sublease request`,
     text: 'and easy to do anywhere, even with Node.js',
     html: `<p>Hey ${req.body.subtenantName},</p>
-    <p>${req.body.tenantName} just accepted your sublease request and have signed the sublease contract. Please preview your sublease contract and pay the required fees and security deposit under "My requests" on crib-app.com.</p> 
+    <p>${req.body.tenantName} just accepted your sublease request and have signed the sublease contract. Please preview your sublease contract and pay the required fees and security deposit under "My requests" on www.crib-app.com.</p> 
     <p>Once the contract is signed and payments are completed, you will be given tenant's contact information to discuss move-in procedure and rental payments. We look forward to finding you your next Crib!</p>
     <p><strong>Got a question?</strong> Contact us at (608)-515-8038.
     <br/>
