@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { query } = require('express');
 const Property = require('../models/property');
 const User = require("../models/user");
+const Request = require('../models/request');
 const Payment = require('../models/payment');
 var differenceInDays = require('date-fns/differenceInDays')
 
@@ -548,10 +549,11 @@ exports.prem_FAQ = (req, res, next) => {
 // @access private
 
 exports.gen_link = async(req, res, next) => {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_KEY);
-    const userId = decoded.userId
-    
+    // const token = req.headers.authorization.split(" ")[1];
+    // const decoded = jwt.verify(token, process.env.JWT_KEY);
+    // const userId = decoded.userId
+    const userId = req.body.userId
+    console.log("GENERATING PAYMENT LINK")
     //Calculating Price: Security Deposit + ((Monthly Rent * Number of Months) * 0.05)
     //TO DO: Implement the rest
 
@@ -577,7 +579,9 @@ exports.gen_link = async(req, res, next) => {
             'Square-Version': '2023-03-15',
             'Authorization': 'Bearer ' + sq_access_token
         }, 
-        body: JSON.stringify({
+        body: JSON.stringify({    "checkout_options": {
+                        "redirect_url": "https://crib-llc.herokuapp.com/payments/redirect_url&id="+userId
+                        },
                                      "description": "Sublease with real people, let's save rent together! \n Sublease booking for " + (new Date(data.availableFrom).toDateString()) + " to " + (new Date(data.availableTo).toDateString()) + " at " + data.loc.streetAddr + + " " + data.loc.secondaryTxt,
              "order": {
 
@@ -606,7 +610,6 @@ exports.gen_link = async(req, res, next) => {
       }).then(resp => resp.json())
       .then(square_res => {
           console.log("THE SQUARE RESPONSE", square_res)
-        const userId = decoded.userId;
             if(square_res.payment_link != undefined){
                 const pay = new Payment({
                     paymentLink: square_res.payment_link,
@@ -619,7 +622,11 @@ exports.gen_link = async(req, res, next) => {
                     }
                 })
                 pay.save().then(r =>{
-                    res.status(200).json({data: "Payment link successfully generated"})
+                    console.log(r)
+                    console.log("bruhhhh")
+                    Request.findOneAndUpdate({_id:req.body.requestId}, {paymentId: r._id}).then( result => {
+                        res.status(200).json({data: "Payment link successfully generated"})
+                    })
                 })
             }
 
@@ -642,3 +649,17 @@ function monthDiff(d1, d2) {
     months += d2.getMonth();
     return months <= 0 ? 0 : months;
 }
+
+// @route GET /payments/redirect_url/:id
+// @description mark the request as paid and redirect them to 
+// @access public
+exports.redirect_url = (req, res, next) => {
+
+    // console.log("RUNNING")
+
+    Request.findOneAndUpdate({subtenantId: req.query.id}, {paid: true}).then( result => {
+        res.writeHead(301, { Location: `https://www.crib-app.com/`}).end()
+    }).catch(e=>res.status(404))  
+
+}
+                    

@@ -46,8 +46,10 @@ exports.requests_create = (req, res, next) => {
             res.status(200).json({data: "Request created", _id: r._id.toString()})
         }    
     
-    )
-    .catch(err => res.status(404).json({ error: err }));
+)
+    .catch(err => {
+        console.log(err)
+        res.status(404).json({ error: err })});
 
 };
 
@@ -179,7 +181,8 @@ exports.request_retrievemyreceivedrequests = (req, res, next) => {
 // @description Called when tenant accepts booking - sends contract to both parties
 // @access private
 exports.request_esignature = (req, res, next) => {
-      Request.findByIdAndUpdate(req.body.requestId, {accepted: true, timeAccepted: new Date()})
+    console.log("BODYYY", req.body)
+      Request.findByIdAndUpdate(req.body.request_id, {accepted: true, timeAccepted: new Date()})
     .then(r => {
 
     fetch('https://0ksxv2pwd7.execute-api.us-east-2.amazonaws.com/Prod', {
@@ -215,7 +218,7 @@ exports.request_esignature = (req, res, next) => {
 // @route GET /request/contract/signedStatus
 // @description Called when tenant accepts booking - sends contract to both parties
 // @access private
-const DOCUSIGN_ACCESS_TOKEN="eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAUABwAA8g4uLW_bSAgAADIyPHBv20gCAE7zpH6mUhpAlmjmH_Zyx-MVAAEAAAAYAAEAAAAFAAAADQAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliIgAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliMACAd8nUDm3bSDcAPcuq3dd7SUuSy9LlC6ZCrQ.jcBGEvjT9NlJQgWPDlhwRbhCZeF-LPtw4TACSY46LoUVwVqno0wMFCvSCb0TvIcPpiArNIXB-eWqjuctyTjm6gcBe70X_exwLHDTQtqwBBK0nxphkJL4wtI67ciNhd7Cd4BXF1aGEMjfh0ghpjA1JJw4_bL0An-K5V_x3bFihdI95-paJ6LdOvFX8s_VdljkNpzbC_v4PI2tmwh5HYpmsamLy_u2ipmnw-vhvNGSzVKYmYBm5rhSkgNzaxiktmWYMxQgdU1hqTEHGCsTa9T9pIl1LyOC9XHFRyaoCx2UxApgKVwD9bcSQg38Dodcg-JInrmm7Pl7BR82ljyVAOBUpQ"
+const DOCUSIGN_ACCESS_TOKEN="eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAUABwAAx0uctm_bSAgAAAdvqvlv20gCAE7zpH6mUhpAlmjmH_Zyx-MVAAEAAAAYAAEAAAAFAAAADQAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliIgAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliMACAd8nUDm3bSDcAPcuq3dd7SUuSy9LlC6ZCrQ.lXSBv7koa72QOdmItOtXEwYFOWaev0ybEIZZpCr0lvTamRtdlxo00DVvDQCobio77t5n59qjIaKsiAi2JSs5thh_FfwzndHaoVAc9m2j-QZNL06M69kwsC4HL8RIaGL7CB4CConajKIo3A6w9ajpXIKXFbgWCLeZqSTA2FwFoCtYmTSXgDpgsNQDw-H8uVUX1nlI4LiO0xYsnf6AjazGX9QEGAK3RzlB6TWy5quiNh6b_NYomSZwyKPe7zi1BLdyhMLgBG2yx1OTabA7kE8s_OdVMNftbzWxutzknK19rWVE3p-QlAfblnkwOM0NZrBBEyOLfi-MgqA93Uw3h9A_9w"
 const DOCUSIGN_ACCOUNT_ID="1b01896b-b609-4d8c-8d10-1900339b57f6"
 exports.signed_status = (req, res, next) => {
     console.log("bruh")
@@ -347,5 +350,67 @@ exports.send_email_subtenant_accepted = (req,res,next) => {
     })
     .catch((error) => {
         console.error(error)
+    })
+}
+
+
+// @route POST /request/docusign_webhook
+// @description Called when tenant accepts booking - sends contract to both parties
+// @access public
+
+exports.docusign_webhook = (req, res, next) => {
+    Request.findOne({envelopeId: req.body.envelopeId}).then(r=>{
+        if(r.tenantSignedContract == false){
+            //Mark tenant as signed contract
+            Request.findOneAndUpdate({envelopeId: req.body.envelopeId}, {tenantSignedContract:true}).then(re=>{
+                    //For payment generation endoint, we need two things: propId and requestId
+                    User.findOne({_id: re.subtenantId}).then(result =>{
+                        console.log({
+                            "propId": result.postedProperties[0],
+                            "requestId": re._id,
+                            "userId": re.subtenantId
+                        })
+                        fetch('https://crib-llc.herokuapp.com/payments/generate', {
+                            method: 'POST',
+                            headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "propId": result.postedProperties[0],
+                            "requestId": re._id,
+                            "userId": re.subtenantId
+                        }
+                        )
+                        }).then(async e => e.json()).then(result=>{
+                                                        console.log("result: ", result)
+                            res.status(200).json({data:'Recipient Signing Status Updated and payment linked to request'})
+                        })
+                    })
+            })
+
+
+        } else{
+            //Mark subtenant as signed contract
+            Request.findOneAndUpdate({envelopeId: req.body.envelopeId}, {subtenantSignedContract:true}).then(re=>{
+                    res.status(200).json({data:'Recipient Signing Status Updated'})
+            })
+        }
+
+    }).catch((error) => {
+        console.error(error)
+    })
+}
+
+
+// @route POST /request/payment_link/:id
+// @description gets the payment link attatched to this request
+// @access public
+
+exports.get_payment_link = (req, res, next) => {
+    Request.findOne({_id:req.params.id}).then(r=>{
+        Payment.findOne({_id:r.paymentId}).then(result=>{
+            res.status(200).json({link:result.paymentLink.url})
+        })
     })
 }
