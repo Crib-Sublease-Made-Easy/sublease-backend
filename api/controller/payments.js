@@ -626,8 +626,10 @@ exports.gen_link = async(req, res, next) => {
                     console.log(r)
                     console.log("bruhhhh")
                     Request.findOneAndUpdate({_id:req.body.requestId}, {paymentId: r._id}).then( result => {
+                        console.log("HEHHHHHH")
                         res.status(200).json({data: "Payment link successfully generated"})
-                    })
+                    })      .catch(err => res.status(400).json({ error: 'update request id catch', errRaw: err }));
+
                 })
             }
 

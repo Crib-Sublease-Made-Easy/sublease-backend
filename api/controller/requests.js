@@ -230,6 +230,7 @@ exports.signed_status = (req, res, next) => {
         'Authorization': 'Bearer '+DOCUSIGN_ACCESS_TOKEN
     }
     }).then(res => res.json()).then(async e => {
+        console.log("RUNNING")
         res.status(200).json(
             {
             recipient1: 
