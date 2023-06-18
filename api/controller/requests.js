@@ -32,7 +32,7 @@ exports.requests_create = (req, res, next) => {
         subtenantSignedContract: false
   })
   //save the request object to the database
-  request.save()
+    request.save()
     .then(r =>  
         {
             //add the request object to the 
@@ -69,7 +69,7 @@ exports.requests_accepted = (req, res, next) => {
 // @description Delete request - used when tenant declines the request for booking
 // @access private
 exports.request_delete = (req, res, next) => {
-  Request.findOneAndDelete(req.params.id)
+  Request.findOneAndDelete({"_id" : mongoose.Types.ObjectId(req.params.id)})
     .then(r => {
          User.updateMany({}, { $pull: {requestsSent:{requestId: r._id}}})
         .then(users => {
@@ -413,4 +413,15 @@ exports.get_payment_link = (req, res, next) => {
             res.status(200).json({link:result.paymentLink.url})
         })
     })
+}
+
+// @route GET /requests/getOne/:id
+// @description gets the payment link attatched to this request
+// @access public
+exports.get_one_request = (req, res, next) => {
+    Request.findOne({_id: mongoose.Types.ObjectId(req.params.id)})
+    .then(r=>{
+        res.status(200).json(r)
+    })
+    .catch( e => res.status(404).json({data:'error'}))
 }
