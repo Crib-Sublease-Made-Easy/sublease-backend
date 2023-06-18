@@ -32,7 +32,7 @@ exports.requests_create = (req, res, next) => {
         subtenantSignedContract: false
   })
   //save the request object to the database
-  request.save()
+    request.save()
     .then(r =>  
         {
             //add the request object to the 
@@ -46,7 +46,7 @@ exports.requests_create = (req, res, next) => {
             res.status(200).json({data: "Request created", _id: r._id.toString()})
         }    
     
-)
+    )
     .catch(err => res.status(404).json({ error: err }));
 
 };
