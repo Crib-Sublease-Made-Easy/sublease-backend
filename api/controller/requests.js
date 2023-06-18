@@ -181,6 +181,7 @@ exports.request_retrievemyreceivedrequests = (req, res, next) => {
 // @description Called when tenant accepts booking - sends contract to both parties
 // @access private
 exports.request_esignature = (req, res, next) => {
+    console.log(req.body)
       Request.findByIdAndUpdate(req.body.request_id, {accepted: true, timeAccepted: new Date()})
     .then(r => {
 
