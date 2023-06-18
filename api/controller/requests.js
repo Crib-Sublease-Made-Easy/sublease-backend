@@ -47,7 +47,9 @@ exports.requests_create = (req, res, next) => {
         }    
     
 )
-    .catch(err => res.status(404).json({ error: err }));
+    .catch(err => {
+        console.log(err)
+        res.status(404).json({ error: err })});
 
 };
 
