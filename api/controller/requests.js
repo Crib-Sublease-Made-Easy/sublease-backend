@@ -380,7 +380,7 @@ exports.docusign_webhook = (req, res, next) => {
                         body: JSON.stringify({
                             "propId": result.postedProperties[0],
                             "requestId": re._id,
-                            "userId": re.subtenantId,
+                            "userId": re.tenantId,
                             "startDate": re.startDate,
                             "endDate": re.endDate
 
