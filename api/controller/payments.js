@@ -663,7 +663,7 @@ console.log("REQID", req.params.id)
     Request.findOneAndUpdate({_id: req.params.id}, {paid: true}).then( result => {
             console.log("IMSIDE")
 
-        res.writeHead(301, { Location: `https://www.crib-app.com/`}).end()
+        res.writeHead(301, { Location: "https://www.crib-app.com/requestDetails/"+req.params.id}).end()
     }).catch(e=>res.status(404))  
 
 }
