@@ -581,7 +581,7 @@ exports.gen_link = async(req, res, next) => {
             'Authorization': 'Bearer ' + sq_access_token
         }, 
         body: JSON.stringify({    "checkout_options": {
-                        "redirect_url": "https://crib-llc.herokuapp.com/payments/redirect_url?id="+userId
+                        "redirect_url": "https://crib-llc.herokuapp.com/payments/redirect_url/"+req.body.requestId
                         },
                                      "description": "Sublease with real people, let's save rent together! \n Sublease booking for " + (new Date(data.availableFrom).toDateString()) + " to " + (new Date(data.availableTo).toDateString()) + " at " + data.loc.streetAddr + + " " + data.loc.secondaryTxt,
              "order": {
@@ -659,8 +659,10 @@ function monthDiff(d1, d2) {
 exports.redirect_url = (req, res, next) => {
 
     console.log("RUNNING")
+console.log("REQID", req.params.id)
+    Request.findOneAndUpdate({_id: req.params.id}, {paid: true}).then( result => {
+            console.log("IMSIDE")
 
-    Request.findOneAndUpdate({subtenantId: req.query.id}, {paid: true}).then( result => {
         res.writeHead(301, { Location: `https://www.crib-app.com/`}).end()
     }).catch(e=>res.status(404))  
 
