@@ -577,7 +577,7 @@ exports.gen_link = async(req, res, next) => {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
-            'Square-Version': '2023-03-15',
+            'Square-Version': '2023-06-08',
             'Authorization': 'Bearer ' + sq_access_token
         }, 
         body: JSON.stringify({    "checkout_options": {
