@@ -182,6 +182,7 @@ exports.request_retrievemyreceivedrequests = (req, res, next) => {
 // @access private
 exports.request_esignature = (req, res, next) => {
     console.log("BODYYY", req.body)
+    var date = new Date();
       Request.findByIdAndUpdate(req.body.request_id, {accepted: true, timeAccepted: new Date()})
     .then(r => {
 
@@ -202,6 +203,7 @@ exports.request_esignature = (req, res, next) => {
         "rent": req.body.rent,
         "security_deposit": req.body.security_deposit,
         "request_id": req.body.request_id,
+        "sublease_date_created": date.toDateString(),
         "fee_percentage": "5",
     })
     }).then(async e => {
