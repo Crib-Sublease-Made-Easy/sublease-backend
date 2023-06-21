@@ -357,6 +357,36 @@ exports.send_email_subtenant_accepted = (req,res,next) => {
 }
 
 
+
+//route POST /requests/sendEmailMessageReceived
+//description use email to send notificaiton 
+exports.send_email_message_received = (req,res,next) => {
+
+    console.log("testing")
+    const msg = {
+    to: `${req.body.recipientEmail}`, // Change to your recipient
+    from: 'cribappllc@gmail.com', // Change to your verified sender
+    subject: `${req.body.senderName} has sent you a message`,
+    text: 'and easy to do anywhere, even with Node.js',
+    html: `<p>Hey ${req.body.recipientName},</p>
+    <p>${req.body.senderName} just sent you a message about the request booking for the sublease on ${req.body.location}.</p> 
+    <p>To view this message, login into www.crib-app.com then navigate to the sublease request details page under "My Requests". Crib is working hard to make the subleasing process easier than ever!</p>
+    <p><strong>Got a question?</strong> Contact us at (608)-515-8038.
+    <br/>
+    <p>Best,<br/>The Crib team</p>
+    `}
+    sgMail
+    .send(msg)
+    .then((r) => {
+        console.log('Email sent')
+        res.status(200).json({data:'email sent'})
+    })
+    .catch((error) => {
+        console.error(error)
+    })
+}
+
+
 // @route POST /request/docusign_webhook
 // @description Called when tenant accepts booking - sends contract to both parties
 // @access public
