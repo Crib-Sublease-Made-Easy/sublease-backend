@@ -33,7 +33,7 @@ exports.requests_create = (req, res, next) => {
   })
   //save the request object to the database
     request.save()
-    .then(r =>  
+    .then(async r =>  
         {
             //add the request object to the 
             let toAdd = {
@@ -41,9 +41,36 @@ exports.requests_create = (req, res, next) => {
                 "createdAt": new Date()
             }
             User.findOneAndUpdate({"_id": req.body.subtenantId}, {$push: { "requestsSent" : toAdd}})
-                .catch(err => res.status(404).json({ error: err }));
+            .catch(err => res.status(404).json({ error: err }));
 
-            res.status(200).json({data: "Request created", _id: r._id.toString()})
+            User.findOne({"_id" : mongoose.Types.ObjectId(req.body.tenantId)})
+            .then( async tenant => {
+                User.findOne({"_id": mongoose.Types.ObjectId(req.body.subtenantId)})
+                .then(async subtenant => {
+                    await fetch('https://crib-llc.herokuapp.com/requests/sendEmailSubtenantRequested', {
+                    method: 'POST',
+                    headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "tenantEmail": tenant.email,
+                        "tenantName": tenant.firstName,
+                        "subtenantName": subtenant.firstName,
+                        "startDate": new Date(req.body.startDate),
+                        "endDate": new Date(req.body.endDate)
+                    })
+                    })
+                    .then(r => {
+                        res.status(200).json({data: "Request marked as accepted and contracts sent"})
+                    })
+                    .catch(e => {
+                        alert(e)
+                    })
+                })
+            })
+
+            
         }    
     
 )
@@ -205,7 +232,25 @@ exports.request_esignature = (req, res, next) => {
         "fee_percentage": "5",
     })
     }).then(async e => {
-        res.status(200).json({data: "Request marked as accepted and contracts sent"})
+        await fetch('https://crib-llc.herokuapp.com/requests/sendEmailTenantAccepted', {
+            method: 'POST',
+            headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            "tenantName": req.body.subleasor_name,
+            "subtenantEmail": req.body.subtenant_email,
+            "subtenantName": req.body.subtenant_name
+        })
+        })
+        .then(r => {
+            res.status(200).json({data: "Request marked as accepted and contracts sent"})
+
+        })
+        .catch(e => {
+            alert(e)
+        })
     })
     .catch( e => {
     console.log("Error in sending contract", e)
@@ -256,7 +301,7 @@ exports.signed_status = (req, res, next) => {
 //description use email to send notificaiton 
 exports.send_email_subtenant_requested = (req,res,next) => {
     if(req.body.tenantName == undefined || req.body.subtenantName == undefined || req.body.startDate == undefined || req.body.endDate == undefined || 
-    req.body.numberOfOccupants == undefined || req.body.bio == undefined || req.body.tenantEmail == undefined ){
+    req.body.tenantEmail == undefined ){
         res.status(404).json({data:"Incomplete information."})
     }
     console.log("testing")
@@ -269,10 +314,8 @@ exports.send_email_subtenant_requested = (req,res,next) => {
     <p>Thank you for posting on Crib!</p>
     <p>${req.body.subtenantName} just requested to book your sublease, following are the request details:</p> 
     <p>Start date: <strong>${new Date(req.body.startDate).toLocaleDateString().split(",")[0]}</strong></p>
-    <p>End date: <strong>${new Date(req.body.endDate).toLocaleDateString().split(",")[0]}<</strong></p> 
-    <p>The number of occupants is <strong>${req.body.numberOfOccupants}</strong></p>
-    <p>${req.body.bio}</p>
-    <strong>To view request, visit www.crib-app.com.</strong>
+    <p>End date: <strong>${new Date(req.body.endDate).toLocaleDateString().split(",")[0]}</strong></p> 
+    <strong>To view request, visit <a href="https://www.crib-app.com">www.crib-app.com.</a></strong>
     <p><strong>Got a question?</strong> Contact us at (608)-515-8038.
     <br/>
     <p>Best,<br/>The Crib team</p>
@@ -294,7 +337,7 @@ exports.send_email_subtenant_requested = (req,res,next) => {
 //route POST /requests/sendEmailTenantAccepted
 //description use email to send notificaiton 
 exports.send_email_tenant_accepted = (req,res,next) => {
-    if(req.body.tenantName == undefined || req.body.subtenantName == undefined || req.body.startDate == undefined || req.body.endDate == undefined || 
+    if(req.body.tenantName == undefined || req.body.subtenantName == undefined ||
     req.body.subtenantEmail == undefined ){
         res.status(404).json({data:"Incomplete information."})
     }
