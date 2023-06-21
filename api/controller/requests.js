@@ -351,8 +351,7 @@ exports.send_email_tenant_accepted = (req,res,next) => {
     subject: `${req.body.tenantName} accepted your sublease request`,
     text: 'and easy to do anywhere, even with Node.js',
     html: `<p>Hey ${req.body.subtenantName},</p>
-    <p>${req.body.tenantName} just accepted your sublease request and have signed the sublease contract. Please preview your sublease contract and pay the required fees and security deposit under "My requests" on www.crib-app.com.</p> 
-    <p>Once the contract is signed and payments are completed, you will be given tenant's contact information to discuss move-in procedure and rental payments. We look forward to finding you your next Crib!</p>
+    <p>${req.body.tenantName} just accepted your sublease request. We will notify you again when ${req.body.tenantName} signs the sublease contract or when there's any update to the status of this booking.</p> 
     <p><strong>Got a question?</strong> Contact us at (608)-515-8038.
     <br/>
     <p>Best,<br/>The Crib team</p>
