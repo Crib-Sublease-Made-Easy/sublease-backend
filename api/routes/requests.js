@@ -21,6 +21,9 @@ router.get("/payment_link/:id", checkAuth, RequestController.get_payment_link)
 router.get("/getOne/:id", checkAuth, RequestController.get_one_request)
 router.get("/payment_amount/:id", checkAuth, RequestController.get_payment_amount)
 router.post("/smsSubtenantRequest", RequestController.sms_notif_subtenant_request)
+router.post("/smsTenantAccept", RequestController.sms_notif_tenant_accept)
+router.post("/sendEmailTenantSigned", RequestController.send_email_notif_tenant_signed)
+
 
 
 
