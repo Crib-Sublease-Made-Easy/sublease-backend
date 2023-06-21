@@ -13,7 +13,7 @@ router.get("/premium/FAQ", PaymentsController.prem_FAQ)
 
 //NEW ITERATION
 router.post("/generate", PaymentsController.gen_link)
-router.get("/redirect_url", PaymentsController.redirect_url)
+router.get("/redirect_url/:id", PaymentsController.redirect_url)
 
 
 

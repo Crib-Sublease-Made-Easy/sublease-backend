@@ -209,6 +209,7 @@ exports.request_retrievemyreceivedrequests = (req, res, next) => {
 // @access private
 exports.request_esignature = (req, res, next) => {
     console.log("BODYYY", req.body)
+    var date = new Date();
       Request.findByIdAndUpdate(req.body.request_id, {accepted: true, timeAccepted: new Date()})
     .then(r => {
 
@@ -229,6 +230,7 @@ exports.request_esignature = (req, res, next) => {
         "rent": req.body.rent,
         "security_deposit": req.body.security_deposit,
         "request_id": req.body.request_id,
+        "sublease_date_created": date.toDateString(),
         "fee_percentage": "5",
     })
     }).then(async e => {
@@ -263,7 +265,7 @@ exports.request_esignature = (req, res, next) => {
 // @route GET /request/contract/signedStatus
 // @description Called when tenant accepts booking - sends contract to both parties
 // @access private
-const DOCUSIGN_ACCESS_TOKEN="eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAUABwAAi_QOJ3DbSAgAAMsXHWpw20gCAE7zpH6mUhpAlmjmH_Zyx-MVAAEAAAAYAAEAAAAFAAAADQAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliIgAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliMACAd8nUDm3bSDcAPcuq3dd7SUuSy9LlC6ZCrQ.xxDdaxXIbhDJW6eyLMGk1KTq9sQJWFo6LNB_-kVKm5q4t1yfNFDyhCRlrjPlLBkQCNlKhae1-HsbHKonLX5EcO4eSx-bBwkWiFCR4BeDD-qrOLXfoGwHlhAYjv5lBgGQKfIQucPE1VlZ_2mQZH4CVtyRKJrhJl8rCSTjuWCsrTm_ZFQ0vyyeIiUeGY-nh4uq92hi7rz2doIbx5JX5UTTE_8o4pou2NToRRKXT5YvjHTv7wXMg4uoTmlkiX5tLLIdRFeyG4X1XvNuWLk897iUF4FN14Ahp1oMs9BtPE3GHzSi8S49HqDpqjRn8_uUwGb4_zjBrHs3eHINAEf--WGYeQ"
+const DOCUSIGN_ACCESS_TOKEN="eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiOGFlYzFjZjQtYmE4NS00MDM5LWE1MmItYzVhODAxMjA3N2EyIn0.AQoAAAABAAUABwCAxj9Up3HbSAgAgAZjYupx20gCALDx2phHMzNCsFcpNmJsSnYVAAcAAAAYAAEAAAAFAAAADQAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliIgAkAAAAYzhmOWZiNDMtYTZlMi00NjEzLThlM2ItNjQyYjMxNzk1ZjliMAAAtI8haXDbSDcAKHTcartdWkKDNeLh2LgBJQ.DH7mNN5NQQ2hXwQAyRQNGb0JSRpG2CG-f3Q7DYxBRQholbsTV1WT8EtxH-jO-f0vdhysZ6k5PlVe7FuyfbvYCvoHtLPTwbvuks8VQZTNm632_Nx83zZbY6YPiRCKLgn3WpJZ4kl_-44LfG5fQLBXbcczidVJu1cpZs4y3Mh0QDwedB0vH4lyj1JfPDObJREz-zoTjBF-J_7qId-_AoXkPxu-BfnY3RCiucmej-VgqWGPMYjhXQcyNo9WyN5dCRVnPxfmCwxd95JN4VWYyap7oNcfnJHHVMBQwyxbv_F-7pZbANjPh9ke-VqIF0lxFUPMd5zOLnqwidfT4GXV5po4lA"
 const DOCUSIGN_ACCOUNT_ID="1b01896b-b609-4d8c-8d10-1900339b57f6"
 exports.signed_status = (req, res, next) => {
     console.log("bruh")
@@ -275,6 +277,7 @@ exports.signed_status = (req, res, next) => {
         'Authorization': 'Bearer '+DOCUSIGN_ACCESS_TOKEN
     }
     }).then(res => res.json()).then(async e => {
+        console.log("RUNNING")
         res.status(200).json(
             {
             recipient1: 
@@ -397,6 +400,36 @@ exports.send_email_subtenant_accepted = (req,res,next) => {
 }
 
 
+
+//route POST /requests/sendEmailMessageReceived
+//description use email to send notificaiton 
+exports.send_email_message_received = (req,res,next) => {
+
+    console.log("testing")
+    const msg = {
+    to: `${req.body.recipientEmail}`, // Change to your recipient
+    from: 'cribappllc@gmail.com', // Change to your verified sender
+    subject: `${req.body.senderName} has sent you a message`,
+    text: 'and easy to do anywhere, even with Node.js',
+    html: `<p>Hey ${req.body.recipientName},</p>
+    <p>${req.body.senderName} just sent you a message about the request booking for the sublease on ${req.body.location}.</p> 
+    <p>To view this message, login into www.crib-app.com then navigate to the sublease request details page under "My Requests". Crib is working hard to make the subleasing process easier than ever!</p>
+    <p><strong>Got a question?</strong> Contact us at (608)-515-8038.
+    <br/>
+    <p>Best,<br/>The Crib team</p>
+    `}
+    sgMail
+    .send(msg)
+    .then((r) => {
+        console.log('Email sent')
+        res.status(200).json({data:'email sent'})
+    })
+    .catch((error) => {
+        console.error(error)
+    })
+}
+
+
 // @route POST /request/docusign_webhook
 // @description Called when tenant accepts booking - sends contract to both parties
 // @access public
@@ -407,7 +440,7 @@ exports.docusign_webhook = (req, res, next) => {
             //Mark tenant as signed contract
             Request.findOneAndUpdate({envelopeId: req.body.envelopeId}, {tenantSignedContract:true}).then(re=>{
                     //For payment generation endoint, we need two things: propId and requestId
-                    User.findOne({_id: re.subtenantId}).then(result =>{
+                    User.findOne({_id: re.tenantId}).then(result =>{
                         console.log({
                             "propId": result.postedProperties[0],
                             "requestId": re._id,
@@ -422,7 +455,10 @@ exports.docusign_webhook = (req, res, next) => {
                         body: JSON.stringify({
                             "propId": result.postedProperties[0],
                             "requestId": re._id,
-                            "userId": re.subtenantId
+                            "userId": re.tenantId,
+                            "startDate": re.startDate,
+                            "endDate": re.endDate
+
                         }
                         )
                         }).then(async e => e.json()).then(result=>{
@@ -462,6 +498,7 @@ exports.get_payment_link = (req, res, next) => {
 // @description gets the payment link attatched to this request
 // @access public
 exports.get_one_request = (req, res, next) => {
+    console.log(req.params)
     // Request.findOne({_id: mongoose.Types.ObjectId(req.params.id)})
     // .then(r=>{
     //     res.status(200).json(r)

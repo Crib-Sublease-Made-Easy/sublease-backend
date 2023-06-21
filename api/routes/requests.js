@@ -15,6 +15,7 @@ router.get("/contract/signedStatus/:envelope_id", checkAuth, RequestController.s
 router.post("/sendEmailSubtenantRequested", RequestController.send_email_subtenant_requested);
 router.post("/sendEmailTenantAccepted", RequestController.send_email_tenant_accepted);
 router.post("/sendEmailSubtenantAccepted", RequestController.send_email_subtenant_accepted);
+router.post("/sendEmailMessageReceived", RequestController.send_email_message_received);
 router.post("/docusign_webook", RequestController.docusign_webhook)
 router.get("/payment_link/:id", checkAuth, RequestController.get_payment_link)
 router.get("/getOne/:id", checkAuth, RequestController.get_one_request)

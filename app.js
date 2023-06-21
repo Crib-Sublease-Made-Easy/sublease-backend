@@ -71,6 +71,9 @@ app.use('/requests', requests);
 
 const id_image = require('./api/routes/id_image');
 app.use('/id_image', id_image);
+
+const request_messages = require('./api/routes/request_messages');
+app.use('/req_messages', request_messages);
 // const chat = require('./api/routes/chat')
 // app.use('/chat', chat);
 

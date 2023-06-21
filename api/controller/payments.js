@@ -563,24 +563,25 @@ exports.gen_link = async(req, res, next) => {
     Property.findById(req.body.propId).then(async data=>{
         if(userId != data.postedBy){
             res.status(400).json({ error: "Unable to get payment link" })
-        }
+        }else{
         price += data.securityDeposit;
-        price += ((data.price) * (differenceInDays( data.availableTo, data.availableFrom)/30.437)) * 0.05
+        price += Math.abs(((data.price) * (differenceInDays( new Date(req.body.startDate), new Date(req.body.endDate))/30.437)) * 0.05)
         console.log(price)
 
         securityDeposit = data.securityDeposit;
-        fee = ((data.price) * (differenceInDays( data.availableTo, data.availableFrom)/30.437)) * 0.05
-
+        fee = Math.abs(((data.price) * (differenceInDays( new Date(req.body.startDate), new Date(req.body.endDate))/30.437)) * 0.05)
+        console.log("SEC DEP", Number(Math.floor(securityDeposit)) * 100)
+        console.log("FEE", Number(Math.floor(fee)) * 100)
 
          await fetch("https://connect.squareup.com/v2/online-checkout/payment-links", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
-            'Square-Version': '2023-03-15',
+            'Square-Version': '2023-06-08',
             'Authorization': 'Bearer ' + sq_access_token
         }, 
         body: JSON.stringify({    "checkout_options": {
-                        "redirect_url": "https://crib-llc.herokuapp.com/payments/redirect_url&id="+userId
+                        "redirect_url": "https://crib-llc.herokuapp.com/payments/redirect_url/"+req.body.requestId
                         },
                                      "description": "Sublease with real people, let's save rent together! \n Sublease booking for " + (new Date(data.availableFrom).toDateString()) + " to " + (new Date(data.availableTo).toDateString()) + " at " + data.loc.streetAddr + + " " + data.loc.secondaryTxt,
              "order": {
@@ -625,8 +626,10 @@ exports.gen_link = async(req, res, next) => {
                     console.log(r)
                     console.log("bruhhhh")
                     Request.findOneAndUpdate({_id:req.body.requestId}, {paymentId: r._id}).then( result => {
+                        console.log("HEHHHHHH")
                         res.status(200).json({data: "Payment link successfully generated"})
-                    })
+                    })      .catch(err => res.status(400).json({ error: 'update request id catch', errRaw: err }));
+
                 })
             }
 
@@ -635,7 +638,7 @@ exports.gen_link = async(req, res, next) => {
       .catch(err => res.status(400).json({ error: 'unable to make request', errRaw: err }));
 
 
-
+    }
     }) .catch(err => res.status(400).json({ error: 'unable to make request', errRaw: err }));
 
 
@@ -655,10 +658,12 @@ function monthDiff(d1, d2) {
 // @access public
 exports.redirect_url = (req, res, next) => {
 
-    // console.log("RUNNING")
+    console.log("RUNNING")
+console.log("REQID", req.params.id)
+    Request.findOneAndUpdate({_id: req.params.id}, {paid: true}).then( result => {
+            console.log("IMSIDE")
 
-    Request.findOneAndUpdate({subtenantId: req.query.id}, {paid: true}).then( result => {
-        res.writeHead(301, { Location: `https://www.crib-app.com/`}).end()
+        res.writeHead(301, { Location: "https://www.crib-app.com/requestDetails/"+req.params.id}).end()
     }).catch(e=>res.status(404))  
 
 }
