@@ -20,6 +20,9 @@ router.post("/docusign_webook", RequestController.docusign_webhook)
 router.get("/payment_link/:id", checkAuth, RequestController.get_payment_link)
 router.get("/getOne/:id", checkAuth, RequestController.get_one_request)
 router.get("/payment_amount/:id", checkAuth, RequestController.get_payment_amount)
+router.post("/smsSubtenantRequest", RequestController.sms_notif_subtenant_request)
+
+
 
 
 module.exports = router; 

@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose');
 const fetch = require('node-fetch');
 const sgMail = require('@sendgrid/mail')
+const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_AUTH_TOKEN);
+
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 sgMail.setApiKey(SENDGRID_API_KEY)
@@ -61,8 +63,28 @@ exports.requests_create = (req, res, next) => {
                         "endDate": new Date(req.body.endDate)
                     })
                     })
-                    .then(r => {
-                        res.status(200).json({data: "Request marked as accepted and contracts sent"})
+                    .then(async r => {
+                        // res.status(200).json({data: "Request marked as accepted and contracts sent"})
+                        await fetch('https://crib-llc.herokuapp.com/requests/smsSubtenantRequest', {
+                            method: 'POST',
+                            headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "tenantName": tenant.firstName,
+                            "tenantPhoneNumber": tenant.phoneNumber,
+                            "subtenantName": subtenant.firstName,
+                            "startDate":  new Date(req.body.startDate),
+                            "endDate":  new Date(req.body.endDate)
+                        })
+                        })
+                        .then(r => {
+                            res.status(200).json({data: "Request created, email and sms notification sent!"})
+                        })
+                        .catch( e => {
+                            console.log(e)
+                        })
                     })
                     .catch(e => {
                         alert(e)
@@ -246,9 +268,9 @@ exports.request_esignature = (req, res, next) => {
             "subtenantName": req.body.subtenant_name
         })
         })
-        .then(r => {
+        .then(async r => {
             res.status(200).json({data: "Request marked as accepted and contracts sent"})
-
+          
         })
         .catch(e => {
             alert(e)
@@ -322,7 +344,6 @@ exports.send_email_subtenant_requested = (req,res,next) => {
     <p><strong>Got a question?</strong> Contact us at (608)-515-8038.
     <br/>
     <p>Best,<br/>The Crib team</p>
-
     `
 
     }
@@ -551,3 +572,48 @@ exports.get_one_request = (req, res, next) => {
         })
     })
 }
+
+
+// @route POST /requests/smsSubtenantRequest
+// @description when subtenant request to book, we send an sms reminder
+// @access Public
+exports.sms_notif_subtenant_request = (req, res, next) => {
+    if(req.body.tenantName == undefined || req.body.subtenantName == undefined || req.body.startDate == undefined || req.body.endDate == undefined || 
+    req.body.tenantPhoneNumber == undefined ){
+        res.status(404).json({data:"Incomplete information."})
+    } 
+    else{
+      client.messages
+      .create({
+          body: `[Crib] Reminder: Hey ${req.body.tenantName}, ${req.body.subtenantName} just requested to book your sublease from ${new Date(req.body.startDate).toLocaleDateString().split(",")[0]} to ${new Date(req.body.endDate).toLocaleDateString().split(",")[0]}. To view request, visit www.crib-app.com.`,
+          from: '+18775226376',
+          to: `+1${req.body.tenantPhoneNumber}`
+      })
+      .then(message => {
+        res.status(200).json({"data": "sms sent!"})
+
+      })
+    }
+  };
+
+
+// @route POST /requests/smsTenantAccept
+// @description when subtenant request to book, we send an sms reminder
+// @access Public
+exports.sms_notif_tenant_request = (req, res, next) => {
+    if(req.body.tenantName == undefined || req.body.subtenantName == undefined || req.body.tenantPhoneNumber == undefined ){
+        res.status(404).json({data:"Incomplete information."})
+    } 
+    else{
+      client.messages
+      .create({
+          body: `[Crib] Reminder: Hey ${req.body.tenantName}, ${req.body.subtenantName} just requested to book your sublease from ${new Date(req.body.startDate).toLocaleDateString().split(",")[0]} to ${new Date(req.body.endDate).toLocaleDateString().split(",")[0]}. To view request, visit www.crib-app.com.`,
+          from: '+18775226376',
+          to: `+1${req.body.tenantPhoneNumber}`
+      })
+      .then(message => {
+        res.status(200).json({"data": "sms sent!"})
+
+      })
+    }
+  };
