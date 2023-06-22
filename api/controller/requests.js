@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose');
 const fetch = require('node-fetch');
 const sgMail = require('@sendgrid/mail')
+const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_AUTH_TOKEN);
+
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 sgMail.setApiKey(SENDGRID_API_KEY)
@@ -61,11 +63,33 @@ exports.requests_create = (req, res, next) => {
                         "endDate": new Date(req.body.endDate)
                     })
                     })
-                    .then(r => {
-                        res.status(200).json({data: "Request marked as accepted and contracts sent"})
+                    .then(async r => {
+                        console.log("EMAIL STATUS", r)
+                        // res.status(200).json({data: "Request marked as accepted and contracts sent"})
+                        await fetch('https://crib-llc.herokuapp.com/requests/smsSubtenantRequest', {
+                            method: 'POST',
+                            headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "tenantName": tenant.firstName,
+                            "tenantPhoneNumber": tenant.phoneNumber,
+                            "subtenantName": subtenant.firstName,
+                            "startDate":  new Date(req.body.startDate),
+                            "endDate":  new Date(req.body.endDate)
+                        })
+                        })
+                        .then(r => {
+                            console.log("PHONE NUMBER STATUS", r)
+                            res.status(200).json({data: "Request created, email and sms notification sent!"})
+                        })
+                        .catch( e => {
+                            console.log("Error in sending sms")
+                        })
                     })
                     .catch(e => {
-                        alert(e)
+                        console.log("Error in sending email")
                     })
                 })
             })
@@ -246,9 +270,26 @@ exports.request_esignature = (req, res, next) => {
             "subtenantName": req.body.subtenant_name
         })
         })
-        .then(r => {
-            res.status(200).json({data: "Request marked as accepted and contracts sent"})
-
+        .then(async resp => {
+            // res.status(200).json({data: "Request marked as accepted and contracts sent"})
+            User.findOne({"_id": mongoose.Types.ObjectId(r.subtenantId)})
+            .then(async subtenantInfo => {
+                await fetch('https://crib-llc.herokuapp.com/requests/smsTenantAccept', {
+                    method: 'POST',
+                    headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "tenantName": req.body.subleasor_name,
+                        "subtenantPhoneNumber": subtenantInfo.phoneNumber,
+                        "subtenantName": subtenantInfo.firstName
+                    })
+                })
+                .then( r => {
+                    res.status(200).json({data: "Request marked as accepted, contracts, email and sms notification sent"})
+                })
+            })
         })
         .catch(e => {
             alert(e)
@@ -310,7 +351,7 @@ exports.send_email_subtenant_requested = (req,res,next) => {
     console.log("testing")
     const msg = {
     to: `${req.body.tenantEmail}`, // Change to your recipient
-    from: 'cribappllc@gmail.com', // Change to your verified sender
+    from: 'support@crib-app.com', // Change to your verified sender
     subject: `${req.body.subtenantName} is interested in your sublease`,
     text: 'and easy to do anywhere, even with Node.js',
     html: `<p>Hey ${req.body.tenantName},</p>
@@ -322,7 +363,6 @@ exports.send_email_subtenant_requested = (req,res,next) => {
     <p><strong>Got a question?</strong> Contact us at (608)-515-8038.
     <br/>
     <p>Best,<br/>The Crib team</p>
-
     `
 
     }
@@ -347,7 +387,7 @@ exports.send_email_tenant_accepted = (req,res,next) => {
     console.log("testing")
     const msg = {
     to: `${req.body.subtenantEmail}`, // Change to your recipient
-    from: 'cribappllc@gmail.com', // Change to your verified sender
+    from: 'support@crib-app.com', // Change to your verified sender
     subject: `${req.body.tenantName} accepted your sublease request`,
     text: 'and easy to do anywhere, even with Node.js',
     html: `<p>Hey ${req.body.subtenantName},</p>
@@ -377,7 +417,7 @@ exports.send_email_subtenant_accepted = (req,res,next) => {
     console.log("testing")
     const msg = {
     to: `${req.body.tenantEmail}`, // Change to your recipient
-    from: 'cribappllc@gmail.com', // Change to your verified sender
+    from: 'support@crib-app.com', // Change to your verified sender
     subject: `${req.body.subtenantName} signed the sublease contract`,
     text: 'and easy to do anywhere, even with Node.js',
     html: `<p>Hey ${req.body.tenantName},</p>
@@ -398,16 +438,47 @@ exports.send_email_subtenant_accepted = (req,res,next) => {
     })
 }
 
+//route POST /requests/sendEmailTenantSigned
+//description use email to notify subtenant that tenant signed contract 
+exports.send_email_notif_tenant_signed = (req, res, next) => {
+    if(req.body.tenantName == undefined || req.body.subtenantName == undefined || req.body.subtenantEmail == undefined){
+        res.status(404).json({data:"Insufficient information"})
+    }
+    else{
+        const msg = {
+        to: `${req.body.subtenantEmail}`, // Change to your recipient
+        from: 'support@crib-app.com', // Change to your verified sender
+        subject: `[Crib] ${req.body.tenantName} has signed sublease contract`,
+        text: 'and easy to do anywhere, even with Node.js',
+        html: `<p>Hey ${req.body.subtenantName},</p>
+        <p>${req.body.tenantName} accepted your sublease request and signed the sublease contract. A sublease contract have been sent to you by DocuSign. Please review and sign the sublease contract soon to have a better result!</p> 
+        <p>To view current progress, please visit "My request" tab at https://www.crib-app.com for more information.</p>
+        <p><strong>Got a question?</strong> Email us at </p>
+        <p>Email: support@crib-app.com.</p>
+        <br/>
+        <p>Best,<br/>The Crib team</p>
+        `}
+        sgMail
+        .send(msg)
+        .then((r) => {
+            console.log('Email sent')
+            res.status(200).json({data:'email sent'})
+        })
+        .catch((error) => {
+            console.error(error)
+        })
+    }
+        
+}
 
 
 //route POST /requests/sendEmailMessageReceived
 //description use email to send notificaiton 
 exports.send_email_message_received = (req,res,next) => {
-
     console.log("testing")
     const msg = {
     to: `${req.body.recipientEmail}`, // Change to your recipient
-    from: 'cribappllc@gmail.com', // Change to your verified sender
+    from: 'support@crib-app.com', // Change to your verified sender
     subject: `${req.body.senderName} has sent you a message`,
     text: 'and easy to do anywhere, even with Node.js',
     html: `<p>Hey ${req.body.recipientName},</p>
@@ -438,37 +509,54 @@ exports.docusign_webhook = (req, res, next) => {
         if(r.tenantSignedContract == false){
             //Mark tenant as signed contract
             Request.findOneAndUpdate({envelopeId: req.body.envelopeId}, {tenantSignedContract:true}).then(re=>{
-                    //For payment generation endoint, we need two things: propId and requestId
-                    User.findOne({_id: re.tenantId}).then(result =>{
-                        console.log({
-                            "propId": result.postedProperties[0],
-                            "requestId": re._id,
-                            "userId": re.subtenantId
-                        })
-                        fetch('https://crib-llc.herokuapp.com/payments/generate', {
+                //For payment generation endoint, we need two things: propId and requestId
+                User.findOne({_id: re.tenantId}).then(result =>{
+               
+                    fetch('https://crib-llc.herokuapp.com/payments/generate', {
+                        method: 'POST',
+                        headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "propId": result.postedProperties[0],
+                        "requestId": re._id,
+                        "userId": re.tenantId,
+                        "startDate": re.startDate,
+                        "endDate": re.endDate
+
+                    })
+                })
+                .then(async e => e.json()).then(resp=>{
+                    User.findById({"_id": r.subtenantId})
+                    .then( subtenantInfo => {
+                        fetch("https://crib-llc.herokuapp.com/requests/sendEmailTenantSigned" , {
                             method: 'POST',
                             headers: {
                             Accept: 'application/json',
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            "propId": result.postedProperties[0],
-                            "requestId": re._id,
-                            "userId": re.tenantId,
-                            "startDate": re.startDate,
-                            "endDate": re.endDate
-
-                        }
-                        )
-                        }).then(async e => e.json()).then(result=>{
-                                                        console.log("result: ", result)
-                            res.status(200).json({data:'Recipient Signing Status Updated and payment linked to request'})
+                            "tenantName": result.firstName,
+                            "subtenantName": subtenantInfo.firstName,
+                            "subtenantEmail": subtenantInfo.email
+                        })})
+                        .then( resp => {
+                            res.status(200).json({data:'Tenant signed and sent email to subtenant'})
+                        })
+                        .catch( e => {
+                            console.log(e)
                         })
                     })
+                    .catch( e => {
+                        res.status(400).json({"error": "Error in getting subtenant information."})
+                    })
+                            
+                })
             })
-
-
-        } else{
+        })
+        } 
+        else{
             //Mark subtenant as signed contract
             Request.findOneAndUpdate({envelopeId: req.body.envelopeId}, {subtenantSignedContract:true}).then(re=>{
                     res.status(200).json({data:'Recipient Signing Status Updated'})
@@ -551,3 +639,47 @@ exports.get_one_request = (req, res, next) => {
         })
     })
 }
+
+
+// @route POST /requests/smsSubtenantRequest
+// @description when subtenant request to book, we send an sms reminder
+// @access Public
+exports.sms_notif_subtenant_request = (req, res, next) => {
+    if(req.body.tenantName == undefined || req.body.subtenantName == undefined || req.body.startDate == undefined || req.body.endDate == undefined || 
+    req.body.tenantPhoneNumber == undefined ){
+        res.status(404).json({data:"Incomplete information."})
+    } 
+    else{
+      client.messages
+      .create({
+          body: `[Crib] Reminder: Hey ${req.body.tenantName}, ${req.body.subtenantName} just requested to book your sublease from ${new Date(req.body.startDate).toLocaleDateString().split(",")[0]} to ${new Date(req.body.endDate).toLocaleDateString().split(",")[0]}. To view request, visit www.crib-app.com.`,
+          from: '+18775226376',
+          to: `+1${req.body.tenantPhoneNumber}`
+      })
+      .then(message => {
+        res.status(200).json({"data": "sms sent!"})
+
+      })
+    }
+};
+
+
+// @route POST /requests/smsTenantAccept
+// @description when subtenant request to book, we send an sms reminder
+// @access Public
+exports.sms_notif_tenant_accept = (req, res, next) => {
+    if(req.body.tenantName == undefined || req.body.subtenantName == undefined || req.body.subtenantPhoneNumber == undefined ){
+        res.status(404).json({data:"Incomplete information."})
+    } 
+    else{
+      client.messages
+      .create({
+          body: `[Crib] Reminder: ${req.body.tenantName} just accepted your sublease request. We will notify you again when ${req.body.tenantName} signs the sublease contract or when there's any update to the status of this booking.`,
+          from: '+18775226376',
+          to: `+1${req.body.subtenantPhoneNumber}`
+      })
+      .then(message => {
+        res.status(200).json({"data": "Tenant accept notification sent!"})
+      })
+    }
+  };
