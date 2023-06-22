@@ -2,6 +2,7 @@ const RequestMessages = require('../models/request_messages');
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
 const User = require("../models/user");
+const fetch = require('node-fetch');
 
 
 
@@ -20,13 +21,17 @@ exports.send_messages = (req, res, next) => {
 
                     // console.log(re)
                 //                         // console.log(rere)
-                //                         console.log({
-                //     requestId: new mongoose.Types.ObjectId(req.body.requestId),
-                //     senderId: new mongoose.Types.ObjectId(req.body.senderId),
-                //     senderName: re.firstName,
-                //     timeStamp: new Date(),
-                //     message: req.body.message
-                // })
+                const message = RequestMessages({
+                    requestId: new mongoose.Types.ObjectId(req.body.requestId),
+                    senderId: new mongoose.Types.ObjectId(req.body.senderId),
+                    senderName: re.firstName,
+                    timeStamp: new Date(),
+                    message: req.body.message
+                })
+
+                console.log(rep)
+                console.log(reu)
+                console.log("BRIHH",rere)
 
                 await fetch('https://crib-llc.herokuapp.com/requests/sendEmailMessageReceived', {
                     method: 'POST',
@@ -36,20 +41,13 @@ exports.send_messages = (req, res, next) => {
 
                 },
                 body: JSON.stringify({
-                            "recipientEmail": reu.email,
-                            "senderName": re.firstName + " " + re.lastName,
-                            "recipientName": reu.firstName + " " + reu.lastName,
-                            "location": rep.loc.streetAddr + " " + rep.loc.secondaryTxt
-                    })
+        "recipientEmail": reu.email,
+        "senderName": re.firstName + " " + re.lastName,
+        "recipientName": reu.firstName + " " + reu.lastName,
+        "location": rep.loc.streetAddr + ", " + rep.loc.secondaryTxt
+   })
                 }).then(result=>{
-                console.log("BROPOPPOP")
-                const message = new RequestMessages({
-                    requestId: new mongoose.Types.ObjectId(req.body.requestId),
-                    senderId: new mongoose.Types.ObjectId(req.body.senderId),
-                    senderName: re.firstName,
-                    timeStamp: new Date(),
-                    message: req.body.message
-                })
+
                 message.save().then(r=>{
                     res.status(200).json({result: "messsage successfully sent"})
                 }).catch(err=>{
@@ -58,13 +56,12 @@ exports.send_messages = (req, res, next) => {
                 })
 
                 }).catch(err=>{
+                                                                            console.log("errr", err)
+
                     res.status(400).json({err: "something went wrong", err})
                 })
 
-
-
             }).catch(err=>{
-                                                        console.log("errr")
 
                     res.status(400).json({err: "something went wrong", err})
                 })
