@@ -66,7 +66,7 @@ const RequestSchema = new mongoose.Schema (
     }
 )
 //delete the request object after 48 hours if the tenant doesnt accept
-RequestSchema.index({createdAt: 1},{expireAfterSeconds: 100000,partialFilterExpression : {accepted: false}});
+// RequestSchema.index({createdAt: 1},{expireAfterSeconds: 100000,partialFilterExpression : {accepted: false}});
 // RequestSchema.index({acceptedAt: 1},{expireAfterSeconds: 1,partialFilterExpression : 
 //     {
 //         $and:
