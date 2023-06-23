@@ -852,7 +852,7 @@ exports.property_create = (req, res, next) => {
     //_id: new mongoose.Types.ObjectId(),
     title: req.body.title,
     type: req.body.type,
-    timePosted: req.body.timePosted,
+    timePosted: new Date(),
     postedBy: decoded.userId,
     price: req.body.price,
     availableFrom: req.body.availableFrom,
