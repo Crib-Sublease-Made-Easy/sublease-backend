@@ -4,6 +4,9 @@ const jwt = require('jsonwebtoken');
 const User = require("../models/user");
 const fetch = require('node-fetch');
 
+const client = require('twilio')(process.env.TWILIO_ACC_SID, process.env.TWILIO_AUTH_TOKEN);
+
+
 
 
 
@@ -33,6 +36,15 @@ exports.send_messages = (req, res, next) => {
                 console.log(reu)
                 console.log("BRIHH",rere)
 
+                client.messages
+                .create({
+                    body: `[Crib] Reminder: ${re.firstName} sent you a message. To reply, please navigate to the specific request in "My requests".`,
+                    from: '+18775226376',
+                    to: `+1${reu.phoneNumber}`
+                })
+                .then(async message => {
+                })
+                .catch(e => console.log("hello"))
                 await fetch('https://crib-llc.herokuapp.com/requests/sendEmailMessageReceived', {
                     method: 'POST',
                     headers: {
@@ -41,11 +53,11 @@ exports.send_messages = (req, res, next) => {
 
                 },
                 body: JSON.stringify({
-        "recipientEmail": reu.email,
-        "senderName": re.firstName + " " + re.lastName,
-        "recipientName": reu.firstName + " " + reu.lastName,
-        "location": rep.loc.streetAddr + ", " + rep.loc.secondaryTxt
-   })
+                    "recipientEmail": reu.email,
+                    "senderName": re.firstName + " " + re.lastName,
+                    "recipientName": reu.firstName + " " + reu.lastName,
+                    "location": rep.loc.streetAddr + ", " + rep.loc.secondaryTxt
+                })
                 }).then(result=>{
 
                 message.save().then(r=>{
@@ -60,6 +72,7 @@ exports.send_messages = (req, res, next) => {
 
                     res.status(400).json({err: "something went wrong", err})
                 })
+
 
             }).catch(err=>{
 

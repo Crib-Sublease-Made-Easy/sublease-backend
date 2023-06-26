@@ -497,16 +497,18 @@ exports.sms_tenant_signed = (req, res, next) => {
 exports.send_email_message_received = (req,res,next) => {
     console.log("testing")
     const msg = {
+    // to: `test-zrly53qov@srv1.mail-tester.com`, // Change to your recipient
     to: `${req.body.recipientEmail}`, // Change to your recipient
     from: 'support@crib-app.com', // Change to your verified sender
     subject: `${req.body.senderName} has sent you a message`,
-    text: 'and easy to do anywhere, even with Node.js',
+    text: `Hey ${req.body.recipientName}, ${req.body.senderName} sent you a message about the sublease booking at ${req.body.location}.To view this message, please enter the Crib website and navigate to the "My requests" tab on the top right corner. Once there, please click on the specific requests and you will be able to enter the chatroom by clicking the message button. We wish to make the whole process as smooth and easy as possible so we ask that all communications before signing the sublease contract to be done on the platform to prevent unwanted behaviors. Best, The Crib team To unsubscribe from email reminders, simple reply to this email.`,
     html: `<p>Hey ${req.body.recipientName},</p>
-    <p>${req.body.senderName} just sent you a message about the request booking for the sublease on ${req.body.location}.</p> 
-    <p>To view this message, please get on the website then navigate to the sublease request details page under "My Requests". Crib is working hard to make the subleasing process easier than ever!</p>
+    <p>${req.body.senderName} sent you a message about the sublease booking at ${req.body.location}.</p> 
+    <p>To view this message, please enter the Crib website and navigate to the "My requests" tab on the top right corner. Once there, please click on the specific requests and you will be able to enter the chatroom by clicking the message button. We wish to make the whole process as smooth and easy as possible so we ask that all communications before signing the sublease contract to be done on the platform to prevent unwanted behaviors.</p>
     <p><strong>Got a question?</strong> Contact us at (608)-515-8038.
-    <br/>
     <p>Best,<br/>The Crib team</p>
+    <small>This email is sent to ${req.body.recipientEmail} as a reminder to incomming message, if you don't wish to receive any future emails from Crib, to unsubscribe from email reminders, simple reply to this email.</small>
+    <small>Crib LLC 2023</small>
     `}
     sgMail
     .send(msg)
