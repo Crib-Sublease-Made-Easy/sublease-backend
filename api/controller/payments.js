@@ -661,10 +661,31 @@ exports.redirect_url = (req, res, next) => {
     console.log("RUNNING")
 console.log("REQID", req.params.id)
     Request.findOneAndUpdate({_id: req.params.id}, {paid: true}).then( result => {
-            console.log("IMSIDE")
-
-        res.writeHead(301, { Location: "https://www.crib-app.com/requestDetails/"+req.params.id}).end()
-    }).catch(e=>res.status(404))  
+    Request.findOne({"_id":req.params.id})
+    .then(requestInfo => {
+        User.findOne({_id: requestInfo.tenantId})
+        .then( tenantInfo => {
+            User.findOne({_id: requestInfo.subtenantId})
+            .then( subtenantInfo => {
+                fetch("https://crib-llc.herokuapp.com/requests/sendEmailSubtenantSignedAndPaid" , {
+                        method: 'POST',
+                        headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "tenantName": result.firstName,
+                        "subtenantName": subtenantInfo.firstName,
+                        "subtenantPhoneNumber": subtenantInfo.phoneNumber
+                    })
+                })
+            })
+        })
+    })
+.then( rr => {
+    res.writeHead(301, { Location: "https://www.crib-app.com/requestDetails/"+req.params.id}).end()
+})
+}).catch(e=>res.status(404))  
 
 }
                     

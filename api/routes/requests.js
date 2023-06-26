@@ -14,7 +14,7 @@ router.post("/requestesignature", checkAuth, RequestController.request_esignatur
 router.get("/contract/signedStatus/:envelope_id", checkAuth, RequestController.signed_status);
 router.post("/sendEmailSubtenantRequested", RequestController.send_email_subtenant_requested);
 router.post("/sendEmailTenantAccepted", RequestController.send_email_tenant_accepted);
-router.post("/sendEmailSubtenantAccepted", RequestController.send_email_subtenant_accepted);
+router.post("/sendEmailSubtenantSignedAndPaid", RequestController.send_email_subtenant_signed_and_paid);
 router.post("/sendEmailMessageReceived", RequestController.send_email_message_received);
 router.post("/docusign_webook", RequestController.docusign_webhook)
 router.get("/payment_link/:id", checkAuth, RequestController.get_payment_link)
@@ -23,6 +23,7 @@ router.get("/payment_amount/:id", checkAuth, RequestController.get_payment_amoun
 router.post("/smsSubtenantRequest", RequestController.sms_notif_subtenant_request)
 router.post("/smsTenantAccept", RequestController.sms_notif_tenant_accept)
 router.post("/sendEmailTenantSigned", RequestController.send_email_notif_tenant_signed)
+router.post("/requests/smsTenantSigned", RequestController.sms_tenant_signed)
 
 
 

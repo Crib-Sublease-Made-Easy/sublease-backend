@@ -407,11 +407,11 @@ exports.send_email_tenant_accepted = (req,res,next) => {
     })
 }
 
-//route POST /requests/sendEmailSubenantAccepted
+//route POST /requests/sendEmailSubtenantSignedAndPaid
 //description use email to send notificaiton 
-exports.send_email_subtenant_accepted = (req,res,next) => {
-    if(req.body.tenantName == undefined || req.body.subtenantName == undefined || req.body.startDate == undefined || req.body.endDate == undefined || 
-    req.body.subtenantEmail == undefined || req.body.subtenantPhoneNumber == undefined || req.body.subtenantEmail == undefined || req.body.subtenantCountryCode == undefined) {
+exports.send_email_subtenant_signed_and_paid = (req,res,next) => {
+    if(req.body.tenantName == undefined || req.body.subtenantName == undefined || req.body.tenantEmail == undefined ||  
+        req.body.subtenantEmail == undefined ||  req.body.subtenantPhoneNumber == undefined || req.body.subtenantCountryCode == undefined) {
         res.status(404).json({data:"Incomplete information."})
     }
     console.log("testing")
@@ -421,9 +421,9 @@ exports.send_email_subtenant_accepted = (req,res,next) => {
     subject: `${req.body.subtenantName} signed the sublease contract`,
     text: 'and easy to do anywhere, even with Node.js',
     html: `<p>Hey ${req.body.tenantName},</p>
-    <p>${req.body.subtenantName} just signed the sublease contract and paid security deposit. ${req.body.subtenantName}'s phone number and email are +${req.body.subtenantCountryCode}${req.body.subtenantPhoneNumber} and ${req.body.subtenantEmail}. Please tell ${req.body.subtenantName} more about the move-in procedure and how rent would be paid over the sublease period.</p> 
+    <p><strong>Congratulations!</strong> ${req.body.subtenantName} just signed the sublease contract and paid security deposit. ${req.body.subtenantName}'s phone number and email are +${req.body.subtenantCountryCode}${req.body.subtenantPhoneNumber} and ${req.body.subtenantEmail}. Please tell ${req.body.subtenantName} more about the move-in procedure and how would rent be paid over the sublease period.</p> 
     <p>Security deposit will be transferred to you once both parties confirmed a successful move-in on the sublease start date.</p>
-    <p><strong>Got a question?</strong> Contact us at (608)-515-8038.
+    <p><strong>Got a question?</strong> Email us at support@crib-app.com</p>
     <br/>
     <p>Best,<br/>The Crib team</p>
     `}
@@ -448,7 +448,7 @@ exports.send_email_notif_tenant_signed = (req, res, next) => {
         const msg = {
         to: `${req.body.subtenantEmail}`, // Change to your recipient
         from: 'support@crib-app.com', // Change to your verified sender
-        subject: `[Crib] ${req.body.tenantName} has signed sublease contract`,
+        subject: `${req.body.tenantName} has signed sublease contract`,
         text: 'and easy to do anywhere, even with Node.js',
         html: `<p>Hey ${req.body.subtenantName},</p>
         <p>${req.body.tenantName} accepted your sublease request and signed the sublease contract. A sublease contract have been sent to you by DocuSign. Please review and sign the sublease contract soon to have a better result!</p> 
@@ -470,6 +470,26 @@ exports.send_email_notif_tenant_signed = (req, res, next) => {
     }
         
 }
+
+//route POST /requests/smsTenantSigned
+//description use email to notify subtenant that tenant signed contract 
+exports.sms_tenant_signed = (req, res, next) => {
+    if(req.body.tenantName == undefined || req.body.subtenantName == undefined || req.body.subtenantPhoneNumber == undefined ){
+        res.status(404).json({data:"Incomplete information."})
+    } 
+    else{
+      client.messages
+      .create({
+          body: `[Crib] Reminder: Hey ${req.body.subtenantName}, ${req.body.tenantName} just signed the sublease request. A sublease contract by DocuSign was sent to you. If you have any questions, please email us at support@crib-app.com.`,
+          from: '+18775226376',
+          to: `+1${req.body.subtenantPhoneNumber}`
+      })
+      .then(message => {
+        res.status(200).json({"data": "Tenant signed sms sent!"})
+      })
+    }
+};
+
 
 
 //route POST /requests/sendEmailMessageReceived
@@ -542,7 +562,20 @@ exports.docusign_webhook = (req, res, next) => {
                             "subtenantEmail": subtenantInfo.email
                         })})
                         .then( resp => {
-                            res.status(200).json({data:'Tenant signed and sent email to subtenant'})
+                            fetch("https://crib-llc.herokuapp.com/requests/smsTenantSigned" , {
+                                method: 'POST',
+                                headers: {
+                                Accept: 'application/json',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                "tenantName": result.firstName,
+                                "subtenantName": subtenantInfo.firstName,
+                                "subtenantPhoneNumber": subtenantInfo.phoneNumber
+                            })})
+                            .then( rr => {
+                                res.status(200).json({data:'Tenant signed, sms and email sent to subtenant'})
+                            })
                         })
                         .catch( e => {
                             console.log(e)
@@ -561,6 +594,7 @@ exports.docusign_webhook = (req, res, next) => {
             Request.findOneAndUpdate({envelopeId: req.body.envelopeId}, {subtenantSignedContract:true}).then(re=>{
                     res.status(200).json({data:'Recipient Signing Status Updated'})
             })
+
         }
 
     }).catch((error) => {
@@ -662,6 +696,7 @@ exports.sms_notif_subtenant_request = (req, res, next) => {
       })
     }
 };
+
 
 
 // @route POST /requests/smsTenantAccept
