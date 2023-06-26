@@ -503,7 +503,7 @@ exports.send_email_message_received = (req,res,next) => {
     text: 'and easy to do anywhere, even with Node.js',
     html: `<p>Hey ${req.body.recipientName},</p>
     <p>${req.body.senderName} just sent you a message about the request booking for the sublease on ${req.body.location}.</p> 
-    <p>To view this message, login into www.crib-app.com then navigate to the sublease request details page under "My Requests". Crib is working hard to make the subleasing process easier than ever!</p>
+    <p>To view this message, please get on the website then navigate to the sublease request details page under "My Requests". Crib is working hard to make the subleasing process easier than ever!</p>
     <p><strong>Got a question?</strong> Contact us at (608)-515-8038.
     <br/>
     <p>Best,<br/>The Crib team</p>
