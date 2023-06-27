@@ -697,7 +697,7 @@ console.log("REQID", req.params.id)
 }
 
 //@POST /receiveCribConnectWebPayments
-//Description get Crib Connect web payments on Square
+//@Description get Crib Connect web payments on Square
 exports.receive_crib_cronnect_web_payments = async (req, res, next) => {
     if(req.body.sourceId == undefined){
         res.status(404).json({"error" : "Incomplete requests"})
