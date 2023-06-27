@@ -43,6 +43,7 @@
     "node-fetch": "^2.6.9",
     "passport-oauth2": "^1.7.0",
     "request": "^2.88.2",
+    "square": "^28.0.1",
     "superagent": "^8.0.9",
     "twilio": "^4.8.0",
     "validation": "^0.0.1"

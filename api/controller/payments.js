@@ -6,8 +6,15 @@ const User = require("../models/user");
 const Request = require('../models/request');
 const Payment = require('../models/payment');
 var differenceInDays = require('date-fns/differenceInDays')
+const { Client, Environment, ApiError } = require('square')
+const { randomUUID } = require('crypto');
 
+const { paymentsApi } =  new Client({
+    accessToken: process.env.SQUARE_ACCESS_TOKEN,
+    environment: Environment.Production
+});
 
+BigInt.prototype.toJSON = function() { return this.toString(); }
 
 var sq_access_token = process.env.SQUARE_ACCESS_TOKEN;
 
@@ -687,5 +694,32 @@ console.log("REQID", req.params.id)
 })
 }).catch(e=>res.status(404))  
 
+}
+
+//@POST /receiveCribConnectWebPayments
+//Description get Crib Connect web payments on Square
+exports.receive_crib_cronnect_web_payments = async (req, res, next) => {
+    if(req.body.sourceId == undefined){
+        res.status(404).json({"error" : "Incomplete requests"})
+    }
+    await paymentsApi.createPayment({
+    idempotencyKey: randomUUID(),
+    sourceId: req.body.sourceId,
+    amountMoney: {
+        currency: 'USD',
+        amount: 50
+    }
+    })
+    .then( result => {
+        if(result.result.payment.status == "COMPLETED"){
+            res.status(200).json(result)
+        }
+        else{
+            res.status(400).json({"error" : "Error occured, please try again."})
+        }
+    })
+    .catch( e=> {
+        res.status(400).json({"error" : "Error occured, please try again."})
+    })
 }
                     
