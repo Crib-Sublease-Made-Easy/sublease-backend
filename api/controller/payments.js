@@ -709,7 +709,7 @@ exports.receive_crib_cronnect_web_payments = async (req, res, next) => {
     sourceId: req.body.sourceId,
     amountMoney: {
         currency: 'USD',
-        amount: 50
+        amount: 4999
     }
     })
     .then( async result => {
