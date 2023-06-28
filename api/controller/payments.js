@@ -8,6 +8,8 @@ const Payment = require('../models/payment');
 var differenceInDays = require('date-fns/differenceInDays')
 const { Client, Environment, ApiError } = require('square')
 const { randomUUID } = require('crypto');
+const { asyncify } = require('async');
+const { default: mongoose } = require('mongoose');
 
 const { paymentsApi } =  new Client({
     accessToken: process.env.SQUARE_ACCESS_TOKEN,
@@ -699,7 +701,7 @@ console.log("REQID", req.params.id)
 //@POST /receiveCribConnectWebPayments
 //@Description get Crib Connect web payments on Square
 exports.receive_crib_cronnect_web_payments = async (req, res, next) => {
-    if(req.body.sourceId == undefined){
+    if(req.body.sourceId == undefined || req.body.uid == undefined){
         res.status(404).json({"error" : "Incomplete requests"})
     }
     await paymentsApi.createPayment({
@@ -710,9 +712,16 @@ exports.receive_crib_cronnect_web_payments = async (req, res, next) => {
         amount: 50
     }
     })
-    .then( result => {
+    .then( async result => {
         if(result.result.payment.status == "COMPLETED"){
-            res.status(200).json(result)
+           
+           User.findOneAndUpdate({"_id": mongoose.Types.ObjectId(req.body.uid)},{"cribPremium.paymentDetails.status": true})
+           .then( resp => {
+             res.status(200).json(result)
+           })
+           .catch(e => {
+            res.status(400).json({"error" : "Error occured, please try again."})
+           })
         }
         else{
             res.status(400).json({"error" : "Error occured, please try again."})
