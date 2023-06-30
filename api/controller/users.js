@@ -126,6 +126,7 @@ exports.otp_step2 = (req, resp, next) => {
 // @description Verify Authy SMS token from user is correct
 // @access Public
 exports.otp_step3 = (req, resp, next) => {
+    console.log("BODYYYYYYYYYYYYYY", req.body)
     authy.verify(
         req.body.authy_id,
         (token = String(req.body.token)),
