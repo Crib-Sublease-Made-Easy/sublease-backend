@@ -302,6 +302,17 @@ exports.web_otp_step3 = (req, resp, next) => {
                                 ? null
                                 : req.body.school,
                         deleted: false,
+                        student: req.body.student == undefined ? null : req.body.student,
+                        purposeOfSubleasing: req.body.purposeOfSubleasing,
+                        schoolEmail: req.body.schoolEmail,
+                        linkedIn: req.body.linkedIn,
+                        instagram: req.body.instagram,
+                        type: req.body.type == undefined
+                            ? null
+                            : req.body.type,
+                        countryCode: req.body.countryCode == undefined ? null : req.body.countryCode,
+                        
+
                     });
 
                     user.save()
