@@ -119,6 +119,36 @@ const UserSchema = new mongoose.Schema ({
         required: true,
         default: false
     },
+    student:{
+        type: Boolean,
+        required: false,
+        default: false
+    },
+    purposeOfSubleasing:{
+        type: String,
+        required: false,
+        default: null
+    },
+    schoolEmail:{
+        type: String,
+        required: false,
+        default: null
+    },
+    linkedIn: {
+        type: String,
+        required: false,
+        default: null
+    },
+    instagram: {
+        type: String,
+        required: false,
+        default: null
+    },
+    wechat: {
+        type: String,
+        required: false,
+        default: null
+    },
     cribPremium:{
         referralCode: {
             type: String,

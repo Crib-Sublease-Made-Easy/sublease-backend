@@ -195,7 +195,13 @@ exports.otp_step3 = (req, resp, next) => {
                         type: req.body.type == undefined
                             ? null
                             : req.body.type,
-                        countryCode: req.body.countryCode
+                        countryCode: req.body.countryCode == undefined ? null : req.body.countryCode,
+                        student: req.body.student == undefined ? null : req.body.student,
+                        purposeOfSubleasing: req.body.purposeOfSubleasing,
+                        schoolEmail: req.body.schoolEmail,
+                        linkedIn: req.body.linkedIn,
+                        instagram: req.body.instagram,
+                        wechat: req.body.wechat
                     });
 
                     user.save()
