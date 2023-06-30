@@ -178,6 +178,12 @@ exports.otp_step3 = (req, resp, next) => {
                         dob: req.body.dob,
                         gender: req.body.gender,
                         authy_id: req.body.authy_id,
+                        student: req.body.student == undefined ? null : req.body.student,
+                        purposeOfSubleasing: req.body.purposeOfSubleasing,
+                        schoolEmail: req.body.schoolEmail,
+                        linkedIn: req.body.linkedIn,
+                        instagram: req.body.instagram,
+                        wechat: req.body.wechat,
                         profilePic:
                             "https://crib-llc.herokuapp.com/users/profileImages/" +
                             im,
@@ -197,13 +203,10 @@ exports.otp_step3 = (req, resp, next) => {
                             ? null
                             : req.body.type,
                         countryCode: req.body.countryCode == undefined ? null : req.body.countryCode,
-                        student: req.body.student == undefined ? null : req.body.student,
-                        purposeOfSubleasing: req.body.purposeOfSubleasing,
-                        schoolEmail: req.body.schoolEmail,
-                        linkedIn: req.body.linkedIn,
-                        instagram: req.body.instagram,
-                        wechat: req.body.wechat
+
                     });
+
+                    console.log(user)
 
                     user.save()
                     .then((result) => {
