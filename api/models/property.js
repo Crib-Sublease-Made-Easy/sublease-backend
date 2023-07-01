@@ -125,6 +125,11 @@ const PropertySchema = new mongoose.Schema (
             required: false,
             default: []
         },
+        otherRentPaymentMethods: {
+            type: String,
+            required: falase,
+            default: ""
+        },
         privateBathroom: {
             type: Boolean,
             required: false,
