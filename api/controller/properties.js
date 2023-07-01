@@ -881,8 +881,15 @@ exports.property_create = (req, res, next) => {
       preferenceGender: preferenceGender,
       preferencePartialSublease: true,
       preferenceStudent: false
-    }
-
+    },
+    numberOfRoommates: req.body.numberOfRoommates == undefined ? 0 : req.body.numberOfRoommates,
+    rentPaymentTime: req.body.rentPaymentTime == undefined ? "Beginning" : req.body.rentPaymentTime,
+    rentPaymentMethod: req.body.rentPaymentMethod == undefined ? "" : req.body.rentPaymentMethod,
+    privateBathroom: req.body.privateBathroom == undefined ? true : false,
+    utilitiesFee: req.body.utilitiesFee == undefined ? 0 : req.body.utilitiesFee,
+    wifiFee: req.body.wifiFee == undefined ? 0 : req.body.wifiFee,
+    WDLocation: req.body.WDLocation == undefined ? "In-building" : req.body.WDLocation,
+    messageToSubtenant: req.body.messageToSubtenant == undefined ? "" : req.body.messageToSubtenant
   });
 
   console.log("create")

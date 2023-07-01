@@ -115,6 +115,46 @@ const PropertySchema = new mongoose.Schema (
                 required: false,
             }
         },
+        rentPaymentTime: {
+            type: String,
+            required: false,
+            default: null
+        },
+        rentPaymentMethod: {
+            type: Array,
+            required: false,
+            default: []
+        },
+        privateBathroom: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        utilitiesFee: {
+            type: Number,
+            required: false,
+            default: 0
+        },
+        wifiFee: {
+            type: Number,
+            required: false,
+            default: 0
+        },
+        WDLocation: {
+            type: String,
+            default: "",
+            required: false 
+        },
+        numberOfRoommates: {
+            type: Number,
+            required: false,
+            default: 0
+        },
+        messageToSubtenant: {
+            type: String,
+            required: false,
+            default: ""
+        },
         detailedPreferences: {
             preferenceGender: {
                 type: String,
