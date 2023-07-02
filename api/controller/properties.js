@@ -886,7 +886,7 @@ exports.property_create = (req, res, next) => {
     rentPaymentTime: req.body.rentPaymentTime == undefined ? "Beginning" : req.body.rentPaymentTime,
     rentPaymentMethod: req.body.rentPaymentMethod == undefined ? "" : req.body.rentPaymentMethod,
     otherRentPaymentMethods: req.body.otherRentPaymentMethods == undefined ? "" : otherRentPaymentMethods,
-    privateBathroom: req.body.privateBathroom == undefined ? true : false,
+    privateBathroom: req.body.privateBathroom == undefined ? true : req.body.privateBathroom,
     utilitiesFee: req.body.utilitiesFee == undefined ? 0 : req.body.utilitiesFee,
     wifiFee: req.body.wifiFee == undefined ? 0 : req.body.wifiFee,
     WDLocation: req.body.WDLocation == undefined ? "In-building" : req.body.WDLocation,
