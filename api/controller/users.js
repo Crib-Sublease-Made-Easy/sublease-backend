@@ -886,7 +886,7 @@ exports.verify_email_verification_code = (req, res, next) => {
     .then(verification_check => {
         console.log(verification_check)
         if(verification_check.valid == true){
-            User.findOneAndUpdate({"_id":req.body.userId},{"emailVerified": true})
+            User.findOneAndUpdate({"_id": mongoose.Types.ObjectId(req.body.userId)},{"emailVerified": true})
             .then( r => {
 
                 res.status(200).json({data:"Email successfully verified"})
