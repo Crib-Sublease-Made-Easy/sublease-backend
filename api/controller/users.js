@@ -888,12 +888,16 @@ exports.verify_email_verification_code = (req, res, next) => {
         if(verification_check.valid == true){
             User.findOneAndUpdate({"_id":req.body.userId},{"emailVerified": true})
             .then( r => {
+
                 res.status(200).json({data:"Email successfully verified"})
             })
         }
         else{
-            res.status(404).json({data:"Incorrect code. Please try again!"})
+            res.status(404).json({data:"Incorrect code"})
         }
     })
-    .catch( e => {res.status(404).json({data:e})})
+    .catch( e => {
+        
+        res.status(404).json({data:"Error in last catch"})
+    })
 }
