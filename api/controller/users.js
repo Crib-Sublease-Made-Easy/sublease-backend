@@ -889,12 +889,12 @@ exports.verify_email_verification_code = (req, res, next) => {
             User.findOneAndUpdate({"_id": mongoose.Types.ObjectId(req.body.userId)},{"emailVerified": true})
             .then( r => {
 
-                res.status(200).json({data:"Email successfully verified"})
+                // res.status(200).json({data:"Email successfully verified"})
             })
         }
-        else{
-            res.status(404).json({data:"Incorrect code"})
-        }
+        // else{
+        //     res.status(400).json({data:"Incorrect code"})
+        // }
     })
     .catch( e => {
         
