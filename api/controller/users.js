@@ -572,6 +572,10 @@ exports.user_modify = (req, res, next) => {
             query.firstName = req.body.firstName;
             query.lastName = req.body.lastName;
         }
+        if (req.body.emailVerified != undefined) {
+            query.emailVerified = true;
+           
+        }
         User.findByIdAndUpdate(req.params.id, query)
             .then((user) => res.json(user))
             .catch((err) =>
